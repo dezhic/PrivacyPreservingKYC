@@ -1,0 +1,25 @@
+#!/bin/sh
+PORTS="8040:8040 8041:8041 " sudo -E scripts/run_docker start \
+   --endpoint http://host.docker.internal:8040 \
+   --label dezbank.agent \
+   --inbound-transport http 0.0.0.0 8040 \
+   --outbound-transport http \
+   --admin 0.0.0.0 8041 \
+   --admin-insecure-mode \
+   --wallet-type basic \
+   --wallet-name dezbank.agent916333 \
+   --wallet-key dezbank.agent916333 \
+   --preserve-exchange-records \
+   --auto-provision \
+   --genesis-url http://dev.greenlight.bcovrin.vonx.io/genesis \
+   --trace-target log \
+   --trace-tag acapy.events \
+   --trace-label dezbank.agent.trace \
+   --auto-ping-connection \
+   --auto-respond-messages \
+   --auto-accept-invites \
+   --auto-accept-requests \
+   --auto-respond-credential-proposal \
+   --auto-respond-credential-offer \
+   --auto-respond-credential-request \
+   --auto-store-credential

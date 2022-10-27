@@ -1,0 +1,7 @@
+logging:
+  level:
+    hk: debug
+
+agent-config:
+  endpoint: http://localhost:8021
+  genesis-url: http://localhost:8020/genesis
