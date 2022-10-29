@@ -67,6 +67,8 @@ public class IssuerAgent {
     private final List<String> schemaAttrs;
     @Getter
     private final String schemaVersion;
+    @Getter
+    private String credDefId;
 
     @Autowired
     public IssuerAgent(RestTemplate restTemplate, AgentProperties agentProperties) throws Exception {
@@ -130,11 +132,32 @@ public class IssuerAgent {
         publicDid = pubDidResult.getResult().getDid();
 
         // Create schema
-        schemaId = createSchemaCredDef(schemaName, schemaAttrs, schemaVersion);
+        schemaId = createSchema(schemaName, schemaAttrs, schemaVersion);
+
+        credDefId = createCredDef(schemaId, schemaName + "_cred", null, null);
+
 
     }
 
-    private String createSchemaCredDef(String schemaName, List<String> schemaAttrs, String schemaVersion) {
+    private String createCredDef(String schemaId, String tag, Boolean supportRevocation, Integer revocationRegistrySize) throws Exception {
+        CredentialDefinitionSendResult result = restTemplate.postForObject(
+                agentProperties.getEndpoint() + "/credential-definitions",
+                CredentialDefinitionSendRequest.builder()
+                    .schemaId(schemaId)
+                    .tag(tag)
+                    .supportRevocation(supportRevocation)
+                    .revocationRegistrySize(revocationRegistrySize)
+                    .build(),
+                CredentialDefinitionSendResult.class
+        );
+        if (result == null) {
+            throw new Exception("Failed to create credential definition");
+        }
+        log.debug("Created credential definition: {}", result);
+        return result.getCredentialDefinitionId();
+    }
+
+    private String createSchema(String schemaName, List<String> schemaAttrs, String schemaVersion) {
         SchemaSendRequest request = SchemaSendRequest.builder()
                 .schemaName(schemaName)
                 .schemaVersion(schemaVersion)
