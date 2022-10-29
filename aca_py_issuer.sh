@@ -1,12 +1,12 @@
 #!/bin/sh
-PORTS="8040:8040 8041:8041 " sudo -E scripts/run_docker start \
-   --endpoint http://host.docker.internal:8040 \
+PORTS="8020:8020 8021:8021 " sudo -E scripts/run_docker start \
+   --endpoint http://host.docker.internal:8020 \
    --label dezbank.agent \
-   --inbound-transport http 0.0.0.0 8040 \
+   --inbound-transport http 0.0.0.0 8020 \
    --outbound-transport http \
-   --admin 0.0.0.0 8041 \
+   --admin 0.0.0.0 8021 \
    --admin-insecure-mode \
-   --wallet-type basic \
+   --wallet-type indy \
    --wallet-name dezbank.agent916333 \
    --wallet-key dezbank.agent916333 \
    --preserve-exchange-records \
@@ -22,4 +22,6 @@ PORTS="8040:8040 8041:8041 " sudo -E scripts/run_docker start \
    --auto-respond-credential-proposal \
    --auto-respond-credential-offer \
    --auto-respond-credential-request \
-   --auto-store-credential
+   --auto-store-credential \
+   --webhook-url http://host.docker.internal:8080/webhooks
+

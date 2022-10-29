@@ -10,17 +10,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
-@ConfigurationProperties(prefix = "agent-config")
 @Getter
 @Setter
+@Component
+@ConfigurationProperties(prefix = "agent-properties")
 public class AgentProperties {
     private String endpoint;
     private String genesisUrl;
-
-    @PostConstruct
-    private void print() {
-        System.err.println(endpoint);
-        System.err.println(genesisUrl);
-    }
+    private String ledgerUrl;
 }
