@@ -1,10 +1,51 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:td="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>Issuer UI</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        th, td {
+            border-style: dotted;
+            padding: 3px;
+        }
+    </style>
 </head>
 <body>
-<p th:text="'Hello, ' + ${name} + '!'"/>
+<button id="create-inv">Create Invitation</button>
+<div id="inv-qr"></div>
+
+<button id="list-conn">List Connections</button>
+<table id="conn-table">
+    <tr><th>ID</th><th>State</th><th>Created At</th><th>Updated At</th></tr>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    $("#create-inv").click(() => {
+        $.post("/issuer/create-invitation", {}, (data, status) => {
+            new QRCode(document.getElementById("inv-qr"), data.invitation_url);
+        });
+    });
+
+    $("#list-conn").click(() => {
+        $.get("/issuer/connections", (data, status) => {
+            let tableContent = '<tr><th>ID</th><th>State</th><th>Created At</th><th>Updated At</th></tr>';
+            const rows = data.results.map(conn => {
+                const createdDate = new Date(conn.created_at);
+                const updatedDate = new Date(conn.updated_at);
+                return `
+                    <tr>
+                        <td>${conn.connection_id}</td>
+                        <td>${conn.state}</td>
+                        <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
+                        <td>${updatedDate.toLocaleDateString()} ${updatedDate.toLocaleTimeString()}</td>
+                    </tr>`;
+            });
+            tableContent += rows;
+            $("#conn-table").html(tableContent);
+        });
+    });
+</script>
 </body>
 </html>

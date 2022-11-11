@@ -3,6 +3,6 @@ logging:
     hk: debug
 
 agent-properties:
-  endpoint: http://localhost:8021
-  genesis-url: http://localhost:8020/genesis
+  endpoint: http://159.138.47.211:8021
+  genesis-url: http://159.138.47.211:8020/genesis
   ledger-url: http://dev.greenlight.bcovrin.vonx.io
