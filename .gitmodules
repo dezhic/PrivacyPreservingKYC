@@ -1,0 +1,3 @@
+[submodule "src/main/snarkjs/circomlib"]
+	path = src/main/snarkjs/circomlib
+	url = https://github.com/iden3/circomlib
