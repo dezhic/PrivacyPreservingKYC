@@ -29,7 +29,7 @@ public class IssuerController {
         this.agentProperties = agentProperties;
     }
 
-    @GetMapping("/issuer/login")
+    @GetMapping("/issuer")
     public String index(Model model) {
         return "issuer/index";
     }
