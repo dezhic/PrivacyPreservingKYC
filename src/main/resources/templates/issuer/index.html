@@ -33,27 +33,44 @@
 </head>
 <body class="text-center">
 
-<main class="form-signin">
-    <form>
-        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+<main class="container">
+    <div class="row">
 
-        <div class="form-floating">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email address</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Password</label>
+        <div class="col-6 border-end border-3">
+            <form class="form-signin" action="http://httpbin.org/post" method="post">
+                <h1 class="h3 mb-3 fw-normal">Admin Login</h1>
+
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="adminUsername" name="username" placeholder="Username">
+                    <label for="adminUsername">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="adminPassword" name="password" placeholder="Password">
+                    <label for="adminPassword">Password</label>
+                </div>
+
+                <button class="mt-3 w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            </form>
         </div>
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
+        <div class="col-6">
+            <form class="form-signin" action="http://httpbin.org/post" method="post">
+                <h1 class="h3 mb-3 fw-normal">Customer Login</h1>
+
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="customerUsername" name="username" placeholder="Username">
+                    <label for="customerUsername">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" id="customerPassword" name="password" placeholder="Password">
+                    <label for="customerPassword">Password</label>
+                </div>
+
+                <button class="mt-3 w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+            </form>
         </div>
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
-    </form>
+
+    </div>
 </main>
 
 </body>
