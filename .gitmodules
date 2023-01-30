@@ -1,3 +1,6 @@
 [submodule "src/main/snarkjs/circomlib"]
 	path = src/main/snarkjs/circomlib
 	url = https://github.com/iden3/circomlib
+[submodule "src/main/snarkjs/ed25519-circom"]
+	path = src/main/snarkjs/ed25519-circom
+	url = https://github.com/Electron-Labs/ed25519-circom
