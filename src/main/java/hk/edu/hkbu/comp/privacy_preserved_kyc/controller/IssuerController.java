@@ -6,12 +6,14 @@ import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.CreateInvitationReques
 import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.InvitationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-@RestController
+@Controller
 @Slf4j
 public class IssuerController {
 
@@ -27,6 +29,22 @@ public class IssuerController {
         this.agentProperties = agentProperties;
     }
 
+    @GetMapping("/issuer/login")
+    public String index(Model model) {
+        return "issuer/index";
+    }
+
+    @GetMapping("/issuer/customer-portal")
+    public String customerPortal(Model model) {
+        return "issuer/customer-portal";
+    }
+
+    @GetMapping("/issuer/admin-portal")
+    public String adminPortal(Model model) {
+        return "issuer/admin-portal";
+    }
+
+    @ResponseBody
     @PostMapping("/issuer/create-invitation")
     public InvitationResult createInvitation() {
         InvitationResult result = restTemplate.postForObject(
@@ -39,6 +57,7 @@ public class IssuerController {
         return result;
     }
 
+    @ResponseBody
     @GetMapping("/issuer/connections")
     public ConnectionList connections() {
         return restTemplate.getForObject(
