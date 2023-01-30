@@ -47,6 +47,13 @@
             <version>2.7.5</version>
         </dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.github.jsonld-java/jsonld-java -->
+		<dependency>
+			<groupId>com.github.jsonld-java</groupId>
+			<artifactId>jsonld-java</artifactId>
+			<version>0.13.4</version>
+		</dependency>
+
 
 	</dependencies>
 
