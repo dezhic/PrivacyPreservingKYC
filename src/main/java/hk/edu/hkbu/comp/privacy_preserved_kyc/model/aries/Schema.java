@@ -1,4 +1,4 @@
-package hk.edu.hkbu.comp.privacy_preserved_kyc.model;
+package hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

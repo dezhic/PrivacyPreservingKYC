@@ -1,7 +1,7 @@
 package hk.edu.hkbu.comp.privacy_preserved_kyc.agent;
 
 import hk.edu.hkbu.comp.privacy_preserved_kyc.config.AgentProperties;
-import hk.edu.hkbu.comp.privacy_preserved_kyc.model.*;
+import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.*;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

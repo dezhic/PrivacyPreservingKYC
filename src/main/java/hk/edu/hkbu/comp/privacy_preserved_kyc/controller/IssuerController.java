@@ -1,9 +1,9 @@
 package hk.edu.hkbu.comp.privacy_preserved_kyc.controller;
 
 import hk.edu.hkbu.comp.privacy_preserved_kyc.config.AgentProperties;
-import hk.edu.hkbu.comp.privacy_preserved_kyc.model.ConnectionList;
-import hk.edu.hkbu.comp.privacy_preserved_kyc.model.CreateInvitationRequest;
-import hk.edu.hkbu.comp.privacy_preserved_kyc.model.InvitationResult;
+import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.ConnectionList;
+import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.CreateInvitationRequest;
+import hk.edu.hkbu.comp.privacy_preserved_kyc.model.aries.InvitationResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +17,7 @@ public class IssuerController {
 
     RestTemplate restTemplate;
     AgentProperties agentProperties;
+
 
     @Autowired
     public IssuerController(
