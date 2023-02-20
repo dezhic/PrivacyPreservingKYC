@@ -1,7 +1,7 @@
-1,1,100,main.S
-2,2,100,main.enabled
-3,3,100,main.Ax
-4,4,100,main.Ay
+1,1,100,main.Ax
+2,2,100,main.Ay
+3,3,100,main.enabled
+4,4,100,main.S
 5,5,100,main.R8x
 6,6,100,main.R8y
 7,7,100,main.M

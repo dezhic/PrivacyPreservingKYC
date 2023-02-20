@@ -8,10 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @Slf4j
@@ -34,9 +36,10 @@ public class IssuerController {
         return "issuer/index";
     }
 
+    @ResponseBody
     @GetMapping("/issuer/customer-portal")
-    public String customerPortal(Model model) {
-        return "issuer/customer-portal";
+    public ModelAndView customerPortal(@CookieValue("sessionId") String sessionId) {
+        return new ModelAndView("issuer/customer-portal");
     }
 
     @GetMapping("/issuer/admin-portal")

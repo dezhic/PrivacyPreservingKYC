@@ -42,4 +42,4 @@ template VerifyEdDSA() {
 
 }
 
-component main {public[S]} = VerifyEdDSA();
+component main {public[Ax, Ay]} = VerifyEdDSA();

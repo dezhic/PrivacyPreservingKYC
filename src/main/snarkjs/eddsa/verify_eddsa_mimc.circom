@@ -10,6 +10,12 @@ template VerifyEdDSAMiMC() {
     signal input S;
     signal input M;
 
+    log("R8x:", R8x);
+    log("R8y:", R8y);
+    log("Ax:", Ax);
+    log("Ay:", Ay);
+    log("M:", M);
+
     component verifier = EdDSAMiMCVerifier();
     verifier.enabled <== 1;
     verifier.Ax <== from_x;
