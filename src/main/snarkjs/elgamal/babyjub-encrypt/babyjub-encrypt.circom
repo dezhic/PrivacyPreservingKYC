@@ -12,11 +12,11 @@
 */
 pragma circom 2.0.0;
 
-include "../circomlib/circuits/bitify.circom";
-include "../circomlib/circuits/pointbits.circom";
-include "../circomlib/circuits/escalarmul.circom";
-include "../circomlib/circuits/escalarmulfix.circom";
-include "../circomlib/circuits/babyjub.circom";
+include "../../circomlib/circuits/bitify.circom";
+include "../../circomlib/circuits/pointbits.circom";
+include "../../circomlib/circuits/escalarmul.circom";
+include "../../circomlib/circuits/escalarmulfix.circom";
+include "../../circomlib/circuits/babyjub.circom";
 
 template ElGamalEncrypt() {
     signal input m;
