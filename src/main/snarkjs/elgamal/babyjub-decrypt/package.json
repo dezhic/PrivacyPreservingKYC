@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@iden3/js-crypto": "^1.0.0-beta.0",
     "circomlibjs": "^0.1.7",
     "maci-crypto": "^1.1.2"
   }

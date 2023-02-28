@@ -1,5 +1,5 @@
 const circomlibjs = require("circomlibjs");
-const maci = require('maci-crypto');
+const jscrypto = require('@iden3/js-crypto');
 
 /**
  * @param {Buffer} buffer 
@@ -33,63 +33,34 @@ function newBufferFromBigUInt256LE(value) {
  * @param {{c1: [BigInt, BigInt], c2: [BigInt, BigInt]}} cipher 
  */
 async function decrypt(privKey, cipher) {
-    const babyJub = await circomlibjs.buildBabyjub();
+    // const babyJub = await circomlibjs.buildBabyjub();
     // Convert point coordinates to bytes
     /* NOTE: Assuming little endianess here
        (The multiplication operation is eventually done by wasm. See iden3/wasmbuilder)
      */
-    var c1XBuf = newBufferFromBigUInt256LE(cipher.c1[0]);
-    var c1YBuf = newBufferFromBigUInt256LE(cipher.c1[1]);
-    var c2XBuf = newBufferFromBigUInt256LE(cipher.c2[0]);
-    var c2YBuf = newBufferFromBigUInt256LE(cipher.c2[1]);
-    // var privKeyBuf = newBufferFromBigUInt256LE(privKey);
-    
-    console.log("c1YBuf:");
-    console.log(c1YBuf);
+    const babyJub = jscrypto.babyJub;
     
     // Compute shared secret s
-    var sBufs = babyJub.mulPointEscalar([c1XBuf, c1YBuf], privKey);  //  WRONG RESULT
-    var s = [
-        readBigUInt256LE(sBufs[0]), 
-        readBigUInt256LE(sBufs[1])
-    ];
-
-
-    console.log("s");
-    console.log(s);  // WRONG RESULT
-    console.log("sBufs");
-    console.log(sBufs);
-
+    var s = babyJub.mulPointEscalar(cipher.c1, privKey);  //  WRONG RESULT
 
     // var sInv = [
     //     babyJub.F.e(-1n * s[0]),
     //     s[1]
     // ];
     // TODO: Check the correct inverse form
-    var sInvXBuf = babyJub.F.e(-1n * s[0]);
-    var sInvYBuf = newBufferFromBigUInt256LE(s[1]);
+    var sInvX = babyJub.F.e(-1n * s[0]);
+    var sInvY = s[1];
     
-    var sInv = [
-        readBigUInt256LE(sInvXBuf),
-        s[1]
-    ];
-
-    var origin = babyJub.addPoint(
-        [sInvXBuf, sInvYBuf],
-        sBufs
-        );
+    var origin = babyJub.addPoint([sInvX, sInvY], s);
     
     console.log("Origin");
     console.log(origin);
 
-    var mPoint = babyJub.addPoint([c2XBuf, c2YBuf], [sInvXBuf, sInvYBuf]);
+    var mPoint = babyJub.addPoint(cipher.c2, [sInvX, sInvY]);
 
     // Point 2 bits
-    var mBuf = babyJub.packPoint(mPoint)
+    var m = babyJub.packPoint(mPoint)
 
-    // Bits 2 Num
-    var m = readBigUInt256LE(mBuf);
-    
     return m;
 }
 
