@@ -30,7 +30,7 @@ template ElGamalEncrypt() {
     signal sX;
     signal sY;
 
-    signal c1XBuf[256];
+    signal c1YBuf[256];
 
     signal output c1X;
     signal output c1Y;
@@ -96,8 +96,21 @@ template ElGamalEncrypt() {
 
     // debug start
     // test if the num2bits perform the same as javascript newBufferFromBigUInt256LE
+    component num2bitsC1Y = Num2Bits(256);
+    num2bitsC1Y.in <== c1Y;
+    log("c1YBuf:");
+    for (i = 0; i < 32; i++) {
+        var oneByte = 0;
+        for (var j = 0; j < 8; j++) {
+            var bitVal = (num2bitsC1Y.out[i * 8 + j] & 1) << j;
+            oneByte = oneByte + bitVal;
+        }
+        log(i, ":", oneByte);
+    }
+
     component num2bitsSX = Num2Bits(256);
     num2bitsSX.in <== sX;
+    log("sXBuf:");
     for (i = 0; i < 32; i++) {
         var oneByte = 0;
         for (var j = 0; j < 8; j++) {
@@ -126,6 +139,13 @@ template ElGamalEncrypt() {
     log("c1Y:", c1Y);
     log("c2X:", c2X);
     log("c2Y:", c2Y);
+    component babyAddDoubleC1 = BabyAdd();
+    babyAddDoubleC1.x1 <== c1X;
+    babyAddDoubleC1.y1 <== c1Y;
+    babyAddDoubleC1.x2 <== c1X;
+    babyAddDoubleC1.y2 <== c1Y;
+    log("doubleC1.x:", babyAddDoubleC1.xout);
+    log("doubleC1.y:", babyAddDoubleC1.yout);
 }
 
 component main {public[pubKey]} = ElGamalEncrypt();

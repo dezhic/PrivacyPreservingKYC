@@ -44,8 +44,11 @@ async function decrypt(privKey, cipher) {
     var c2YBuf = newBufferFromBigUInt256LE(cipher.c2[1]);
     // var privKeyBuf = newBufferFromBigUInt256LE(privKey);
     
+    console.log("c1YBuf:");
+    console.log(c1YBuf);
+    
     // Compute shared secret s
-    var sBufs = babyJub.mulPointEscalar([c1XBuf, c1YBuf], privKey);
+    var sBufs = babyJub.mulPointEscalar([c1XBuf, c1YBuf], privKey);  //  WRONG RESULT
     var s = [
         readBigUInt256LE(sBufs[0]), 
         readBigUInt256LE(sBufs[1])
@@ -53,7 +56,7 @@ async function decrypt(privKey, cipher) {
 
 
     console.log("s");
-    console.log(s);
+    console.log(s);  // WRONG RESULT
     console.log("sBufs");
     console.log(sBufs);
 
@@ -120,14 +123,14 @@ async function messageGen() {
     console.log("m Point:");
     console.log(mPoint);
 
-    console.log('--- compress test ---');
-    console.log("pointbuf");
-    console.log(pointBuf);
-    console.log('packed')
-    const compressed = babyJub.packPoint(pointBuf);
-    console.log(compressed);
-    console.log(readBigUInt256LE(compressed));
-    console.log('--- end of compress test ---');
+    // console.log('--- compress test ---');
+    // console.log("pointbuf");
+    // console.log(pointBuf);
+    // console.log('packed')
+    // const compressed = babyJub.packPoint(pointBuf);
+    // console.log(compressed);
+    // console.log(readBigUInt256LE(compressed));
+    // console.log('--- end of compress test ---');
 
 }
 
