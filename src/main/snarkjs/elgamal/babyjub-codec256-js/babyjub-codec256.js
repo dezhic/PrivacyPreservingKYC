@@ -20,12 +20,17 @@ function encode(message) {
  * @returns {bigint} the decoded message
  */
 function decode(point, xmXor) {
-    
-    return new Uint8Array(32);
+    return point[0] ^ xmXor;
 }
 
-module.exports.randomPoint = function randomPoint() {
+function randomPoint() {
     const privBuf = crypto.randomBytes(32);
     const priv = new iden3crypto.PrivateKey(privBuf);
     return priv.public().p;
 }
+
+module.exports = {
+    encode: encode,
+    decode: decode,
+    randomPoint: randomPoint
+};
