@@ -13,24 +13,12 @@ template VerifyEdDSA(n256Bits) {
 
     signal hash;
 
-    // // Calculate hash of msg
-    // component sha256 = Sha256(msgByteLength*8);
-    // for (var i = 0; i < msgByteLength*8; i++) {
-    //     sha256.in[i] <== msg[i];
-    // }
-
     // Calculate Poseidon hash of msg
     component poseidon = Poseidon(n256Bits);
     for (var i = 0; i < n256Bits; i++) {
         poseidon.inputs[i] <== msg[i];
     }
     hash <== poseidon.out;
-
-    // component bits2numHash = Bits2Num(256);
-    // for (var i = 0; i < 256; i++) {
-    //     bits2numHash.in[i] <== sha256.out[i];
-    // }
-    // hash <== bits2numHash.out;
 
     // Verify Issuer's signature on the msg hash
     component verifier = EdDSAPoseidonVerifier();
