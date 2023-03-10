@@ -33,3 +33,12 @@ build/
 ### VS Code ###
 .vscode/
 **/node_modules/
+
+
+**.r1cs
+**.sym
+**.wasm
+**.wtns
+**.ptau
+**.zkey
+
