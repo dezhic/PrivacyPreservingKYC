@@ -45,7 +45,7 @@ template GenerateZkKYCToken(n256Bits) {
         verifyEdDSA.msg[i] <== didI[i];
     }
     for (var i = 0; i < n256Bits; i++) {
-        verifyEdDSA.msg[i] <== didHI[i];
+        verifyEdDSA.msg[n256Bits + i] <== didHI[i];
     }
 
     /* Step 2: Create an encrypted token that contains (DID_I, DID_HI, DID_HV, DID_V) */
