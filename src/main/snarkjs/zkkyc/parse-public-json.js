@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { uint256Array2Did } = require('./utils');
+const { uint248Array2Did } = require('./utils');
 
 /**
  * Source: circomlib/test/sha256.js
@@ -36,20 +36,20 @@ function parsePublicJson(publicJson) {
             ]
         },
         msgCipher: {
-            cipher: bitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
-            iv: bitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
+            cipher: bitArray2buffer(public.slice(4, 4+248*4)).toString("hex"),
+            iv: bitArray2buffer(public.slice(4+248*4, 4+248*4+128)).toString("hex"),
         },
-        didHV: uint256Array2Did([BigInt(public[1156])], 1),
-        didV: uint256Array2Did([BigInt(public[1157])], 1),
+        didHV: uint248Array2Did([BigInt(public[1124])], 1),
+        didV: uint248Array2Did([BigInt(public[1125])], 1),
         issuerPubKey: {
-            x: public[1158],
-            y: public[1159],
+            x: public[1126],
+            y: public[1127],
         },
         govPubKey: {
-            x: public[1160],
-            y: public[1161],
+            x: public[1128],
+            y: public[1129],
         },
-        symKeyXmXor: public[1162],
+        symKeyXmXor: public[1130],
     }
 }
 

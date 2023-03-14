@@ -30,7 +30,7 @@ template ElGamalEncrypt() {
     signal sX;
     signal sY;
 
-    signal c1YBuf[256];
+    signal c1YBuf[248];
 
     signal output c1X;
     signal output c1Y;
@@ -44,12 +44,12 @@ template ElGamalEncrypt() {
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
 
-    component num2bitsM = Num2Bits(256);
+    component num2bitsM = Num2Bits(248);
     num2bitsM.in <== m;
     log("m Num:", m);
 
     component bits2pointM = Bits2Point_Strict();
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 248; i++) {
         bits2pointM.in[i] <== num2bitsM.out[i];
     }
     mX <== bits2pointM.out[0];
@@ -60,11 +60,11 @@ template ElGamalEncrypt() {
 
     // Convert public key pubKey to field element
     log("pubKeyNum:", pubKey);
-    component num2bitsPubKey = Num2Bits(256);  // simple little-endian encoding
+    component num2bitsPubKey = Num2Bits(248);  // simple little-endian encoding
     num2bitsPubKey.in <== pubKey;
 
     component bits2pointPubKey = Bits2Point_Strict();
-    for (i = 0; i < 256; i++) {
+    for (i = 0; i < 248; i++) {
         bits2pointPubKey.in[i] <== num2bitsPubKey.out[i];
     }
     pubKeyX <== bits2pointPubKey.out[0];
@@ -73,11 +73,11 @@ template ElGamalEncrypt() {
     log("pubKeyY:", pubKeyY);
 
     // Calculate c1
-    component num2bitsR = Num2Bits(256);
+    component num2bitsR = Num2Bits(248);
     num2bitsR.in <== r;
 
-    component escalarMulFixC1 = EscalarMulFix(256, BASE8);
-    for (i = 0; i < 256; i++) {
+    component escalarMulFixC1 = EscalarMulFix(248, BASE8);
+    for (i = 0; i < 248; i++) {
         escalarMulFixC1.e[i] <== num2bitsR.out[i];
     }
     c1X <== escalarMulFixC1.out[0];
@@ -85,8 +85,8 @@ template ElGamalEncrypt() {
 
 
     // Calculate shared secret (pubKey^r)
-    component escalarMulAnyS = EscalarMulAny(256);
-    for (i = 0; i < 256; i++) {
+    component escalarMulAnyS = EscalarMulAny(248);
+    for (i = 0; i < 248; i++) {
         escalarMulAnyS.e[i] <== num2bitsR.out[i];
     }
     escalarMulAnyS.p[0] <== pubKeyX;
@@ -95,11 +95,11 @@ template ElGamalEncrypt() {
     sY <== escalarMulAnyS.out[1];
 
     // debug start
-    // test if the num2bits perform the same as javascript newBufferFromBigUInt256LE
-    component num2bitsC1Y = Num2Bits(256);
+    // test if the num2bits perform the same as javascript newBufferFromBigUInt248LE
+    component num2bitsC1Y = Num2Bits(248);
     num2bitsC1Y.in <== c1Y;
     log("c1YBuf:");
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < 31; i++) {
         var oneByte = 0;
         for (var j = 0; j < 8; j++) {
             var bitVal = (num2bitsC1Y.out[i * 8 + j] & 1) << j;
@@ -108,10 +108,10 @@ template ElGamalEncrypt() {
         log(i, ":", oneByte);
     }
 
-    component num2bitsSX = Num2Bits(256);
+    component num2bitsSX = Num2Bits(248);
     num2bitsSX.in <== sX;
     log("sXBuf:");
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < 31; i++) {
         var oneByte = 0;
         for (var j = 0; j < 8; j++) {
             var bitVal = (num2bitsSX.out[i * 8 + j] & 1) << j;

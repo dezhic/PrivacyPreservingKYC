@@ -2,7 +2,7 @@ const { randomPoint } = require('./utils');
 
 /**
  * 
- * @param {bigint} message an arbitrary 256-bit bigint (little endian)
+ * @param {bigint} message an arbitrary 248-bit bigint (little endian)
  * @returns {point: [bigint, bigint], xmXor: bigint} point: the encoded babyjub point, xmXor: the xor of the message bytes and the x-coordinate of the point
  */
 function encode(message) {

@@ -1,24 +1,23 @@
 pragma circom 2.0.0;
 
-include "../node_modules/circomlib/circuits/sha256/sha256.circom";
 include "../node_modules/circomlib/circuits/bitify.circom";
 include "../node_modules/circomlib/circuits/eddsaposeidon.circom";
 
 /**
- * @param {number} n256Bits - Length of msg, measured in the number of 256-bit chunks
+ * @param {number} n248Bits - Length of msg, measured in the number of 248-bit chunks
  */
-template VerifyEdDSA(n256Bits) {
+template VerifyEdDSA(n248Bits) {
 
     signal input pubKey[2];
     signal input S;
     signal input R[2];
-    signal input msg[n256Bits];
+    signal input msg[n248Bits];
 
     signal hash;
 
     // 1. Calculate Poseidon hash of msg
-    component poseidon = Poseidon(n256Bits);
-    for (var i = 0; i < n256Bits; i++) {
+    component poseidon = Poseidon(n248Bits);
+    for (var i = 0; i < n248Bits; i++) {
         poseidon.inputs[i] <== msg[i];
     }
     hash <== poseidon.out;

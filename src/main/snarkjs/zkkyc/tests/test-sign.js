@@ -1,5 +1,5 @@
 const test = require("node:test");
-const { did2Uint256Array, hashUint256Array } = require('../utils');
+const { did2Uint248Array, hashUint248Array } = require('../utils');
 const { babyJubKeyGen } = require('../keygen');
 const sign = require('../sign');
 
@@ -15,8 +15,8 @@ const didI = 'did:sov:123456789abcdefghi';
 const didHI = 'did:peer:abcdefghijklmnopqrstuv';
 let didIArray, didHIArray;
 test('generate the bigint array representation of a DID', t => {
-  didIArray = did2Uint256Array(didI, 1);
-  didHIArray = did2Uint256Array(didHI, 1);
+  didIArray = did2Uint248Array(didI, 1);
+  didHIArray = did2Uint248Array(didHI, 1);
   console.log('didIArray:', didIArray);
   console.log('didHIArray:', didHIArray);
 });
@@ -29,7 +29,7 @@ test('concatenate didIArray and didHIArray', t => {
 
 let hash;
 test('hash the concatenated array', t => {
-  hash = hashUint256Array(concatArray);
+  hash = hashUint248Array(concatArray);
   console.log('hash:', hash);
 });
 
