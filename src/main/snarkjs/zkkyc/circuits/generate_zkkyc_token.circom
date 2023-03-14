@@ -123,12 +123,29 @@ template GenerateZkKYCToken(n256Bits) {
 
     component symKeyEncrypt = ElGamalEncrypt();
     symKeyEncrypt.m <== symKeyPointX;
-    symKeyEncrypt.pubKey <== govPubKey;
+    symKeyEncrypt.pubKey <== govPubKey[1];
     symKeyEncrypt.r <== elGamalR;
     keyCipherC1[0] <== symKeyEncrypt.c1X;
     keyCipherC1[1] <== symKeyEncrypt.c1Y;
     keyCipherC2[0] <== symKeyEncrypt.c2X;
     keyCipherC2[1] <== symKeyEncrypt.c2Y;
+
+    // log("didI", didI);
+    // log("didHI", didHI);
+    log("didHV[0]", didHV[0]);
+    log("did[0]", didV[0]);
+    // log("sigS", sigS);
+    // log("sigR[0]", sigR[0]);
+    // log("sigR[1]", sigR[1]);
+    log("issuerPubKey[0]", issuerPubKey[0]);
+    log("issuerPubKey[1]", issuerPubKey[1]);
+    log("govPubKey[0]", govPubKey[0]);
+    log("govPubKey[1]", govPubKey[1]);
+    log("symKeyXmXor", symKeyXmXor);
+    log("keyCipherC1[0]", keyCipherC1[0]);
+    log("keyCipherC1[1]", keyCipherC1[1]);
+    log("keyCipherC2[0]", keyCipherC2[0]);
+    log("keyCipherC2[1]", keyCipherC2[1]);
 
 }
 

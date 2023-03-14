@@ -14,13 +14,13 @@ pragma circom 2.0.0;
 
 include "../node_modules/circomlib/circuits/bitify.circom";
 include "../node_modules/circomlib/circuits/pointbits.circom";
-include "../node_modules/circomlib/circuits/escalarmul.circom";
+include "../node_modules/circomlib/circuits/escalarmulany.circom";
 include "../node_modules/circomlib/circuits/escalarmulfix.circom";
 include "../node_modules/circomlib/circuits/babyjub.circom";
 
 template ElGamalEncrypt() {
     signal input m;       // x-coorinate of the plaintext
-    signal input pubKey[2];  // public key (babyjub point)
+    signal input pubKey;  // compressed babyjub public key
     signal input r;       // a random ephemeral key, taken as an input as circom cannot generate one
 
     signal mX;
@@ -59,18 +59,18 @@ template ElGamalEncrypt() {
     log("mY:", mY);
 
     // Convert public key pubKey to field element
-    // log("pubKeyNum:", pubKey);
-    // component num2bitsPubKey = Num2Bits(256);  // simple little-endian encoding
-    // num2bitsPubKey.in <== pubKey;
+    log("pubKeyNum:", pubKey);
+    component num2bitsPubKey = Num2Bits(256);  // simple little-endian encoding
+    num2bitsPubKey.in <== pubKey;
 
-    // component bits2pointPubKey = Bits2Point_Strict();
-    // for (i = 0; i < 256; i++) {
-    //     bits2pointPubKey.in[i] <== num2bitsPubKey.out[i];
-    // }
-    // pubKeyX <== bits2pointPubKey.out[0];
-    // pubKeyY <== bits2pointPubKey.out[1];
-    // log("pubKeyX:", pubKeyX);
-    // log("pubKeyY:", pubKeyY);
+    component bits2pointPubKey = Bits2Point_Strict();
+    for (i = 0; i < 256; i++) {
+        bits2pointPubKey.in[i] <== num2bitsPubKey.out[i];
+    }
+    pubKeyX <== bits2pointPubKey.out[0];
+    pubKeyY <== bits2pointPubKey.out[1];
+    log("pubKeyX:", pubKeyX);
+    log("pubKeyY:", pubKeyY);
 
     // Calculate c1
     component num2bitsR = Num2Bits(256);
@@ -85,13 +85,14 @@ template ElGamalEncrypt() {
 
 
     // Calculate shared secret (pubKey^r)
-    component escalarMulS = EscalarMul(256, [0, 1]);
+    component escalarMulAnyS = EscalarMulAny(256);
     for (i = 0; i < 256; i++) {
-        escalarMulS.in[i] <== num2bitsR.out[i];
+        escalarMulAnyS.e[i] <== num2bitsR.out[i];
     }
-    escalarMulS.inp <== pubKey;
-    sX <== escalarMulS.out[0];
-    sY <== escalarMulS.out[1];
+    escalarMulAnyS.p[0] <== pubKeyX;
+    escalarMulAnyS.p[1] <== pubKeyY;
+    sX <== escalarMulAnyS.out[0];
+    sY <== escalarMulAnyS.out[1];
 
     // debug start
     // test if the num2bits perform the same as javascript newBufferFromBigUInt256LE
