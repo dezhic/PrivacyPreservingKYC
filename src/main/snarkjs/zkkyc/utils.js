@@ -46,7 +46,7 @@ function hashUint248Array(arr) {
  * @returns a random point on the babyjub curve
  */
 function randomPoint() {
-    const privBuf = crypto.randomBytes(31);
+    const privBuf = crypto.randomBytes(32);
     const priv = new iden3crypto.PrivateKey(privBuf);
     return priv.public().p;
 }

@@ -36,7 +36,7 @@ function parsePublicJson(publicJson) {
             ]
         },
         msgCipher: {
-            cipher: bitArray2buffer(public.slice(4, 4+248*4)).toString("hex"),
+            cipher: bitArray2buffer(public.slice(4, 4+248*4)).toString("hex"),      // the cipher of 4 248-bit DIDs
             iv: bitArray2buffer(public.slice(4+248*4, 4+248*4+128)).toString("hex"),
         },
         didHV: uint248Array2Did([BigInt(public[1124])], 1),

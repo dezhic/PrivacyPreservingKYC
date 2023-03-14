@@ -51,17 +51,17 @@ template GenerateZkKYCToken(n248Bits) {
     /* Step 2: Create an encrypted token that contains (DID_I, DID_HI, DID_HV, DID_V) */
     // Compute the symmetric key by XORing the symKey and symKeyXmXor
     var symKeyBits[256];
-    component symKeyPointXNum2Bits = Num2Bits(248);
+    component symKeyPointXNum2Bits = Num2Bits(253);
     symKeyPointXNum2Bits.in <== symKeyPointX;
-    component symKeyXmXorNum2Bits = Num2Bits(248);
+    component symKeyXmXorNum2Bits = Num2Bits(253);
     symKeyXmXorNum2Bits.in <== symKeyXmXor;
-    for (var i = 0; i < 248; i++) {
+    for (var i = 0; i < 253; i++) {
         var a, b;
         a = symKeyPointXNum2Bits.out[i];
         b = symKeyXmXorNum2Bits.out[i];
         symKeyBits[i] = a + b - 2*a*b;  // XOR expressed in a quadratic equation
     }
-    for (var i = 248; i < 256; i++) {
+    for (var i = 253; i < 256; i++) {
         symKeyBits[i] = 0;  // pad AES256 key with 0s
     }
     
