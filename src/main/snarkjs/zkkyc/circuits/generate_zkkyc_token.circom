@@ -66,15 +66,6 @@ template GenerateZkKYCToken(n248Bits) {
     symKeyBits[254] = 0;  // pad AES256 key with 0s
     symKeyBits[255] = 0;  // pad AES256 key with 0s
     
-    // Debug
-    component debugBits2Num = Bits2Num(256);
-    debugBits2Num.in <== symKeyBits;
-    var symKey = debugBits2Num.out;
-    log("symKeyPointX: ", symKeyPoint[0]);
-    log("symKeyXmXor: ", symKeyXmXor);
-    log("symKey: ", symKey);
-    // End Debug
-    
     // Convert DIDs int248 array to bits
     // Each 248-bit integer is converted into a __256-bit__ array of bits, tail padded with 0s
     // This is because AES expects the size to be "usize",
@@ -138,35 +129,6 @@ template GenerateZkKYCToken(n248Bits) {
     keyCipherC1[1] <== symKeyEncrypt.c1Y;
     keyCipherC2[0] <== symKeyEncrypt.c2X;
     keyCipherC2[1] <== symKeyEncrypt.c2Y;
-
-    // log("didI", didI);
-    // log("didHI", didHI);
-    // log("didHV[0]", didHV[0]);
-    // log("did[0]", didV[0]);
-    // log("sigS", sigS);
-    // log("sigR[0]", sigR[0]);
-    // log("sigR[1]", sigR[1]);
-    // log("issuerPubKey[0]", issuerPubKey[0]);
-    // log("issuerPubKey[1]", issuerPubKey[1]);
-    // log("govPubKey[0]", govPubKey[0]);
-    // log("govPubKey[1]", govPubKey[1]);
-    // log("symKeyXmXor", symKeyXmXor);
-    // log("keyCipherC1[0]", keyCipherC1[0]);
-    // log("keyCipherC1[1]", keyCipherC1[1]);
-    // log("keyCipherC2[0]", keyCipherC2[0]);
-    // log("keyCipherC2[1]", keyCipherC2[1]);
-    log("plaintext");
-    for (var i = 0; i < 4 * n248Bits * 256; i++) {
-        log(messageEncrypt.msg[i]);
-    }
-    log("key");
-    for (var i = 0; i < 256; i++) {
-        log(messageEncrypt.key[i]);
-    }
-    log("ctr");
-    for (var i = 0; i < 128; i++) {
-        log(messageEncrypt.ctr[i]);
-    }
 
 }
 
