@@ -11,8 +11,8 @@ test('generate babyJub key pair', t => {
   console.log('privScalar:', babyJubKeys.privScalar);
 });
 
-const didI = 'did:sov:123456789abcdefghi';
-const didHI = 'did:peer:abcdefghijklmnopqrstuv';
+const didI = 'did:sov:issuer0001';
+const didHI = 'did:peer:holder01forissuer00001';
 let didIArray, didHIArray;
 test('generate the bigint array representation of a DID', t => {
   didIArray = did2Uint248Array(didI, 1);
@@ -34,6 +34,6 @@ test('hash the concatenated array', t => {
 });
 
 test('sign the hash', t => {
-  const sig = sign(babyJubKeys.priv, hash);
+  const sig = sign(babyJubKeys.priv.sk, hash);
   console.log('sig', sig);
 });
