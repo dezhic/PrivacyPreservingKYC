@@ -114,11 +114,12 @@ function bits2BigInt(bits) {
     let x = 0n;
     for (let i = bits.length - 1; i >= 0; i--) {
         x <<= 1n;
-        x |= bits[i];
+        x |= BigInt(bits[i]);
     }
     return x;
 }
 
+// Order of the babyjub curve, the circuit can only handle numbers smaller than this!
 const GLOBAL_FIELD_P = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 
 module.exports = {
@@ -130,4 +131,5 @@ module.exports = {
     buffer2bitArray: buffer2bitArray,
     bigInt2Bits: bigInt2Bits,
     bits2BigInt: bits2BigInt,
+    GLOBAL_FIELD_P: GLOBAL_FIELD_P,
 }
