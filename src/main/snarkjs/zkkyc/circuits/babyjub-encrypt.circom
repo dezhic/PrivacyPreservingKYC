@@ -62,9 +62,6 @@ template ElGamalEncrypt() {
     sX <== escalarMulAnyS.out[0];
     sY <== escalarMulAnyS.out[1];
 
-    log("sX:", sX);
-    log("sY:", sY);
-
     component babyAddC2 = BabyAdd();
     babyAddC2.x1 <== mX;
     babyAddC2.y1 <== mY;
@@ -74,17 +71,11 @@ template ElGamalEncrypt() {
     c2X <== babyAddC2.xout;
     c2Y <== babyAddC2.yout;
 
-    log("c1X:", c1X);
-    log("c1Y:", c1Y);
-    log("c2X:", c2X);
-    log("c2Y:", c2Y);
     component babyAddDoubleC1 = BabyAdd();
     babyAddDoubleC1.x1 <== c1X;
     babyAddDoubleC1.y1 <== c1Y;
     babyAddDoubleC1.x2 <== c1X;
     babyAddDoubleC1.y2 <== c1Y;
-    log("doubleC1.x:", babyAddDoubleC1.xout);
-    log("doubleC1.y:", babyAddDoubleC1.yout);
 }
 
 // component main {public[pubKey]} = ElGamalEncrypt();
