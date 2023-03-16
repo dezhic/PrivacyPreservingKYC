@@ -9,7 +9,7 @@ const { bitArray2buffer, uint248Array2Did } = require('./utils');
 function parsePublicJson(publicJson) {
     let public = JSON.parse(publicJson);
     return {
-        keyCipher: {
+        aesKeyPointCipher: {
             c1: [
                 public[0],
                 public[1],
@@ -19,7 +19,7 @@ function parsePublicJson(publicJson) {
                 public[3],
             ]
         },
-        msgCipher: {
+        encryptedToken: {
             cipher: bitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
             iv: bitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
         },

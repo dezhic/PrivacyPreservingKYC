@@ -30,9 +30,9 @@ template GenerateZkKYCToken(n248Bits) {
     signal input elGamalR;     // random number for ElGamal
     signal input aesIV[128];    // IV for AES-CTR encryption
 
-    signal output keyCipherC1[2];
-    signal output keyCipherC2[2];
-    signal output tokenCipher[4*n248Bits*256+128];  // 4 n*248-bit DIDs + 128-bit AES-CTR IV
+    signal output aesKeyPointCipherC1[2];
+    signal output aesKeyPointCipherC2[2];
+    signal output encryptedToken[4*n248Bits*256+128];  // 4 n*248-bit DIDs + 128-bit AES-CTR IV
 
 
     /* Step 1: Verify Issuer's signature on DID_I, DID_HI */
@@ -117,7 +117,7 @@ template GenerateZkKYCToken(n248Bits) {
     for (var i = 0; i < 128; i++) {
         messageEncrypt.ctr[i] <== aesIV[i];
     }
-    tokenCipher <== messageEncrypt.ciphertext;
+    encryptedToken <== messageEncrypt.ciphertext;
 
     component aesKeyEncrypt = ElGamalEncrypt();
     aesKeyEncrypt.mX <== aesKeyPoint[0];
@@ -125,10 +125,10 @@ template GenerateZkKYCToken(n248Bits) {
     aesKeyEncrypt.pubKeyX <== govPubKey[0];
     aesKeyEncrypt.pubKeyY <== govPubKey[1];
     aesKeyEncrypt.r <== elGamalR;
-    keyCipherC1[0] <== aesKeyEncrypt.c1X;
-    keyCipherC1[1] <== aesKeyEncrypt.c1Y;
-    keyCipherC2[0] <== aesKeyEncrypt.c2X;
-    keyCipherC2[1] <== aesKeyEncrypt.c2Y;
+    aesKeyPointCipherC1[0] <== aesKeyEncrypt.c1X;
+    aesKeyPointCipherC1[1] <== aesKeyEncrypt.c1Y;
+    aesKeyPointCipherC2[0] <== aesKeyEncrypt.c2X;
+    aesKeyPointCipherC2[1] <== aesKeyEncrypt.c2Y;
 
 }
 
