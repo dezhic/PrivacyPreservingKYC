@@ -1,7 +1,7 @@
 pragma circom 2.0.0;
 
-include "../node_modules/@electron-labs/aes-gcm-siv-circom/circuits/aes_256_ctr.circom";
-include "../node_modules/@electron-labs/aes-gcm-siv-circom/circuits/aes_256_key_expansion.circom";
+include "../aes-circom-circuits/aes_256_ctr.circom";
+include "../aes-circom-circuits/aes_256_key_expansion.circom";
 
 template MessageEncrypt(nBits) {
     
