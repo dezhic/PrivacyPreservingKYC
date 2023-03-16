@@ -19,14 +19,12 @@ include "../node_modules/circomlib/circuits/escalarmulfix.circom";
 include "../node_modules/circomlib/circuits/babyjub.circom";
 
 template ElGamalEncrypt() {
-    signal input m;       // x-coorinate of the plaintext
-    signal input pubKey;  // compressed babyjub public key
+    signal input mX;      // x-coorinate of the plaintext
+    signal input mY;      // y-coorinate of the plaintext
+    signal input pubKeyX;
+    signal input pubKeyY;
     signal input r;       // a random ephemeral key, taken as an input as circom cannot generate one
 
-    signal mX;
-    signal mY;
-    signal pubKeyX;
-    signal pubKeyY;
     signal sX;
     signal sY;
 
@@ -41,34 +39,6 @@ template ElGamalEncrypt() {
         5299619240641551281634865583518297030282874472190772894086521144482721001553,
         16950150798460657717958625567821834550301663161624707787222815936182638968203
     ];
-
-    component num2bitsM = Num2Bits(254);
-    num2bitsM.in <== m;
-    log("m Num:", m);
-
-    component bits2pointM = Bits2Point_Strict();
-    for (i = 0; i < 254; i++) {
-        bits2pointM.in[i] <== num2bitsM.out[i];
-    }
-    mX <== bits2pointM.out[0];
-    mY <== bits2pointM.out[1];
-
-    log("mX:", mX);
-    log("mY:", mY);
-
-    // Convert public key pubKey to field element
-    log("pubKeyNum:", pubKey);
-    component num2bitsPubKey = Num2Bits(254);  // simple little-endian encoding
-    num2bitsPubKey.in <== pubKey;
-
-    component bits2pointPubKey = Bits2Point_Strict();
-    for (i = 0; i < 254; i++) {
-        bits2pointPubKey.in[i] <== num2bitsPubKey.out[i];
-    }
-    pubKeyX <== bits2pointPubKey.out[0];
-    pubKeyY <== bits2pointPubKey.out[1];
-    log("pubKeyX:", pubKeyX);
-    log("pubKeyY:", pubKeyY);
 
     // Calculate c1
     component num2bitsR = Num2Bits(254);

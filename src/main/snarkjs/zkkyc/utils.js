@@ -51,6 +51,74 @@ function randomPoint() {
     return priv.public().p;
 }
 
+/**
+ * ATTENTION! BIZARRE BEHAVIOR!
+ * This is for little-endian bytes order
+ * but big-endian bits order!!!
+ * 
+ * Source: circomlib/test/sha256.js
+ * @param {array} a an array of bits "0" or "1"
+ * @returns {Buffer} a buffer of bytes
+ */
+function bitArray2buffer(a) {
+    const len = Math.floor((a.length -1 )/8)+1;
+    const b = new Buffer.alloc(len);
+
+    for (let i=0; i<a.length; i++) {
+        const p = Math.floor(i/8);
+        b[p] = b[p] | (Number(a[i]) << ( 7 - (i%8)  ));
+    }
+    return b;
+}
+
+/**
+ * ATTENTION! BIZARRE BEHAVIOR!
+ * This is for little-endian bytes order
+ * but big-endian bits order!!!
+ * 
+ * Source: circomlib/test/sha256.js
+ * @param {Buffer} b 
+ * @returns {array} an array of 0s and 1s
+ */
+function buffer2bitArray(b) {
+    const res = [];
+    for (let i=0; i<b.length; i++) {
+        for (let j=0; j<8; j++) {
+            res.push((b[i] >> (7-j) &1));
+        }
+    }
+    return res;
+}
+
+/**
+ * Convert a bigint to an array of 0s and 1s (little endian)
+ * @param {bigint} x a bigint
+ * @param {array} nBits  an array of 0s and 1s
+ * @returns 
+ */
+function bigInt2Bits(x, nBits) {
+    const bits = [];
+    for (let i = 0; i < nBits; i++) {
+        bits.push(x & 1n);
+        x >>= 1n;
+    }
+    return bits;
+}
+
+/**
+ * Convert an array of 0s and 1s to a bigint (little endian)
+ * @param {array} bits an array of 0s and 1s
+ * @returns {bigint} a bigint
+ */
+function bits2BigInt(bits) {
+    let x = 0n;
+    for (let i = bits.length - 1; i >= 0; i--) {
+        x <<= 1n;
+        x |= bits[i];
+    }
+    return x;
+}
+
 const GLOBAL_FIELD_P = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 
 module.exports = {
@@ -58,4 +126,8 @@ module.exports = {
     uint248Array2Did: uint248Array2Did,
     hashUint248Array: hashUint248Array,
     randomPoint: randomPoint,
+    bitArray2buffer: bitArray2buffer,
+    buffer2bitArray: buffer2bitArray,
+    bigInt2Bits: bigInt2Bits,
+    bits2BigInt: bits2BigInt,
 }

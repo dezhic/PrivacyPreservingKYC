@@ -25,14 +25,15 @@ template GenerateZkKYCToken(n248Bits) {
     signal input govPubKey[2];  // Government's public key for encryption
 
     // Encryption parameters
-    signal input symKeyPointX; // x-coordinate of symKey babyjub encoding point
+    signal input symKeyPoint[2]; // coordinates of symKey babyjub encoding point
     signal input symKeyXmXor;  // XOR of symKey and the x-coordinate of symKeyPoint
     signal input elGamalR;     // random number for ElGamal
     signal input aesIV[128];    // IV for AES-CTR encryption
 
     signal output keyCipherC1[2];
     signal output keyCipherC2[2];
-    signal output symCipher[4*n248Bits*248+128];  // 4 n*248-bit DIDs + 128-bit AES-CTR IV
+    signal output symCipher[4*n248Bits*256+128];  // 4 n*248-bit DIDs + 128-bit AES-CTR IV
+
 
     /* Step 1: Verify Issuer's signature on DID_I, DID_HI */
     component verifyEdDSA = VerifyEdDSA(2*n248Bits);
@@ -51,71 +52,74 @@ template GenerateZkKYCToken(n248Bits) {
     /* Step 2: Create an encrypted token that contains (DID_I, DID_HI, DID_HV, DID_V) */
     // Compute the symmetric key by XORing the symKey and symKeyXmXor
     var symKeyBits[256];
-    component symKeyPointXNum2Bits = Num2Bits(253);
-    symKeyPointXNum2Bits.in <== symKeyPointX;
+    component symKeyPointXNum2Bits = Num2Bits(254);
+    symKeyPointXNum2Bits.in <== symKeyPoint[0];
     component symKeyXmXorNum2Bits = Num2Bits(253);
     symKeyXmXorNum2Bits.in <== symKeyXmXor;
     for (var i = 0; i < 253; i++) {
         var a, b;
-        a = symKeyPointXNum2Bits.out[i];
+        a = symKeyPointXNum2Bits.out[i+1];  // the point x-coordinate is right-shifted by 1 bit during encoding to avoid XOR value overflow, so we do the same here as well
         b = symKeyXmXorNum2Bits.out[i];
         symKeyBits[i] = a + b - 2*a*b;  // XOR expressed in a quadratic equation
     }
-    for (var i = 253; i < 256; i++) {
-        symKeyBits[i] = 0;  // pad AES256 key with 0s
-    }
+    symKeyBits[253] = 0;  // pad AES256 key with 0s
+    symKeyBits[254] = 0;  // pad AES256 key with 0s
+    symKeyBits[255] = 0;  // pad AES256 key with 0s
     
     // Debug
     component debugBits2Num = Bits2Num(256);
     debugBits2Num.in <== symKeyBits;
     var symKey = debugBits2Num.out;
-    log("symKeyPointX: ", symKeyPointX);
+    log("symKeyPointX: ", symKeyPoint[0]);
     log("symKeyXmXor: ", symKeyXmXor);
     log("symKey: ", symKey);
     // End Debug
     
     // Convert DIDs int248 array to bits
+    // Each 248-bit integer is converted into a __256-bit__ array of bits, tail padded with 0s
+    // This is because AES expects the size to be "usize",
+    // while the integers are 248-bit (31-byte), as limited by the order of the babyjub curve.
     component didINum2Bits[n248Bits];
     for (var i = 0; i < n248Bits; i++) {
-        didINum2Bits[i] = Num2Bits(248);
+        didINum2Bits[i] = Num2Bits(256);
         didINum2Bits[i].in <== didI[i];
     }
     component didHINum2Bits[n248Bits];
     for (var i = 0; i < n248Bits; i++) {
-        didHINum2Bits[i] = Num2Bits(248);
+        didHINum2Bits[i] = Num2Bits(256);
         didHINum2Bits[i].in <== didHI[i];
     }
     component didHVNum2Bits[n248Bits];
     for (var i = 0; i < n248Bits; i++) {
-        didHVNum2Bits[i] = Num2Bits(248);
+        didHVNum2Bits[i] = Num2Bits(256);
         didHVNum2Bits[i].in <== didHV[i];
     }
     component didVNum2Bits[n248Bits];
     for (var i = 0; i < n248Bits; i++) {
-        didVNum2Bits[i] = Num2Bits(248);
+        didVNum2Bits[i] = Num2Bits(256);
         didVNum2Bits[i].in <== didV[i];
     }
 
     // AES encryption
-    component messageEncrypt = MessageEncrypt(4*n248Bits*248);  // Encrypt 4 n*248-bit DIDs
+    component messageEncrypt = MessageEncrypt(4 * n248Bits * 256);  // Encrypt 4 n*248-bit DIDs, padded to a multiple of 256 bits
     for (var i = 0; i < n248Bits; i++) {
-        for (var j = 0; j < 248; j++) {
-            messageEncrypt.msg[i*248+j] <== didINum2Bits[i].out[j];
+        for (var j = 0; j < 256; j++) {
+            messageEncrypt.msg[i*256+j] <== didINum2Bits[i].out[j];
         }
     }
     for (var i = 0; i < n248Bits; i++) {
-        for (var j = 0; j < 248; j++) {
-            messageEncrypt.msg[(n248Bits+i)*248+j] <== didHINum2Bits[i].out[j];
+        for (var j = 0; j < 256; j++) {
+            messageEncrypt.msg[(n248Bits+i)*256+j] <== didHINum2Bits[i].out[j];
         }
     }
     for (var i = 0; i < n248Bits; i++) {
-        for (var j = 0; j < 248; j++) {
-            messageEncrypt.msg[(2*n248Bits+i)*248+j] <== didHVNum2Bits[i].out[j];
+        for (var j = 0; j < 256; j++) {
+            messageEncrypt.msg[(2*n248Bits+i)*256+j] <== didHVNum2Bits[i].out[j];
         }
     }
     for (var i = 0; i < n248Bits; i++) {
-        for (var j = 0; j < 248; j++) {
-            messageEncrypt.msg[(3*n248Bits+i)*248+j] <== didVNum2Bits[i].out[j];
+        for (var j = 0; j < 256; j++) {
+            messageEncrypt.msg[(3*n248Bits+i)*256+j] <== didVNum2Bits[i].out[j];
         }
     }
     messageEncrypt.key <== symKeyBits;
@@ -125,8 +129,10 @@ template GenerateZkKYCToken(n248Bits) {
     symCipher <== messageEncrypt.ciphertext;
 
     component symKeyEncrypt = ElGamalEncrypt();
-    symKeyEncrypt.m <== symKeyPointX;
-    symKeyEncrypt.pubKey <== govPubKey[1];
+    symKeyEncrypt.mX <== symKeyPoint[0];
+    symKeyEncrypt.mY <== symKeyPoint[1];
+    symKeyEncrypt.pubKeyX <== govPubKey[0];
+    symKeyEncrypt.pubKeyY <== govPubKey[1];
     symKeyEncrypt.r <== elGamalR;
     keyCipherC1[0] <== symKeyEncrypt.c1X;
     keyCipherC1[1] <== symKeyEncrypt.c1Y;
@@ -135,20 +141,32 @@ template GenerateZkKYCToken(n248Bits) {
 
     // log("didI", didI);
     // log("didHI", didHI);
-    log("didHV[0]", didHV[0]);
-    log("did[0]", didV[0]);
+    // log("didHV[0]", didHV[0]);
+    // log("did[0]", didV[0]);
     // log("sigS", sigS);
     // log("sigR[0]", sigR[0]);
     // log("sigR[1]", sigR[1]);
-    log("issuerPubKey[0]", issuerPubKey[0]);
-    log("issuerPubKey[1]", issuerPubKey[1]);
-    log("govPubKey[0]", govPubKey[0]);
-    log("govPubKey[1]", govPubKey[1]);
-    log("symKeyXmXor", symKeyXmXor);
-    log("keyCipherC1[0]", keyCipherC1[0]);
-    log("keyCipherC1[1]", keyCipherC1[1]);
-    log("keyCipherC2[0]", keyCipherC2[0]);
-    log("keyCipherC2[1]", keyCipherC2[1]);
+    // log("issuerPubKey[0]", issuerPubKey[0]);
+    // log("issuerPubKey[1]", issuerPubKey[1]);
+    // log("govPubKey[0]", govPubKey[0]);
+    // log("govPubKey[1]", govPubKey[1]);
+    // log("symKeyXmXor", symKeyXmXor);
+    // log("keyCipherC1[0]", keyCipherC1[0]);
+    // log("keyCipherC1[1]", keyCipherC1[1]);
+    // log("keyCipherC2[0]", keyCipherC2[0]);
+    // log("keyCipherC2[1]", keyCipherC2[1]);
+    log("plaintext");
+    for (var i = 0; i < 4 * n248Bits * 256; i++) {
+        log(messageEncrypt.msg[i]);
+    }
+    log("key");
+    for (var i = 0; i < 256; i++) {
+        log(messageEncrypt.key[i]);
+    }
+    log("ctr");
+    for (var i = 0; i < 128; i++) {
+        log(messageEncrypt.ctr[i]);
+    }
 
 }
 

@@ -1,22 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { uint248Array2Did } = require('./utils');
-
-/**
- * Source: circomlib/test/sha256.js
- * @param {array} a an array of bits "0" or "1"
- * @returns {Buffer} a buffer of bytes
- */
-function bitArray2buffer(a) {
-    const len = Math.floor((a.length -1 )/8)+1;
-    const b = new Buffer.alloc(len);
-
-    for (let i=0; i<a.length; i++) {
-        const p = Math.floor(i/8);
-        b[p] = b[p] | (Number(a[i]) << ( 7 - (i%8)  ));
-    }
-    return b;
-}
+const { bitArray2buffer, uint248Array2Did } = require('./utils');
 
 /**
  * Parse public.json into the specified public inputs and outputs
@@ -36,20 +20,20 @@ function parsePublicJson(publicJson) {
             ]
         },
         msgCipher: {
-            cipher: bitArray2buffer(public.slice(4, 4+248*4)).toString("hex"),      // the cipher of 4 248-bit DIDs
-            iv: bitArray2buffer(public.slice(4+248*4, 4+248*4+128)).toString("hex"),
+            cipher: bitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
+            iv: bitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
         },
-        didHV: uint248Array2Did([BigInt(public[1124])], 1),
-        didV: uint248Array2Did([BigInt(public[1125])], 1),
+        didHV: uint248Array2Did([BigInt(public[1156])], 1),
+        didV: uint248Array2Did([BigInt(public[1157])], 1),
         issuerPubKey: {
-            x: public[1126],
-            y: public[1127],
+            x: public[1158],
+            y: public[1159],
         },
         govPubKey: {
-            x: public[1128],
-            y: public[1129],
+            x: public[1160],
+            y: public[1161],
         },
-        symKeyXmXor: public[1130],
+        symKeyXmXor: public[1162],
     }
 }
 
