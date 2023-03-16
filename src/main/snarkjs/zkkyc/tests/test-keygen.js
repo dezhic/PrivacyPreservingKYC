@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { babyJubKeyGen, symmetricKeyGen } = require('../keygen');
+const { babyJubKeyGen, aesKeyGen } = require('../keygen');
 
 test('generate babyJub key pair', t => {
     const babyJubKeys = babyJubKeyGen();
@@ -7,6 +7,6 @@ test('generate babyJub key pair', t => {
 });
 
 test('generate symmetric key (raw and encoded)', t => {
-    const symmetricKeys = symmetricKeyGen();
-    console.log(symmetricKeys);
+    const aesKeys = aesKeyGen();
+    console.log(aesKeys);
 });

@@ -41,8 +41,8 @@ function parseTokenBuffer(buf, n248Bits) {
   }
 }
 
-const symKeyHex = '494485226912f91c6c5b20e4c43ecd964b8341d59d01f13105cf6a92dc1c1e00';
-const cipherHex = 'bc0442bc5419c22378cab6e3b7410e2c2a1eff962259288ff3616d1dda381649f5bc94785000873cc9b2c9b4383e41c39ca42369a615e2c67ad7c15a17286b1e248d215d0af41804e8faf9af4d94d6ca5b4a628a9ca4e791863f65a86e8a19f717fc471c806c8322a8f7a9fad647bb4c87eb172c91f4bc5bb05b4ed3abeb5b75';
-const iv = 'b3aba32323a3a3a30000000000000000';
+const aesKeyHex = '6264a4d0f6b61bfd071b54c1fa788279fe4d2192fbd430f668897e43507a0c20';
+const cipherHex = '6c6ea195f2544ca3e904adc3d51997a1b8ebe4bc2c0c8641f83ddb31801d3b25105420767f15617851b4e81b71f3c37e1cd00a9a008acabf6b2ed4c6674635b2a554714ebd1b639dc8aaf4e748f3521ca092b82cf43105fc9dd25b0cd8506934343f7051878c8b5aab44d1cc17cb4e6773bc3dcecfc43b783d262d7c092471b2';
+const iv = '28b7ab22aaa30bb70000000000000000';
 
-console.log(parseTokenBuffer(decrypt(cipherHex, symKeyHex, iv), 1));
+console.log(parseTokenBuffer(decrypt(cipherHex, aesKeyHex, iv), 1));

@@ -33,7 +33,7 @@ function parsePublicJson(publicJson) {
             x: public[1160],
             y: public[1161],
         },
-        symKeyXmXor: public[1162],
+        aesKeyXmXor: public[1162],
     }
 }
 

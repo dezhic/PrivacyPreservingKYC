@@ -18,7 +18,7 @@ function babyJubKeyGen() {
     return { priv: priv, pub: pub, privScalar: privScalar };
 }
 
-function symmetricKeyGen() {
+function aesKeyGen() {
     let randBuf = crypto.randomBytes(32);
     let randInt = iden3crypto.ffUtils.leBuff2int(randBuf);
     // This makes the key stay within the babyjub curve's order p = 21888242871839275222246405745257275088548364400416034343698204186575808495617
@@ -34,5 +34,5 @@ function symmetricKeyGen() {
 
 module.exports = {
     babyJubKeyGen: babyJubKeyGen,
-    symmetricKeyGen: symmetricKeyGen,
+    aesKeyGen: aesKeyGen,
 }

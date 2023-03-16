@@ -10,7 +10,7 @@ template MessageEncrypt(nBits) {
     signal input ctr[128];
     signal output ciphertext[nBits+128];
 
-    // Encrypt message with symKey using AES
+    // Encrypt message with aesKey using AES
     component keyExp = AES256KeyExpansion();
     for (var i=0; i<256; i++) {
         keyExp.key[i] <== key[i];
