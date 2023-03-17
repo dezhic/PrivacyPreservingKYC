@@ -38,7 +38,6 @@ function aesKeyGen() {
     let encodedKey = babyjubCodec.encode(rawKey);
     return {
         rawKey: rawKey,
-        rawKeyHex: bitArray2buffer(bigInt2Bits(rawKey, 256)).toString('hex'),
         encodedKey: encodedKey,
     }
 }
