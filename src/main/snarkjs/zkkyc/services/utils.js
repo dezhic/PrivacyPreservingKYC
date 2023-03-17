@@ -119,6 +119,14 @@ function leBits2BigInt(bits) {
     return x;
 }
 
+function uint256ToHex(x) {
+    return beBitArray2buffer(leBigInt2Bits(x, 256)).toString('hex');
+}
+
+function hexToUint256(x) {
+    return leBits2BigInt(beBuffer2bitArray(Buffer.from(x, 'hex')));
+}
+
 // Order of the babyjub curve, the circuit can only handle numbers smaller than this!
 const GLOBAL_FIELD_P = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 
@@ -131,5 +139,7 @@ module.exports = {
     beBuffer2bitArray: beBuffer2bitArray,
     leBigInt2Bits: leBigInt2Bits,
     leBits2BigInt: leBits2BigInt,
+    uint256ToHex: uint256ToHex,
+    hexToUint256: hexToUint256,
     GLOBAL_FIELD_P: GLOBAL_FIELD_P,
 }
