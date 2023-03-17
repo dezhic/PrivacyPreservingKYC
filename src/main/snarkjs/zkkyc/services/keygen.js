@@ -7,14 +7,14 @@ const { leBigInt2Bits, beBitArray2buffer } = require('./utils');
 /**
  * Generate BabyJub private and public keys
  * @param { Uint8Array | string | undefined } privBuf a 32-byte private key buffer or a hex string, or undefined to generate a random key
- * @returns 
+ * @returns {{ priv: iden3crypto.PrivateKey, pub: iden3crypto.PublicKey, privScalar: bigint }}
  */
 function babyJubKeyGen(privBuf) {
     // Generate a random private key and its corresponding public key
     if (!privBuf) {
         privBuf = crypto.randomBytes(32);
     } else {
-        if (privBuf instanceof string) {
+        if (typeof(privBuf) === 'string') {
             privBuf = Buffer.from(privBuf, 'hex');
         }
     }
