@@ -1,0 +1,3 @@
+module.exports = {
+    generateZkKycProof: (sig)
+}

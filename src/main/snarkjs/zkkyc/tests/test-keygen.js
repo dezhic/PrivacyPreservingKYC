@@ -1,5 +1,5 @@
 const test = require('node:test');
-const { babyJubKeyGen, aesKeyGen } = require('../keygen');
+const { babyJubKeyGen, aesKeyGen } = require('../services/keygen');
 
 test('generate babyJub key pair', t => {
     const babyJubKeys = babyJubKeyGen();

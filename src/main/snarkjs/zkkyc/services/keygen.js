@@ -4,9 +4,20 @@ const crypto = require('crypto');
 const babyjubCodec = require('./babyjub-codec253');
 const { bigInt2Bits, bitArray2buffer } = require('./utils');
 
-function babyJubKeyGen() {
+/**
+ * Generate BabyJub private and public keys
+ * @param { Uint8Array | string | undefined } privBuf a 32-byte private key buffer or a hex string, or undefined to generate a random key
+ * @returns 
+ */
+function babyJubKeyGen(privBuf) {
     // Generate a random private key and its corresponding public key
-    const privBuf = crypto.randomBytes(32);
+    if (!privBuf) {
+        privBuf = crypto.randomBytes(32);
+    } else {
+        if (privBuf instanceof string) {
+            privBuf = Buffer.from(privBuf, 'hex');
+        }
+    }
     const priv = new iden3crypto.PrivateKey(privBuf);
     const pub = priv.public();
     // Process private key according to the eddsa spec

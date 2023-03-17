@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const utils = require('../utils');
+const utils = require('../services/utils');
 
 const didI = 'did:sov:issuer0001';
 const didHI = 'did:peer:holder01forissuer001';

@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { encode, decode } = require('../babyjub-codec253.js');
+const { encode, decode } = require('../services/babyjub-codec253.js');
 
 const message253 = 0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcden;
 var point, xmXor;

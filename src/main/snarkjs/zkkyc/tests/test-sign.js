@@ -1,7 +1,7 @@
 const test = require("node:test");
-const { did2Uint248Array, hashUint248Array } = require('../utils');
-const { babyJubKeyGen } = require('../keygen');
-const sign = require('../sign');
+const { did2Uint248Array, hashUint248Array } = require('../services/utils');
+const { babyJubKeyGen } = require('../services/keygen');
+const sign = require('../services/sign');
 
 let babyJubKeys;
 test('generate babyJub key pair', t => {
