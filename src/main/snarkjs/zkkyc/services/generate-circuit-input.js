@@ -1,12 +1,12 @@
-const { did2Uint248Array } = require("./utils");
+const { leDid2Uint248Array } = require("./utils");
 
 function generateCircuitInput(didI, didHI, didHV, didV, sigS, sigR, issuerPubKey, govPubKey, aesKeyPoint, aesKeyXmXor, elGamalR, aesIV) {
 
     return {
-        didI: did2Uint248Array(didI, 1).map(x => x.toString()),
-        didHI: did2Uint248Array(didHI, 1).map(x => x.toString()),
-        didHV: did2Uint248Array(didHV, 1).map(x => x.toString()),
-        didV: did2Uint248Array(didV, 1).map(x => x.toString()),
+        didI: leDid2Uint248Array(didI, 1).map(x => x.toString()),
+        didHI: leDid2Uint248Array(didHI, 1).map(x => x.toString()),
+        didHV: leDid2Uint248Array(didHV, 1).map(x => x.toString()),
+        didV: leDid2Uint248Array(didV, 1).map(x => x.toString()),
         sigS: sigS.toString(),
         sigR: sigR.map(x => x.toString()),
         issuerPubKey: issuerPubKey.map(x => x.toString()),

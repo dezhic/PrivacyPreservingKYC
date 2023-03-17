@@ -2,7 +2,7 @@ const createBlakeHash = require('blake-hash');
 const iden3crypto = require('@iden3/js-crypto');
 const crypto = require('crypto');
 const babyjubCodec = require('./babyjub-codec253');
-const { bigInt2Bits, bitArray2buffer } = require('./utils');
+const { leBigInt2Bits, beBitArray2buffer } = require('./utils');
 
 /**
  * Generate BabyJub private and public keys

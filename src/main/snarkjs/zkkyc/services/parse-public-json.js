@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
-const { bitArray2buffer, uint248Array2Did } = require('./utils');
+const { beBitArray2buffer, leUint248Array2Did } = require('./utils');
 
 /**
  * Parse public.json into the specified public inputs and outputs
@@ -20,11 +20,11 @@ function parsePublicJson(publicJson) {
             ]
         },
         encryptedToken: {
-            cipher: bitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
-            iv: bitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
+            cipher: beBitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
+            iv: beBitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
         },
-        didHV: uint248Array2Did([BigInt(public[1156])], 1),
-        didV: uint248Array2Did([BigInt(public[1157])], 1),
+        didHV: leUint248Array2Did([BigInt(public[1156])], 1),
+        didV: leUint248Array2Did([BigInt(public[1157])], 1),
         issuerPubKey: {
             x: public[1158],
             y: public[1159],

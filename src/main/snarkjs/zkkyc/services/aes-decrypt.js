@@ -1,5 +1,5 @@
 const CryptoJS = require("crypto-js");
-const { buffer2bitArray, bits2BigInt, uint248Array2Did } = require('./utils');
+const { beBuffer2bitArray, leBits2BigInt, leUint248Array2Did } = require('./utils');
 
 
 function decrypt(cipher, key, iv) {
@@ -28,16 +28,16 @@ function parseTokenBuffer(buf, n248Bits) {
     const ints = [];
     for (let i = 0; i < buf.length; i += 32) {
       const chunk = buf.subarray(i, i + 32);
-      ints.push(bits2BigInt(buffer2bitArray(chunk)));
+      ints.push(leBits2BigInt(beBuffer2bitArray(chunk)));
     }
     return ints;
   };
 
   return {
-    didI: uint248Array2Did(read256Ints(didIBuf), n248Bits),
-    didHI: uint248Array2Did(read256Ints(didHIBuf), n248Bits),
-    didHV: uint248Array2Did(read256Ints(didHVBuf), n248Bits),
-    didV: uint248Array2Did(read256Ints(didVBuf), n248Bits),
+    didI: leUint248Array2Did(read256Ints(didIBuf), n248Bits),
+    didHI: leUint248Array2Did(read256Ints(didHIBuf), n248Bits),
+    didHV: leUint248Array2Did(read256Ints(didHVBuf), n248Bits),
+    didV: leUint248Array2Did(read256Ints(didVBuf), n248Bits),
   }
 }
 
