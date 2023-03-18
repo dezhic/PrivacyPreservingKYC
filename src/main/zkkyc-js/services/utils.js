@@ -137,6 +137,35 @@ function hexToUint256(x) {
     return leBits2BigInt(beBuffer2bitArray(Buffer.from(x, 'hex')));
 }
 
+/**
+ * Parse the token buffer decrypted from AES to get {didI, didHI, didHV, didV}
+ * @param {Uint8Array} buf token buffer decrypted from AES
+ * @param {*} n248Bits number of 248-bit chunks to represent one DID
+ * @returns 
+ */
+function parseTokenBuffer(buf, n248Bits) {
+  const didIBuf = buf.subarray(0, buf.length / 4);
+  const didHIBuf = buf.subarray(buf.length / 4, buf.length / 2);
+  const didHVBuf = buf.subarray(buf.length / 2, buf.length * 3 / 4);
+  const didVBuf = buf.subarray(buf.length * 3 / 4, buf.length);
+  
+  const read256Ints = (buf) => {
+    const ints = [];
+    for (let i = 0; i < buf.length; i += 32) {
+      const chunk = buf.subarray(i, i + 32);
+      ints.push(leBits2BigInt(beBuffer2bitArray(chunk)));
+    }
+    return ints;
+  };
+
+  return {
+    didI: leUint248Array2Did(read256Ints(didIBuf), n248Bits),
+    didHI: leUint248Array2Did(read256Ints(didHIBuf), n248Bits),
+    didHV: leUint248Array2Did(read256Ints(didHVBuf), n248Bits),
+    didV: leUint248Array2Did(read256Ints(didVBuf), n248Bits),
+  }
+}
+
 // Order of the babyjub curve, the circuit can only handle numbers smaller than this!
 const GLOBAL_FIELD_P = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 
@@ -152,5 +181,6 @@ module.exports = {
     hexToUint256: hexToUint256,
     randomPoint: randomPoint,
     randomUint253: randomUint253,
+    parseTokenBuffer: parseTokenBuffer,
     GLOBAL_FIELD_P: GLOBAL_FIELD_P,
 }
