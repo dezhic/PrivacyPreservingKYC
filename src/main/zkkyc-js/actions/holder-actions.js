@@ -20,7 +20,7 @@ module.exports = {
 
         // Generate circuit input file
         const input = generateCircuitInput(
-            hexToUint256(didI), hexToUint256(didHI), hexToUint256(didHV), hexToUint256(didV),
+            didI, didHI, didHV, didV,
             hexToUint256(sigS), sigR.map(hexToUint256), issuerPubKey.map(hexToUint256), govPubKey.map(hexToUint256),
             aesKey.point, aesKey.xmXor, elGamalR, aesIV
         );
@@ -50,10 +50,15 @@ module.exports = {
         const public = JSON.parse(fs.readFileSync(publicFilePath));
         
         // Clean up files
+        console.log('Cleaning up files...');
         fs.rm(inputFilePath, (err) => { if (err) console.log(err) });
+        console.log('Removed input file: ' + inputFilePath);
         fs.rm(witnessFilePath, (err) => { if (err) console.log(err) });
+        console.log('Removed witness file: ' + witnessFilePath);
         fs.rm(proofFilePath, (err) => { if (err) console.log(err) });
+        console.log('Removed proof file: ' + proofFilePath);
         fs.rm(publicFilePath, (err) => { if (err) console.log(err) });
+        console.log('Removed public file: ' + publicFilePath);
 
         return {
             proof: proof,
