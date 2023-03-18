@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package zkkyc;
+
+service ParsePublic {
+    rpc ParsePublic(ParsePublicRequest) returns (ParsePublicResponse);
+}
+
+service VerifyZkKycProof {
+    rpc VerifyZkKycProof(VerifyZkKycProofRequest) returns (VerifyZkKycProofResponse);
+}
+
+message ParsePublicRequest {
+    string public_json = 1;
+}
+
+message AesKeyPointCipher {
+    repeated string c1 = 1;
+    repeated string c2 = 2;
+}
+
+message ParsePublicResponse {
+    AesKeyPointCipher aes_key_point_cipher = 1;
+    string encrypted_token = 2;
+    string did_hv = 3;
+    string did_v = 4;
+    repeated string issuer_pub_key = 5;
+    repeated string gov_pub_key = 6;
+    string aes_key_xm_xor = 7;
+}
+
+message VerifyZkKycProofRequest {
+    string proof_json = 1;
+    string public_json = 2;
+}
+
+message VerifyZkKycProofResponse {
+    bool result = 1;
+}

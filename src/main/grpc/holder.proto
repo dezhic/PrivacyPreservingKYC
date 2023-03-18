@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package zkkyc;
+
+service GenerateZkKycProof {
+    rpc GenerateZkKycProof(GenerateZkKycProofRequest) returns (GenerateZkKycProofResponse);
+}
+
+message GenerateZkKycProofRequest {
+    string did_i = 1;
+    string did_hi = 2;
+    string did_hv = 3;
+    string did_v = 4;
+    string sig_s = 5;
+    repeated string sig_r = 6;
+    repeated string issuer_pub_key = 7;
+    repeated string gov_pub_key = 8;
+}
+
+message GenerateZkKycProofResponse {
+    string proof_json = 1;
+    string public_json = 2;
+}
