@@ -25,8 +25,8 @@ module.exports = {
         const sig = sign(keys.priv.sk, hash);
 
         return {
-            S: uint256ToHex(sig.S),
-            R: sig.R8.map(uint256ToHex),
+            s: uint256ToHex(sig.S),
+            r: sig.R8.map(uint256ToHex),
         }
     },
 

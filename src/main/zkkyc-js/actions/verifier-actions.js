@@ -1,4 +1,5 @@
 const fs = require('fs');
+const crypto = require('crypto');
 const { spawnSync } = require('child_process');
 const { beBitArray2buffer, leUint248Array2Did } = require('../services/utils');
 
@@ -27,14 +28,14 @@ module.exports = {
             encryptedToken: beBitArray2buffer(public.slice(4, 4+1024+128)).toString("hex"),  // 1024 bits for the cipher, 128 bits for the iv
             didHV: leUint248Array2Did([BigInt(public[1156])]),
             didV: leUint248Array2Did([BigInt(public[1157])]),
-            issuerPubKey: {
-                x: public[1158],
-                y: public[1159],
-            },
-            govPubKey: {
-                x: public[1160],
-                y: public[1161],
-            },
+            issuerPubKey: [
+                public[1158],
+                public[1159],
+            ],
+            govPubKey: [
+                public[1160],
+                public[1161],
+            ],
             aesKeyXmXor: public[1162],
         }
     },
@@ -70,11 +71,11 @@ module.exports = {
         console.log(`Proof file ${WORKING_DIR}/${proofId}_proof.json deleted`);
         fs.rm(`${WORKING_DIR}/${proofId}_public.json`, (err) => { if (err) console.log(err); });
         console.log(`Public inputs/outputs file ${WORKING_DIR}/${proofId}_public.json deleted`);
-
-        if (result.status != 0) {
-            return { result: false };
+        console.log(result.status);
+        if (result.status !== 0) {
+            return false;
         } else {
-            return { result: true };
+            return true;
         }
 
     },

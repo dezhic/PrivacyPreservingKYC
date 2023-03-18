@@ -3,9 +3,6 @@ const protoLoader = require("@grpc/proto-loader");
 const { government, holder, issuer, verifier } = require("./index");
 
 const PROTO_PATH = "../protos/zkkyc.proto";
-const HOLDER_PROTO_PATH = "../protos/holder.proto";
-const ISSUER_PROTO_PATH = "../protos/issuer.proto";
-const VERIFIER_PROTO_PATH = "../protos/verifier.proto";
 
 const options = {
     keepCase: false,
@@ -21,41 +18,54 @@ const server = new grpc.Server();
 
 server.addService(zkkyc.Issuer.service, {
     generateKeyPair: (call, callback) => {
-        console.log(call.request);
-        callback(null, { priv: 'asdf', pub: ['asdf', 'asdf'] });
+        console.log('Issuer::generateKeyPair invoked');
+        callback(null, issuer.generateKeyPair(call.request.privKey));
     },
     signDidRecord: (call, callback) => {
-        console.log(call.request);
-        callback(null, { s: 'asdf', r: ['asdf', 'asdf'] });
+        console.log('Issuer::signDidRecord invoked');
+        const sig = issuer.signDidRecord(call.request.didI, call.request.didHI, call.request.privKey);
+        callback(null, sig);
     }
 });
 
 server.addService(zkkyc.Holder.service, {
     generateZkKycProof: (call, callback) => {
-        console.log(call.request);
-        callback(null, { proofJson: 'asdf', publicJson: 'asdf' });
+        console.log('Holder::generateZkKycProof invoked');
+        const proof = holder.generateZkKycProof(
+            call.request.didI,
+            call.request.didHI,
+            call.request.didHV,
+            call.request.didV,
+            call.request.sigS,
+            call.request.sigR,
+            call.request.issuerPubKey,
+            call.request.govPubKey);
+        callback(null, proof);
     }
 });
 
 server.addService(zkkyc.Verifier.service, {
     parsePublic: (call, callback) => {
-        console.log(call.request);
-        callback(null, { parsedPublic: 'asdf' });
+        console.log('Verifier::parsePublic invoked');
+        const parsed = verifier.parsePublic(call.request.publicJson);
+        callback(null, parsed);
     },
     verifyZkKycProof: (call, callback) => {
-        console.log(call.request);
-        callback(null, { result: true });
+        console.log('Verifier::verifyZkKycProof invoked');
+        const result = verifier.verifyZkKycProof(call.request.proofJson, call.request.publicJson);
+        callback(null, { result: result });
     },
 });
 
 server.addService(zkkyc.Government.service, {
     generateKeyPair: (call, callback) => {
-        console.log(call.request);
-        callback(null, { priv: 'asdf', pub: ['asdf', 'asdf'] });
+        console.log('Government::generateKeyPair invoked');
+        callback(null, issuer.generateKeyPair(call.request.privKey));
     },
     decryptZkKycToken: (call, callback) => {
-        console.log(call.request);
-        callback(null, {didI: 'asdf', did_hi: 'asdf', did_hv: 'asdf', did_v: 'asdf' });
+        console.log('Government::decryptZkKycToken invoked');
+        const decrypted = government.decryptToken(call.request.parsedPublic, call.request.privKey);
+        callback(null, decrypted);
     },
 });
 

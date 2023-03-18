@@ -31,7 +31,7 @@ message GenerateKeyPairResponse {
 
 message SignDidRecordRequest {
     string did_i = 1;
-    string did_hi = 2;
+    string did_h_i = 2;
     string priv_key = 3;
 }
 
@@ -42,8 +42,8 @@ message SignDidRecordResponse {
 
 message GenerateZkKycProofRequest {
     string did_i = 1;
-    string did_hi = 2;
-    string did_hv = 3;
+    string did_h_i = 2;
+    string did_h_v = 3;
     string did_v = 4;
     string sig_s = 5;
     repeated string sig_r = 6;
@@ -63,7 +63,7 @@ message AesKeyPointCipher {
 message ParsePublicResponse {
     AesKeyPointCipher aes_key_point_cipher = 1;
     string encrypted_token = 2;
-    string did_hv = 3;
+    string did_h_v = 3;
     string did_v = 4;
     repeated string issuer_pub_key = 5;
     repeated string gov_pub_key = 6;
@@ -89,7 +89,7 @@ message GenerateZkKycProofResponse {
 message ParsedPublic {
     AesKeyPointCipher aes_key_point_cipher = 1;
     string encrypted_token = 2;
-    string did_hv = 3;
+    string did_h_v = 3;
     string did_v = 4;
     repeated string issuer_pub_key = 5;
     repeated string gov_pub_key = 6;
@@ -103,7 +103,7 @@ message DecryptZkKycTokenRequest {
 
 message DecryptZkKycTokenResponse {
     string did_i = 1;
-    string did_hi = 2;
-    string did_hv = 3;
+    string did_h_i = 2;
+    string did_h_v = 3;
     string did_v = 4;
 }
