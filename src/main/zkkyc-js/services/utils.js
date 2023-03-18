@@ -52,6 +52,16 @@ function randomPoint() {
 }
 
 /**
+ * Generate a random 253-bit bigint
+ * @returns {bigint} a random 253-bit bigint
+ */
+function randomUint253() {
+    let randBuf = crypto.randomBytes(32);
+    let randInt = iden3crypto.ffUtils.leBuff2int(randBuf);
+    return randInt >> 3n;  // 256-bit -> 253-bit
+}
+
+/**
  * ATTENTION! BIZARRE BEHAVIOR!
  * This is for little-endian bytes order
  * but big-endian bits order!!!
@@ -134,12 +144,13 @@ module.exports = {
     leDid2Uint248Array: leDid2Uint248Array,
     leUint248Array2Did: leUint248Array2Did,
     hashUint248Array: hashUint248Array,
-    randomPoint: randomPoint,
     beBitArray2buffer: beBitArray2buffer,
     beBuffer2bitArray: beBuffer2bitArray,
     leBigInt2Bits: leBigInt2Bits,
     leBits2BigInt: leBits2BigInt,
     uint256ToHex: uint256ToHex,
     hexToUint256: hexToUint256,
+    randomPoint: randomPoint,
+    randomUint253: randomUint253,
     GLOBAL_FIELD_P: GLOBAL_FIELD_P,
 }
