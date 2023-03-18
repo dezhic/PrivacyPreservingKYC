@@ -1,5 +1,21 @@
 const { leDid2Uint248Array } = require("./utils");
 
+/**
+ * 
+ * @param {string} didI 
+ * @param {string} didHI 
+ * @param {string} didHV 
+ * @param {string} didV 
+ * @param {bigint} sigS 
+ * @param {[bigint, bigint]} sigR 
+ * @param {[bigint, bigint]} issuerPubKey 
+ * @param {[bigint, bigint]} govPubKey 
+ * @param {[bigint, bigint]} aesKeyPoint encoded AES key point
+ * @param {bigint} aesKeyXmXor encoded AES key point "x coordinate right shifted by 1 bit" XORed with the 253-bit AES key
+ * @param {bigint} elGamalR the random number used in ElGamal encryption
+ * @param {array} aesIV bits array of length 128, initial vector for AES
+ * @returns 
+ */
 function generateCircuitInput(didI, didHI, didHV, didV, sigS, sigR, issuerPubKey, govPubKey, aesKeyPoint, aesKeyXmXor, elGamalR, aesIV) {
 
     return {
@@ -45,4 +61,6 @@ let obj = generateCircuitInput(
     [0,0,1,0,1,0,0,0,1,0,1,1,0,1,1,1,1,0,1,0,1,0,1,1,0,0,1,0,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,1,1,0,0,0,0,1,0,1,1,1,0,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 )
 
-console.log(JSON.stringify(obj));
+module.exports = generateCircuitInput;
+
+// console.log(JSON.stringify(obj));

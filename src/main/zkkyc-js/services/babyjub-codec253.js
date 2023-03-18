@@ -8,7 +8,7 @@ const { randomPoint } = require('./utils');
  * Right shift the x-coordinate of the point by 1 bit to avoid XOR value overflowing the curve order p
  * 
  * @param {bigint} message an arbitrary 253-bit bigint (little endian)
- * @returns {point: [bigint, bigint], xmXor: bigint} point: the encoded babyjub point, xmXor: the xor of the message bytes and the x-coordinate of the point
+ * @returns {{point: [bigint, bigint], xmXor: bigint}} point: the encoded babyjub point, xmXor: the xor of the message bytes and the x-coordinate of the point
  */
 function encode(message) {
     const point = randomPoint();
