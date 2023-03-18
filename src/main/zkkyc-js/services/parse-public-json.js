@@ -19,10 +19,7 @@ function parsePublicJson(publicJson) {
                 public[3],
             ]
         },
-        encryptedToken: {
-            cipher: beBitArray2buffer(public.slice(4, 4+1024)).toString("hex"),
-            iv: beBitArray2buffer(public.slice(4+1024, 4+1024+128)).toString("hex"),
-        },
+        encryptedToken: beBitArray2buffer(public.slice(4, 4+1024+128)).toString("hex"),  // 1024 bits for the cipher, 128 bits for the iv
         didHV: leUint248Array2Did([BigInt(public[1156])], 1),
         didV: leUint248Array2Did([BigInt(public[1157])], 1),
         issuerPubKey: {
