@@ -8,10 +8,11 @@ fs.mkdirSync(WORKING_DIR, { recursive: true });
 module.exports = {
     /**
      * Parse public file content into the specified public inputs and outputs
-     * @param {array} public array in the public.json file
+     * @param {string} publicJson  public.json file content
      * @returns 
      */
-    parsePublic: function (public) {
+    parsePublic: function (publicJson) {
+        const public = JSON.parse(publicJson);
         return {
             aesKeyPointCipher: {
                 c1: [
@@ -40,11 +41,14 @@ module.exports = {
 
     /**
      * Verify zk-SNARK proof with snarkJS
-     * @param {object} proof proof object
-     * @param {array} public public inputs and outputs
+     * @param {string} proofJson proof.json file content
+     * @param {string} publicJson public.json file content
      * @returns {boolean} true if proof is valid, false otherwise
      */
-    verifyZkKycProof: function (proof, public) {
+    verifyZkKycProof: function (proofJson, publicJson) {
+        const proof = JSON.parse(proofJson);
+        const public = JSON.parse(publicJson);
+
         const proofId = crypto.createHash('sha256').update(JSON.stringify(proof)).digest('hex').slice(0, 8);
         fs.writeFileSync(`${WORKING_DIR}/${proofId}_proof.json`, JSON.stringify(proof));
         console.log(`Proof written to ${WORKING_DIR}/${proofId}_proof.json`);
@@ -68,9 +72,9 @@ module.exports = {
         console.log(`Public inputs/outputs file ${WORKING_DIR}/${proofId}_public.json deleted`);
 
         if (result.status != 0) {
-            return false;
+            return { result: false };
         } else {
-            return true;
+            return { result: true };
         }
 
     },

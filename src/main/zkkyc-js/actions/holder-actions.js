@@ -61,8 +61,8 @@ module.exports = {
         console.log('Removed public file: ' + publicFilePath);
 
         return {
-            proof: proof,
-            public: public,
+            proofJson: JSON.stringify(proof),
+            publicJson: JSON.stringify(public),
         }
     },
 }
