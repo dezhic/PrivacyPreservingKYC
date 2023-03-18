@@ -1,3 +1,8 @@
+const keygen = require('../services/keygen');
+const { uint256ToHex, leBigInt2Bits, beBitArray2buffer, parseTokenBuffer } = require('../services/utils');
+const babyjubDecrypt = require('../services/babyjub-decrypt');
+const aesDecrypt = require('../services/aes-decrypt');
+
 module.exports = {
 
     /**
@@ -11,12 +16,34 @@ module.exports = {
         return {
             priv: Buffer.from(keys.priv.sk).toString('hex'),
             pub: keys.pub.p.map(uint256ToHex),
-            privScalar: uint256ToHex(keys.privScalar),
         }
     },
 
-    decryptToken: (token, privKey) => {
+    /**
+     * 
+     * @param {object} publicIO parsed public input/output object
+     * @param {string} privKey hex string of government's private key
+     */
+    decryptToken: (publicIO, privKey) => {
+        // Decrypt the the AES key using ElGamal with babyjub curve
+        privKey = Buffer.from(privKey, 'hex');
+        const aesKeyPoint = babyjubDecrypt(
+            {
+                c1: publicIO.aesKeyPointCipher.c1.map(BigInt),
+                c2: publicIO.aesKeyPointCipher.c2.map(BigInt),
+            },
+            privKey);
+        const aesKey = (aesKeyPoint[0] >> 1n) ^ BigInt(publicIO.aesKeyXmXor);
 
+        // Decrypt the token with the AES key using AES-256-CTR
+        const aesKeyBuf = beBitArray2buffer(leBigInt2Bits(aesKey, 256));
+        const tokenBuf = aesDecrypt(
+            publicIO.encryptedToken.substr(0, 256),
+            publicIO.encryptedToken.substr(256, 32),
+            aesKeyBuf.toString('hex')
+        );
+
+        return parseTokenBuffer(tokenBuf, 1);
     }
 
 }
