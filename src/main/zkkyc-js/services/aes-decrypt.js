@@ -2,7 +2,7 @@ const CryptoJS = require("crypto-js");
 const { beBuffer2bitArray, leBits2BigInt, leUint248Array2Did } = require('./utils');
 
 
-function decrypt(cipher, key, iv) {
+function decrypt(cipher, iv, key) {
   const cipherWords = CryptoJS.enc.Hex.parse(cipher);
   const keyWords = CryptoJS.enc.Hex.parse(key);
   const ivWords = CryptoJS.enc.Hex.parse(iv);
@@ -45,4 +45,4 @@ const aesKeyHex = '6264a4d0f6b61bfd071b54c1fa788279fe4d2192fbd430f668897e43507a0
 const cipherHex = '6c6ea195f2544ca3e904adc3d51997a1b8ebe4bc2c0c8641f83ddb31801d3b25105420767f15617851b4e81b71f3c37e1cd00a9a008acabf6b2ed4c6674635b2a554714ebd1b639dc8aaf4e748f3521ca092b82cf43105fc9dd25b0cd8506934343f7051878c8b5aab44d1cc17cb4e6773bc3dcecfc43b783d262d7c092471b2';
 const iv = '28b7ab22aaa30bb70000000000000000';
 
-console.log(parseTokenBuffer(decrypt(cipherHex, aesKeyHex, iv), 1));
+console.log(parseTokenBuffer(decrypt(cipherHex, iv, aesKeyHex), 1));
