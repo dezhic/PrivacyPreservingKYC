@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package zkkyc;
+
+service Issuer {
+    rpc GenerateKeyPair(GenerateKeyPairRequest) returns (GenerateKeyPairResponse) {}
+    rpc SignDidRecord(SignDidRecordRequest) returns (SignDidRecordResponse);
+}
+
+service Holder {
+    rpc GenerateZkKycProof(GenerateZkKycProofRequest) returns (GenerateZkKycProofResponse);
+}
+
+service Verifier {
+    rpc ParsePublic(ParsePublicRequest) returns (ParsePublicResponse);
+    rpc VerifyZkKycProof(VerifyZkKycProofRequest) returns (VerifyZkKycProofResponse);
+}
+
+service Government {
+    rpc GenerateKeyPair(GenerateKeyPairRequest) returns (GenerateKeyPairResponse) {}
+    rpc DecryptZkKycToken(DecryptZkKycTokenRequest) returns (DecryptZkKycTokenResponse);
+}
+message GenerateKeyPairRequest {
+    string priv_key = 1;
+}
+
+message GenerateKeyPairResponse {
+    string priv = 1;
+    repeated string pub = 2;
+}
+
+message SignDidRecordRequest {
+    string did_i = 1;
+    string did_hi = 2;
+    string priv_key = 3;
+}
+
+message SignDidRecordResponse {
+    string s = 1;
+    repeated string r = 2;
+}
+
+message GenerateZkKycProofRequest {
+    string did_i = 1;
+    string did_hi = 2;
+    string did_hv = 3;
+    string did_v = 4;
+    string sig_s = 5;
+    repeated string sig_r = 6;
+    repeated string issuer_pub_key = 7;
+    repeated string gov_pub_key = 8;
+}
+
+message ParsePublicRequest {
+    string public_json = 1;
+}
+
+message AesKeyPointCipher {
+    repeated string c1 = 1;
+    repeated string c2 = 2;
+}
+
+message ParsePublicResponse {
+    AesKeyPointCipher aes_key_point_cipher = 1;
+    string encrypted_token = 2;
+    string did_hv = 3;
+    string did_v = 4;
+    repeated string issuer_pub_key = 5;
+    repeated string gov_pub_key = 6;
+    string aes_key_xm_xor = 7;
+}
+
+message VerifyZkKycProofRequest {
+    string proof_json = 1;
+    string public_json = 2;
+}
+
+message VerifyZkKycProofResponse {
+    bool result = 1;
+}
+
+
+message GenerateZkKycProofResponse {
+    string proof_json = 1;
+    string public_json = 2;
+}
+
+
+message ParsedPublic {
+    AesKeyPointCipher aes_key_point_cipher = 1;
+    string encrypted_token = 2;
+    string did_hv = 3;
+    string did_v = 4;
+    repeated string issuer_pub_key = 5;
+    repeated string gov_pub_key = 6;
+    string aes_key_xm_xor = 7;
+}
+
+message DecryptZkKycTokenRequest {
+    ParsedPublic parsed_public = 1;
+    string priv_key = 2;
+}
+
+message DecryptZkKycTokenResponse {
+    string did_i = 1;
+    string did_hi = 2;
+    string did_hv = 3;
+    string did_v = 4;
+}
