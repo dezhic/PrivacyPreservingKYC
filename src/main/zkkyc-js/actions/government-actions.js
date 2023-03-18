@@ -21,25 +21,25 @@ module.exports = {
 
     /**
      * 
-     * @param {object} publicIO parsed public input/output object
+     * @param {object} parsedPublic parsed public input/output object
      * @param {string} privKey hex string of government's private key
      */
-    decryptToken: (publicIO, privKey) => {
+    decryptToken: (parsedPublic, privKey) => {
         // Decrypt the the AES key using ElGamal with babyjub curve
         privKey = Buffer.from(privKey, 'hex');
         const aesKeyPoint = babyjubDecrypt(
             {
-                c1: publicIO.aesKeyPointCipher.c1.map(BigInt),
-                c2: publicIO.aesKeyPointCipher.c2.map(BigInt),
+                c1: parsedPublic.aesKeyPointCipher.c1.map(BigInt),
+                c2: parsedPublic.aesKeyPointCipher.c2.map(BigInt),
             },
             privKey);
-        const aesKey = (aesKeyPoint[0] >> 1n) ^ BigInt(publicIO.aesKeyXmXor);
+        const aesKey = (aesKeyPoint[0] >> 1n) ^ BigInt(parsedPublic.aesKeyXmXor);
 
         // Decrypt the token with the AES key using AES-256-CTR
         const aesKeyBuf = beBitArray2buffer(leBigInt2Bits(aesKey, 256));
         const tokenBuf = aesDecrypt(
-            publicIO.encryptedToken.substr(0, 256),
-            publicIO.encryptedToken.substr(256, 32),
+            parsedPublic.encryptedToken.substr(0, 256),
+            parsedPublic.encryptedToken.substr(256, 32),
             aesKeyBuf.toString('hex')
         );
 
