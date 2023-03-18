@@ -13,7 +13,9 @@ function babyJubKeyGen(privBuf) {
         privBuf = crypto.randomBytes(32);
     } else {
         if (typeof(privBuf) === 'string') {
-            privBuf = Buffer.from(privBuf, 'hex');
+            let buf = Buffer.alloc(32);
+            buf.write(privBuf, 'hex');
+            privBuf = buf;
         }
     }
     const priv = new iden3crypto.PrivateKey(privBuf);
