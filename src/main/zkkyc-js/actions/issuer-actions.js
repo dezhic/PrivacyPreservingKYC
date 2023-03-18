@@ -8,7 +8,7 @@ module.exports = {
      * 
      * @param {string} didI Issuer's public DID (max 31 bytes)
      * @param {string} didHI Holder's registered peer DID (max 31 bytes)
-     * @param {string} privKey hex string of a 32-byte buffer for generating a babyjub private key (NOT privScalar!)
+     * @param {string} privKey hex string of the private key of the issuer
      */
     signDidRecord: (didI, didHI, privKey) => {
         if (!privKey) {
@@ -40,7 +40,6 @@ module.exports = {
         return {
             priv: Buffer.from(keys.priv.sk).toString('hex'),
             pub: keys.pub.p.map(uint256ToHex),
-            privScalar: uint256ToHex(keys.privScalar),
         }
     },
 

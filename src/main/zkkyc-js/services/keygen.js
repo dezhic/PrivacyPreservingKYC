@@ -1,8 +1,6 @@
-const createBlakeHash = require('blake-hash');
 const iden3crypto = require('@iden3/js-crypto');
 const crypto = require('crypto');
 const babyjubCodec = require('./babyjub-codec253');
-const { leBigInt2Bits, beBitArray2buffer } = require('./utils');
 
 /**
  * Generate BabyJub private and public keys
@@ -20,13 +18,8 @@ function babyJubKeyGen(privBuf) {
     }
     const priv = new iden3crypto.PrivateKey(privBuf);
     const pub = priv.public();
-    // Process private key according to the eddsa spec
-    const blaked = createBlakeHash('blake512').update(privBuf).digest()
-    const pruned = iden3crypto.eddsa.pruneBuffer(blaked).slice(0, 32);
-    let privScalar = iden3crypto.ffUtils.leBuff2int(pruned);
-    privScalar = privScalar >> 3n;
 
-    return { priv: priv, pub: pub, privScalar: privScalar };
+    return { priv: priv, pub: pub };
 }
 
 function aesKeyGen() {

@@ -8,7 +8,6 @@ test('generate babyJub key pair', t => {
   babyJubKeys = babyJubKeyGen();
   console.log('priv:', babyJubKeys.priv);
   console.log('pub:', babyJubKeys.pub);
-  console.log('privScalar:', babyJubKeys.privScalar);
 });
 
 const didI = 'did:sov:issuer0001';
