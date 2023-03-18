@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "compilecircuit": "/bin/sh ./scripts/compile_circuit.sh",
-    "trustsetup": "/bin/sh ./scripts/trust_setup.sh",
+    "phase2": "/bin/sh ./scripts/phase2_setup.sh",
     "witness": "/bin/sh ./scripts/generate_witness.sh"
   },
   "author": "",

@@ -35,10 +35,5 @@ build/
 **/node_modules/
 
 
-**.r1cs
-**.sym
-**.wasm
+powersOfTau28_hez_final_17.ptau
 **.wtns
-**.ptau
-**.zkey
-
