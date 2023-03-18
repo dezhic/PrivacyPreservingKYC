@@ -9,6 +9,7 @@ module.exports = {
      * @param {string} didI Issuer's public DID (max 31 bytes)
      * @param {string} didHI Holder's registered peer DID (max 31 bytes)
      * @param {string} privKey hex string of the private key of the issuer
+     * @returns {{ S: string, R: string[] }}} signature object
      */
     signDidRecord: (didI, didHI, privKey) => {
         if (!privKey) {
@@ -33,7 +34,7 @@ module.exports = {
      * Generate babyjub public key and private key given a 32-byte hex string, or generate a new random key pair
      * 
      * @param {string | undefined} privKey hex string of a 32-byte buffer for generating a babyjub key pair, or undefined to generate a new random key
-     * @returns 
+     * @returns {[string, string]} [x, y] of the public key
      */
     generateKeyPair: (privKey) => {
         const keys = keygen.babyJubKeyGen(privKey);
