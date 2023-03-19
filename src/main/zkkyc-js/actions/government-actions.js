@@ -1,6 +1,7 @@
 const keygen = require('../services/keygen');
 const { uint256ToHex, leBigInt2Bits, beBitArray2buffer, parseTokenBuffer } = require('../services/utils');
 const babyjubDecrypt = require('../services/babyjub-decrypt');
+const babyjubCodec = require('../services/babyjub-codec253');
 const aesDecrypt = require('../services/aes-decrypt');
 
 module.exports = {
@@ -33,7 +34,7 @@ module.exports = {
                 c2: parsedPublic.aesKeyPointCipher.c2.map(BigInt),
             },
             privKey);
-        const aesKey = (aesKeyPoint[0] >> 1n) ^ BigInt(parsedPublic.aesKeyXmXor);
+        const aesKey = babyjubCodec.decode(aesKeyPoint, BigInt(parsedPublic.aesKeyXmXor));
 
         // Decrypt the token with the AES key using AES-256-CTR
         const aesKeyBuf = beBitArray2buffer(leBigInt2Bits(aesKey, 256));

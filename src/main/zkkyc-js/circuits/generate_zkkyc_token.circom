@@ -58,7 +58,7 @@ template GenerateZkKYCToken(n248Bits) {
     aesKeyXmXorNum2Bits.in <== aesKeyXmXor;
     for (var i = 0; i < 253; i++) {
         var a, b;
-        a = aesKeyPointXNum2Bits.out[i+1];  // the point x-coordinate is right-shifted by 1 bit during encoding to avoid XOR value overflow, so we do the same here as well
+        a = aesKeyPointXNum2Bits.out[i];
         b = aesKeyXmXorNum2Bits.out[i];
         aesKeyBits[i] = a + b - 2*a*b;  // XOR expressed in a quadratic equation
     }
