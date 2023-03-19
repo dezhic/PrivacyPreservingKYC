@@ -6,7 +6,8 @@
   "scripts": {
     "compilecircuit": "/bin/sh ./scripts/compile_circuit.sh",
     "phase2": "/bin/sh ./scripts/phase2_setup.sh",
-    "witness": "/bin/sh ./scripts/generate_witness.sh"
+    "witness": "/bin/sh ./scripts/generate_witness.sh",
+    "grpc": "node ./server"
   },
   "author": "",
   "license": "ISC",
