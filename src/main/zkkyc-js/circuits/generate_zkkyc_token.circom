@@ -69,7 +69,7 @@ template GenerateZkKYCToken(n248Bits) {
     // Convert DIDs int248 array to bits
     // Each 248-bit integer is converted into a __256-bit__ array of bits, tail padded with 0s
     // This is because AES expects the size to be "usize",
-    // while the integers are 248-bit (31-byte), as limited by the order of the babyjub curve.
+    // while the integers are 248-bit (31-byte), as limited by the finite field where babyjub curve is defined
     component didINum2Bits[n248Bits];
     for (var i = 0; i < n248Bits; i++) {
         didINum2Bits[i] = Num2Bits(256);

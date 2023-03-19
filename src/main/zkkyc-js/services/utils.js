@@ -166,7 +166,7 @@ function parseTokenBuffer(buf, n248Bits) {
   }
 }
 
-// Order of the babyjub curve, the circuit can only handle numbers smaller than this!
+// Finite field F_p, the circuit can only handle numbers smaller than this!
 const GLOBAL_FIELD_P = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 
 module.exports = {
