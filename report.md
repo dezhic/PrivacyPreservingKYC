@@ -116,7 +116,7 @@ The circuit inputs also include the initial vector `iv` for AES, which is a rand
 
 After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext `encryptedPayload`.
 
-To encrypt the token, we use the AES-256-CTR cipher, and the implementation is adapted from _Electron-Labs/aes-circom_ [ref:https://github.com/Electron-Labs/aes-circom], where they implemented the AES-GCM-SIV.
+To encrypt the payload, we use the AES-256-CTR cipher, and the implementation is adapted from _Electron-Labs/aes-circom_ [ref:https://github.com/Electron-Labs/aes-circom], where they implemented the AES-GCM-SIV.
 
 We did not choose AES-GCM-SIV due to its computational complexity, and we do not require the integrity guarantee it provides.
 We just use AES-256-CTR circuit in their repository, and we modified it to match the bit endianness we are using in the rest of the project.
