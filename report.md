@@ -68,31 +68,66 @@ Finally, Issuer can retrieve the Holder's real identity, `{ real_name: "Evil Hol
 
 ## Implementation Details
 Now, we are clear about the workflow of the zkKYC process. In this section, we will discuss the implementation details of the workflow.
+### DID Encoding
+By default, Circom signals are bounded by the field size of the curve, which is a 254-bit prime number.
+Therefore, for both convenience and efficiency, we decide to encode the DIDs in the form of an array of 248-bit (31-byte) signals.
+So, DIDs length limits will be multiples of 31 bytes, and the _multiple_ is specified by the circuit construction parameter `n248Bits`.
+
+
 ### Signing and Verification with EdDSA
 The signing and verification of the tuple `(did_i, did_hi)` is done using EdDSA over the Baby Jubjub curve.
 
 In practice, the signature is created on the _Poseidon Hash_ of the encoded `did_i` and `did_hi` concatenated together. We have chosen the Poseidon hash function in favor of the well-known SHA-256 hash function, because the Poseidon hash function is a set of permutations over a prime field, which makes it more efficient for zk-SNARKs.
+[ref:https://eips.ethereum.org/EIPS/eip-5988]
 
 In contrast, the SHA-256 hash function is inefficient in our use case, and it also resulted in a large number of constraints in the circuits according to our experiments.
 
 EdDSA Signing is performed in NodeJS using the _@iden3/js-crypto_ library, and verification is performed in the circuit using the _circomlib_ library.
 
-### Encryption and Decryption with ElGamal and AES
-
-### Key Generation
-__Asymmetric Key Pair__
-
-
-__Symmetric Key__
-
-
+The EdDSA signature consists of two elements, `R` and `S`. `R` is a point on the curve, and `S` is a scalar. We encode `R` as two 254-bit integers in an array, and `S` as a 254-bit integer.
 
 ### Message Representation in ElGamal Encryption
+Before we discuss the encryption and decryption process, we need to clarify the message representation in the ElGamal encryption.
+
+Because we implement ElGamal encryption over the Baby Jubjub curve, what it encrypts is essentially a _point_ on the curve. Therefore, we need a way to represent an arbitrary message with a point on the curve.
+
+An existing solution is to pick a random point on the curve, and subtract the message from its x-coordinate [ref:https://ethresear.ch/t/elgamal-encryption-decryption-and-rerandomization-with-circom-support/8074] to get a `xIncrement` value. Then, the message can be represented by the point and `xIncrement`.
+
+We improved this solution by performing XOR, instead of subtraction, between the lowest 253 bits of the x-coordinate and the message up to 253 bits, to get a `xmXor` value. Note that we do not utilize all 254 bits of the x-coordinate, because otherwise `xmXor` may overflow the BabyJub curve field size.
+
+In the existing solution, we need to assert that the x-coordinate of the point is greater than the message, which can possibly fail, especially when the message integer is large. In our solution, the encoding can always succeed.
+
+Also, our solution has the advantage that the representing point, which acts as the plaintext in the succeeding ElGamal encryption, can be _uniformly_ chosen at random, while the existing solution cannot as its x-coordinate is lower-bounded by the message. This advantage increases the security level of the entire encryption process.
+
+### Token Encryption and Decryption with ElGamal and AES
+This subsection describes how we achieve the public key encryption and decryption of the zkKYC token.
+
+Encryption is performed in the circom circuit so that we can prove the proper encryption of the zkKYC token in the zk-SNARK proof, while decryption is done by the Government in any environment.
+
+Briefly speaking, we first encrypt the payload with AES using a random symmetric key, and then encrypt the symmetric key with ElGamal using the Government's public key.
+
+__AES Encryption/Decryption__
+
+As mentioned in the previous section, plaintext messages in ElGamal encryption are represented by a point and an `xmXor` value. As the AES key will be later encrypted with ElGamal, it is input
+to the circuit as a point and an `xmXor` value.
+Therefore, the first step is to obtain the AES key by XORing the `xmXor` value with the x-coordinate of the point.
+
+The circuit inputs also include the initial vector `iv` for AES, which is a randomly generated array of 128 bits.
+
+After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext `encryptedToken`.
+
+To encrypt the token, we use the AES-256-CTR cipher, and the implementation is adapted from _Electron-Labs/aes-circom_ [ref:https://github.com/Electron-Labs/aes-circom], where they implemented the AES-GCM-SIV.
+
+We did not choose AES-GCM-SIV due to its computational complexity, and we do not require the integrity guarantee it provides.
+We just use AES-256-CTR circuit in their repository, and we modified it to match the bit endianness we are using in the rest of the project.
+
+__ElGamal Encryption/Decryption__
+
 
 ### zkKYC Token Structure
 
 ### Bit Lengths of Components — 248, 253, 254 or 256?
-You may have noticed that we use various bit lengths in the project.
+You may have noticed that we use various bit lengths in the project implementation.
 Those values are carefully chosen to maximize the security of the system, while avoiding overflow.
 In this section, we will summarize bit lengths for the components and explain the rationale behind those choices.
 
