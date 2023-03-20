@@ -1,46 +1,3 @@
-
-
-
-
-# Zero Knowledge Proof
-
-## Operation
-- build
-- zkSNARK Setup (powers of tau)
-- generate witness
-
-
-# Implementation Details
-KeyGen: eddsa key process
-
-# Implementation Attempts
-
-Some efforts have been made to incorporate the zkKYC token generation and signature verification process (the ZKP part of the project) with Hyperledger Aries, by implementing the encryption and 
-
-
-
-
-Representing an arbitrary message with a point on the BabyJub curve is tricky. Similar work, xIncrement. Here, we propose an improved version XOR. More secure.
-
-pointX => 254-bit
-symKey => 253-bit
-limit => some 254-bit number
-Therefore, to avoid overflow, we need to limit the number of iterations to 253. AKA xor they symKey with (pointX >> 1)
-
-
-类比于 网络层协议
--- zkkyc
--- symmetric encryption 【symmetric header】【did payload】
--- asymmetric encryption【asymmetric header】【symmetric cipher payload】
-
-
-- I used elgamal asymmetric encryption here. A better approach can be ECDH.
-- Deploy the zkkyc verification to smart contract (Another paper: zkSNARKs in DeFi)
-
-- production: babyjub points can be packed. to avoid unnecessary complications, we use the uncompressed form in this project
-
-- EdDSA Private Key Processing (BabyJubJub edition)
-
 # The zkKYC Solution Concept
 
 # System Overview
@@ -48,14 +5,15 @@ Therefore, to avoid overflow, we need to limit the number of iterations to 253. 
 
 # Self-Sovereign Identity (SSI) Using Hyperledger Aries
 
-# Zero Knowledge Proof (ZKP) with Circom and SnarkJS
+# Zero Knowledge Proof (ZKP) with zk-SNARKs
 
-## Background
-### zk-SNARKs
+## zk-SNARK Fundamentals
+### What are zk-SNARKs?
 
 ### Choosing a Proving System – Groth16 or PLONK?
 
-### How 
+### Implementing zk-SNARKs in the Project
+Thanks to Circom and SnarkJS, we define zk-SNARK constraints in the form of a circuit using the circom language, and then generate the witness and proof using SnarkJS.
 
 ## ZKP Workflow for zkKYC
 
