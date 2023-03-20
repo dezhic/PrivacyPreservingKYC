@@ -9,19 +9,70 @@
 
 ## zk-SNARK Fundamentals
 ### What are zk-SNARKs?
-
+___TODO: FROM MID-TERM REPORT___
 ### Choosing a Proving System – Groth16 or PLONK?
 
 ### Implementing zk-SNARKs in the Project
-Thanks to Circom and SnarkJS, we define zk-SNARK constraints in the form of a circuit using the circom language, and then generate the witness and proof using SnarkJS.
+We can define zk-SNARK constraints in the form of a circuit using the circom language, and then generate the witness and proof using SnarkJS.
+
+build ... setup --> ... phase 2 ... -> **verification key** (referred later)
 
 ## ZKP Workflow for zkKYC
+Now, we will illustrate the zero knowledge proof workflow using the following scenario:
+
+- Issuer has a public DID `did_i` and has a key pair (`pub_i`, `priv_i`).
+- Holder generates a peer DID `did_hi` to interact with Issuer.
+- Verifier has a public DID `did_v`.
+- Holder generates a peer DID `did_hv` to interact with Verifier.
+- Government has a key pair (`pub_g`, `priv_g`).
+
+Before the zkKYC process, the Holder has already registered with the Issuer. That is to say, the Issuer has the binding `{ did: "did_hi", real_name: "Evil Holder", passport_no: "A12345678" }` in its database.
+ 
+
+__1. Issuer signs the tuple `(did_i, did_hi)`.__
+
+When the Holder requests a KYC credential, the Issuer signs the tuple `(did_i, did_hi)` with its private key `priv_i`, and sends the signature `sig_i_hi` to the Holder in the credential.
+This conveys that the Holder is a recognized customer of the Issuer.
+
+__2. Holder generates the zkKYC token and proof for the Verifier.__
+
+When the Holder registers a business with the Verifier, the Holder generates a zkKYC token and proof for the specific Verifier.
+
+To generate the zkKYC token, the Holder inputs `did_i`, `did_hi`, `did_hv`, `did_v`, `sig_i_hi`, `pub_i`, `pub_g` into the zkKYC token generation circuit. The circuit will perform the following steps:
+
+- Verify `(did_i, did_hi)` with `pub_i` and `sig_i_hi`.
+- Encrypt `(did_i, did_hi, did_hv, did_v)` with `pub_g` to obtain the _circuit output_, `encryptedToken`.
+- Include `did_hv`, `did_v`, `pub_i` and `pub_g` as _public inputs_.
+- Generate a _proof_ for the public inputs and the circuit output.
+
+Then, the Holder sends public inputs, output and proof to the Verifier. These can be regarded as the zkKYC token and proof.
+
+__3. Verifier verifies the zkKYC token and proof.__
+
+When the Verifier receives the information from the Holder, it checks the following:
+
+- Verify the public inputs and output with the proof using the verification key of the circuit, to ensure the enclosed information is valid.
+- Check the public inputs `did_hv` and `did_v` to ensure that the zkKYC token is intended for the Verifier.
+- Check the public input `pub_i` to ensure that the Holder is registered with a _recognized_ Issuer.
+- Check the public input `pub_g` to ensure that the `encryptedToken` can be decrypted by the intended Government.
+
+__4. Government decrypts the zkKYC token.__
+
+When the Verifier spots suspicious activities of the Holder identified by `did_hv`, the Verifier reports the `encryptedToken` to the Government for further investigation.
+
+Government decrypts the `encryptedToken` with its private key `priv_g`, and obtains the tuple `(did_i, did_hi, did_hv, did_v)`. Then, Government can 
+- check that this is the zkKYC token of the suspicious Holder `did_hv` doing business with the reporting Verifier `did_v`, and
+- contact the Issuer `did_i` to obtain the Holder's real identity with `did_hi`.
+
+Finally, Issuer can retrieve the Holder's real identity, `{ real_name: "Evil Holder", passport_no: "A12345678" }`, for the Government to take further actions.
 
 ## Implementation Details
 ### Circuits
 __Asymmetric Encryption__
 
 __Symmetric Encryption__: AES-256-CTR
+
+### zkKYC Token Structure
 
 ### Bit Lengths Used in the Project — 248, 253, 254 or 256?
 You may have noticed that we use various bit lengths in the project.
