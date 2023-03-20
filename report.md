@@ -106,10 +106,10 @@ Encryption is performed in the circom circuit so that we can prove the proper en
 
 Briefly speaking, we first encrypt the payload with AES using a random symmetric key, and then encrypt the symmetric key with ElGamal using the Government's public key.
 
-__AES Encryption/Decryption__
+__AES Encryption__
 
 As mentioned in the previous section, plaintext messages in ElGamal encryption are represented by a point and an `xmXor` value. As the AES key will be later encrypted with ElGamal, it is input
-to the circuit as a point and an `xmXor` value.
+to the circuit as a point `aesKeyPoint`, and a _public_ input value `xmXor`.
 Therefore, the first step is to obtain the AES key by XORing the `xmXor` value with the x-coordinate of the point.
 
 The circuit inputs also include the initial vector `iv` for AES, which is a randomly generated array of 128 bits.
@@ -121,10 +121,16 @@ To encrypt the token, we use the AES-256-CTR cipher, and the implementation is a
 We did not choose AES-GCM-SIV due to its computational complexity, and we do not require the integrity guarantee it provides.
 We just use AES-256-CTR circuit in their repository, and we modified it to match the bit endianness we are using in the rest of the project.
 
-__ElGamal Encryption/Decryption__
+__ElGamal Encryption__
 
+After AES encryption, we encrypt the AES key with ElGamal using the Government's public key. 
+With the AES key represented by `aesKeyPoint` and `xmXor`, we just apply the ElGamal encryption on the `aesKeyPoint`, and output the ElGamal ciphertext represented by two points `c1` and `c2`.
 
-### zkKYC Token Structure
+__Token Structure__
+[ 图 zkKYC Token Structure ]
+
+__Decryption Process__
+
 
 ### Bit Lengths of Components — 248, 253, 254 or 256?
 You may have noticed that we use various bit lengths in the project implementation.
