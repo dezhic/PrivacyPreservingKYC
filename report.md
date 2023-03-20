@@ -41,8 +41,32 @@ Therefore, to avoid overflow, we need to limit the number of iterations to 253. 
 
 - EdDSA Private Key Processing (BabyJubJub edition)
 
-## Bit Lengths Used in the Project — 248, 253, 254 or 256?
-You may have noticed that we use various bit lengths in the project. 
+# The zkKYC Solution Concept
+
+# System Overview
+
+
+# Self-Sovereign Identity (SSI) Using Hyperledger Aries
+
+# Zero Knowledge Proof (ZKP) with Circom and SnarkJS
+
+## Background
+### zk-SNARKs
+
+### Choosing a Proving System – Groth16 or PLONK?
+
+### How 
+
+## ZKP Workflow for zkKYC
+
+## Implementation Details
+### Circuits
+__Asymmetric Encryption__
+
+__Symmetric Encryption__: AES-256-CTR
+
+### Bit Lengths Used in the Project — 248, 253, 254 or 256?
+You may have noticed that we use various bit lengths in the project.
 Those values are carefully chosen to maximize the security of the system, while avoiding overflow.
 In this section, we will summarize bit lengths for the components and explain the rationale behind those choices.
 
@@ -71,7 +95,28 @@ __Private Key Scalar (253 bits):__ A 253-bit scalar derived according to the Bab
 __AES Circuit Input (256 bits):__ As the AES-256 algorithm requires the size of the input to be the multiple of the unsigned integer size, we pad input units (integers representing DIDs) to 256 bits with trailing zeros.
 The 253-bit AES key is also padded to 256 bits with trailing zeros before inputting into the AES circuit.
 
+# Requirements Review
+Now, we will review the requirements of the zkKYC solution concept and see how the project meets those requirements.
+
+__No correlating signatures__
+
+This is achieved by including the signature verification process in the ZKP circuit.
+
+# Future Work
+__Optimize Implementation__ &nbsp; For simplicity, we did not consider the performance and efficiency of the implementation in this project.
+We can identify several areas for optimization:
+
+- Compared to ElGamal encryption, ECDH is more efficient and secure. We can use ECDH to derive the shared secret for symmetrically encrypting the DIDs payload.
+- AES-256 encryption results in large circuits. For instance, our circuit uses the plain AES-256-CTR circuit to encrypt just 32 bytes of data, but has more than 120,000 constraints and generates a 21.7MB R1CS file! We should find some _zk-friendly_ alternatives for token symmetric encryption.
+- For clearer demonstrations, we used the uncompressed form of Baby Jubjub points in the project (two 254-bit integers). In practice, we can pack a point into one single 255-bit integer to improve efficiency.
+
+__Reconsider Proving Systems__ &nbsp; We use the Groth16 proving system in this project. However, we may want to consider other proving systems in practice, because Groth16 requires a trusted setup for each circuit.
+A trusted setup usually involves multiple trusted parties to guarantee the security of the setup. It may not be practical to go through such a process for each circuit.
+
+__Integrate into DeFi Protocols__ &nbsp; This could be the most exciting potential of the project, and has also been discussed in the succeeding zkKYC paper – _zkKYC in DeFi_ [ref:https://eprint.iacr.org/2022/321]. This project can be easily extended to integrate with DeFi protocols, as Circom can generate Solidity smart contracts for proof verification. Then, a DeFi protocol can include the zkKYC verification process in its smart contract, and require users to submit a valid zkKYC proof before they can use the protocol. This will enable DeFi protocols to provide a more trustful and still privacy-preserving service to authenticated users.
+
 # Appendix
+## Project Setup
 ## Project Code Navigation
 ### Circom & SnarkJS
 #### Circuits
