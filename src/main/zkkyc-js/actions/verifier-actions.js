@@ -25,7 +25,7 @@ module.exports = {
                     public[3],
                 ]
             },
-            encryptedToken: beBitArray2buffer(public.slice(4, 4+1024+128)).toString("hex"),  // 1024 bits for the cipher, 128 bits for the iv
+            encryptedPayload: beBitArray2buffer(public.slice(4, 4+1024+128)).toString("hex"),  // 1024 bits for the cipher, 128 bits for the iv
             didHV: leUint248Array2Did([BigInt(public[1156])]),
             didV: leUint248Array2Did([BigInt(public[1157])]),
             issuerPubKey: [

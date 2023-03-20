@@ -39,8 +39,8 @@ module.exports = {
         // Decrypt the token with the AES key using AES-256-CTR
         const aesKeyBuf = beBitArray2buffer(leBigInt2Bits(aesKey, 256));
         const tokenBuf = aesDecrypt(
-            parsedPublic.encryptedToken.substr(0, 256),
-            parsedPublic.encryptedToken.substr(256, 32),
+            parsedPublic.encryptedPayload.substr(0, 256),
+            parsedPublic.encryptedPayload.substr(256, 32),
             aesKeyBuf.toString('hex')
         );
 

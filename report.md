@@ -41,7 +41,7 @@ When the Holder registers a business with the Verifier, the Holder generates a z
 To generate the zkKYC token, the Holder inputs `did_i`, `did_hi`, `did_hv`, `did_v`, `sig_i_hi`, `pub_i`, `pub_g` into the zkKYC token generation circuit. The circuit will perform the following steps:
 
 - Verify `(did_i, did_hi)` with `pub_i` and `sig_i_hi`.
-- Encrypt `(did_i, did_hi, did_hv, did_v)` with `pub_g` to obtain the _circuit output_, `encryptedToken`.
+- Encrypt `(did_i, did_hi, did_hv, did_v)` with `pub_g` to obtain the _circuit output_, `encryptedPayload`.
 - Include `did_hv`, `did_v`, `pub_i` and `pub_g` as _public inputs_.
 - Generate a _proof_ for the public inputs and the circuit output.
 
@@ -54,13 +54,13 @@ When the Verifier receives the information from the Holder, it checks the follow
 - Verify the public inputs and output with the proof using the verification key of the circuit, to ensure the enclosed information is valid.
 - Check the public inputs `did_hv` and `did_v` to ensure that the zkKYC token is intended for the Verifier.
 - Check the public input `pub_i` to ensure that the Holder is registered with a _recognized_ Issuer.
-- Check the public input `pub_g` to ensure that the `encryptedToken` can be decrypted by the intended Government.
+- Check the public input `pub_g` to ensure that the `encryptedPayload` can be decrypted by the intended Government.
 
 __4. Government decrypts the zkKYC token.__
 
-When the Verifier spots suspicious activities of the Holder identified by `did_hv`, the Verifier reports the `encryptedToken` to the Government for further investigation.
+When the Verifier spots suspicious activities of the Holder identified by `did_hv`, the Verifier reports the `encryptedPayload` to the Government for further investigation.
 
-Government decrypts the `encryptedToken` with its private key `priv_g`, and obtains the tuple `(did_i, did_hi, did_hv, did_v)`. Then, Government can 
+Government decrypts the `encryptedPayload` with its private key `priv_g`, and obtains the tuple `(did_i, did_hi, did_hv, did_v)`. Then, Government can 
 - check that this is the zkKYC token of the suspicious Holder `did_hv` doing business with the reporting Verifier `did_v`, and
 - contact the Issuer `did_i` to obtain the Holder's real identity with `did_hi`.
 
@@ -114,7 +114,7 @@ Therefore, the first step is to obtain the AES key by XORing the `xmXor` value w
 
 The circuit inputs also include the initial vector `iv` for AES, which is a randomly generated array of 128 bits.
 
-After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext `encryptedToken`.
+After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext `encryptedPayload`.
 
 To encrypt the token, we use the AES-256-CTR cipher, and the implementation is adapted from _Electron-Labs/aes-circom_ [ref:https://github.com/Electron-Labs/aes-circom], where they implemented the AES-GCM-SIV.
 
