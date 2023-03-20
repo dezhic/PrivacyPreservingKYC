@@ -18,7 +18,7 @@ We can define zk-SNARK constraints in the form of a circuit using the circom lan
 build ... setup --> ... phase 2 ... -> **verification key** (referred later)
 
 ## ZKP Workflow for zkKYC
-Now, we will illustrate the zero knowledge proof workflow using the following scenario:
+In this section, we will illustrate the zero knowledge proof workflow using the following scenario:
 
 - Issuer has a public DID `did_i` and has a key pair (`pub_i`, `priv_i`).
 - Holder generates a peer DID `did_hi` to interact with Issuer.
@@ -67,14 +67,31 @@ Government decrypts the `encryptedToken` with its private key `priv_g`, and obta
 Finally, Issuer can retrieve the Holder's real identity, `{ real_name: "Evil Holder", passport_no: "A12345678" }`, for the Government to take further actions.
 
 ## Implementation Details
-### Circuits
-__Asymmetric Encryption__
+Now, we are clear about the workflow of the zkKYC process. In this section, we will discuss the implementation details of the workflow.
+### Signing and Verification with EdDSA
+The signing and verification of the tuple `(did_i, did_hi)` is done using EdDSA over the Baby Jubjub curve.
 
-__Symmetric Encryption__: AES-256-CTR
+In practice, the signature is created on the _Poseidon Hash_ of the encoded `did_i` and `did_hi` concatenated together. We have chosen the Poseidon hash function in favor of the well-known SHA-256 hash function, because the Poseidon hash function is a set of permutations over a prime field, which makes it more efficient for zk-SNARKs.
+
+In contrast, the SHA-256 hash function is inefficient in our use case, and it also resulted in a large number of constraints in the circuits according to our experiments.
+
+EdDSA Signing is performed in NodeJS using the _@iden3/js-crypto_ library, and verification is performed in the circuit using the _circomlib_ library.
+
+### Encryption and Decryption with ElGamal and AES
+
+### Key Generation
+__Asymmetric Key Pair__
+
+
+__Symmetric Key__
+
+
+
+### Message Representation in ElGamal Encryption
 
 ### zkKYC Token Structure
 
-### Bit Lengths Used in the Project — 248, 253, 254 or 256?
+### Bit Lengths of Components — 248, 253, 254 or 256?
 You may have noticed that we use various bit lengths in the project.
 Those values are carefully chosen to maximize the security of the system, while avoiding overflow.
 In this section, we will summarize bit lengths for the components and explain the rationale behind those choices.
@@ -105,7 +122,7 @@ __AES Circuit Input (256 bits):__ As the AES-256 algorithm requires the size of 
 The 253-bit AES key is also padded to 256 bits with trailing zeros before inputting into the AES circuit.
 
 # Requirements Review
-Now, we will review the requirements of the zkKYC solution concept and see how the project meets those requirements.
+Finally, let us review the requirements of the zkKYC solution concept and see how the project meets those requirements.
 
 __No correlating signatures__
 
