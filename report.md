@@ -1,6 +1,22 @@
+Privacy-Preserved KYC
 # Introduction
 
-# Problem Statements
+# Problem and Objective
+Generally speaking, we have the following problems in the current traditional KYC process:
+-	Traditional businesses collect much information for the KYC purpose and clients have poor control over the shared information
+-	Crypto businesses guarantee privacy and anonymity but lack the KYC process to combat crime
+
+According to Pauwels (2021), the traditional KYC process has the following problems that threaten the security of users’ personal information:
+
+> __Copy Problem:__ When users have to share personal information with each regulated entity that they engage with, it is impossible for them to control what these businesses subsequently do with that information. It can be copied, sold, misused, or may indeed be part of a hack or data breach anytime in the future. \
+> __Bundling Problem:__ While AML/CTF regulations usually require only specific data attributes (e.g. name, address, date of birth) of a customer to be verified for KYC purposes, often much more personal data is collected and stored by the regulated entity. \
+> __Recursive Oversight Problem:__ When users have to share personal information with a regulated entity, what governance protections do they have for their information? If data protection regulation does exist in a particular jurisdiction (e.g. GDPR), how is this enforced? How is the regulated entity held accountable for violating data governance obligations? If a regulated entity shares customer identity data with a regulator or other government agency, what privacy protection obligations are they subject to and who holds them to account?
+
+To address these problems, Pauwels (2021) proposed a solution concept named __*zkKYC*__, which leverages Self-Sovereign Identity (SSI) and zero-knowledge proofs to achieve the KYC purpose without disclosing any personal information.
+
+While Pauwels (2021) gives comprehensive business requirements and the solution concept, challenges lie in the implementation of the zero-knowledge proving system (Pauwels et al., 2022).
+
+Therefore, the objective of this project is to study existing SSI technologies, design a zero-knowledge proving mechanism and finally provide an implementation of the zkKYC solution concept.
 
 # The zkKYC Solution Concept
 
