@@ -19,7 +19,24 @@ ___TODO: FROM MID-TERM REPORT___
 ### Implementing zk-SNARKs in the Project
 In our project, we define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
 
-build ... setup --> ... phase 2 ... -> **verification key** (referred later)
+Here are the general steps of the process:
+
+__A. Circuit definition and preparation for proving__
+
+1. Define the circuit in the circom language.
+2. Compile the circom file to into a Rank-1 Constraint System (the .r1cs file) using the circom compiler. This step also generates the script for generating the witness.
+3. Trusted Setup - Powers of Tau. With Groth16, the first phase, Powers of Tau, can be performed in advance. So, we just download the Powers of Tau file of the right size from a trusted source [ref:https://github.com/iden3/snarkjs].
+4. Trusted Setup - Phase 2. The phase 2 setup, however, is specific to the circuit. Ideally, it requires contributions from multiple trusted parties via MPC. In our demonstration, we just contribute our hardcoded entropy in the phase 2 setup. This step generates the proving key (.zkey file) and the verification key (verification_key.json).
+
+__B. Generating the witness and proof__
+
+1. Prepare the input data for the circuit.
+2. Generate the witness by executing the witness generation script with the correct input data.
+3. Prove the witness using the proving key, and obtain the proof with public inputs and outputs.
+
+__C. Verifying the proof__
+
+1. Verify the proof, public inputs and outputs using the verification key.
 
 ## ZKP Workflow for zkKYC
 In this section, we will illustrate the zero knowledge proof workflow using the following scenario:
@@ -47,7 +64,8 @@ To generate the zkKYC token, the Holder inputs `did_i`, `did_hi`, `did_hv`, `did
 - Verify `(did_i, did_hi)` with `pub_i` and `sig_i_hi`.
 - Encrypt `(did_i, did_hi, did_hv, did_v)` with `pub_g` to obtain the _circuit output_, `encryptedPayload`.
 - Include `did_hv`, `did_v`, `pub_i` and `pub_g` as _public inputs_.
-- Generate a _proof_ for the public inputs and the circuit output.
+
+Proof of the execution process is generated with the proving key from the trusted setup.
 
 Then, the Holder sends public inputs, output and proof to the Verifier. These can be regarded as the zkKYC token and proof.
 
