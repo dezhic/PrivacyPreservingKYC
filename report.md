@@ -253,10 +253,10 @@ __Government__
 
 ---
 
-These interfaces are packaged into a NodeJS module __zkkyc__ and can be imported into the SSI controller written in NodeJS.
+These interfaces are packaged into a NodeJS module __zkkyc-js__ and can be imported into the SSI controller written in NodeJS.
 For this method, we strongly suggest using separate _worker threads_ to run the zkKYC actions to avoid blocking other tasks in the SSI controller thread, because the ZKP process is very time-consuming and NodeJS is single-threaded.
 
-We also implemented GRPC services for these interfaces to facilitate the integration with SSI controllers written in other languages. You can start the GRPC server by running `npm run grpc` in the __zkkyc__ directory.
+We also implemented GRPC services for these interfaces to facilitate the integration with SSI controllers written in other languages. You can start the GRPC server by running `npm run grpc` in the __zkkyc-js__ directory.
 
 # Requirements Review
 Finally, let us review the requirements of the zkKYC solution concept and see how the project meets those requirements.
