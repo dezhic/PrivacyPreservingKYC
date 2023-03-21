@@ -249,6 +249,9 @@ We can identify several areas for optimization:
 - AES-256 encryption results in large circuits. For instance, our circuit uses the plain AES-256-CTR circuit to encrypt just 32 bytes of data, but has more than 120,000 constraints and generates a 21.7MB R1CS file! We should find some _zk-friendly_ alternatives for token symmetric encryption.
 - For clearer demonstrations, we used the uncompressed form of Baby Jubjub points in the project (two 254-bit integers). In practice, we can pack a point into one single 255-bit integer to improve efficiency.
 
+__Adapt to a Common Elliptic Curve__ &nbsp; We use the Baby Jubjub curve in this project, which is a special curve designed for zkSNARKs and the only reliable curve available at the moment. However, it is not widely used in practice. We may want to consider adapting the project to a more common elliptic curve, such as the Ed25519 curve.
+As a prerequisite, this will need an _efficient_ circom implementation of the curve.
+
 __Reconsider Proving Systems__ &nbsp; We use the Groth16 proving system in this project. However, we may want to consider other proving systems in practice, because Groth16 requires a trusted setup for each circuit.
 A trusted setup usually involves multiple trusted parties to guarantee the security of the setup. It may not be practical to go through such a process for each circuit.
 
