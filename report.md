@@ -236,15 +236,11 @@ PLONK, on the other hand, is a more recently proposed, polynomial-based zk-SNARK
 
 The advantage of PLONK is that it supports a universal trusted setup, which means that the trusted setup can be performed once and used for any circuit. This is a major improvement over Groth16.
 
-However, PLONK is not as efficient as Groth16 as it has a much slower performance and larger key and proof sizes. Taking our circuit as an example, with Groth16, 
-
-> PLONK \
-> [INFO]  snarkJS: Plonk constraints: 286616
->
+However, PLONK is not as efficient as Groth16 as it has a much slower performance and larger key and proof sizes. Taking our circuit as an example, with Groth16, generating the proving and verification keys took us about 2.5 minutes, and generating the proof took only around 15-20 seconds. The proving key size is 59MB. In contrast, with PLONK, it took us about 80 minutes to write 407 out 1163 Lagrange polynomials for the setup, and then the incomplete proving key exhausted all 33GB of free disk space on our machine...
 
 Both Groth16 and PLONK are supported by _SnarkJS_, the tool we will use to generate the witness and proof.
 So, either of the two proving systems may be used in the project.
-In the demonstration, we will use Groth16 for succinct and fast proving.
+However, due to the prohibitive cost of PLONK, we will just choose Groth16 in our implementation.
 
 ### Implementing zk-SNARKs in the Project
 To implement zk-SNARKs, we can define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
