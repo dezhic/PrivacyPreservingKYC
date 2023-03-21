@@ -78,6 +78,8 @@ When the Verifier receives the information from the Holder, it checks the follow
 - Check the public input `pub_i` to ensure that the Holder is registered with a _recognized_ Issuer.
 - Check the public input `pub_g` to ensure that the `encryptedPayload` can be decrypted by the intended Government.
 
+With this information, the Verifier cannot deduce any information about the Holder's identity beyond the Holder's verifier-dedicated DID `did_hv`, but can be assured that the intended party, Government, can decrypt the information for retrieving the Holder's real identity.
+
 __4. Government decrypts the zkKYC token.__
 
 When the Verifier spots suspicious activities of the Holder identified by `did_hv`, the Verifier reports the `encryptedPayload` to the Government for further investigation.
