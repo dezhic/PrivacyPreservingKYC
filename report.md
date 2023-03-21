@@ -35,11 +35,12 @@ Here are the business requirements specified in the original zkKYC paper:
 
 
 ## Implementing zkKYC with Hyperledger Aries
+___TODOOOOOOOOOOOOOOOOOOOOOO!!!!!!!___
 
 
 # Zero Knowledge Proof (ZKP) with zk-SNARKs
 Generating the _zkKYC token_ and the _validity proof_ is an unaddressed challenge in the zkKYC paper.
-In this section, we will discuss our approach to this problem using zero knowledge proof with _zk-SNARKs_.
+In this section, we will discuss our approach to solving this problem using zero knowledge proof with _zk-SNARKs_.
 
 ## zk-SNARK Fundamentals
 In this section, we will introduce the fundamentals of zk-SNARKs, and how we can implement zk-SNARKs in our project.
