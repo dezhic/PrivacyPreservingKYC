@@ -1,11 +1,41 @@
+# Introduction
+
+# Problem Statements
+
 # The zkKYC Solution Concept
-[TODO]
+
+## Business Requirements
+Here are the business requirements specified in the original zkKYC paper:
+
+> | ID   | Business Requirement |
+> | ---- | -------------------- |
+> | BR01 | The level of user control, agency and privacy provided and enabled by the self-sovereign identity model MUST be preserved or enhanced. See section 3.2 for details. |
+> | BR02 | A User SHOULD NOT share personal identifiable information (e.g. name, address, date of birth) when on-boarding at a Business. |
+> | BR03 | A User MUST prove they meet the criteria defined by the Business or relevant regulator(s) to consume the provided service (e.g. adult, domestic resident, valid driver license for specific vehicle category, verified email address). |
+> | BR04 | A Business that suspects a specific User of fraud, money laundering or terrorism financing MUST be able to report that User to Government (e.g. regulator). |
+> | BR05 | A Business that wants to file charges against a specific User due to breach of contract or other dispute MUST be able to report that User to Government (e.g. law enforcement). |
+> | BR06 | Government (e.g. regulator, law enforcement) MUST be able to identify a reported User based on the information provided and on the ground of reasonable suspicion. |
+> | BR07 | When a Business reports a User to Government, this MUST NOT be disclosed to the User (i.e. tipping-off). |
+> | BR08 | A Business SHOULD NOT hold personal identifiable information on a User, unless it is provided to them by Government in context of a reported issue. |
 
 # System Overview
-[TODO]
+[TODO]: An overview of the system; Briefly mention that we will use Aries to implement the SSI framework and zk-SNARKs to achieve the zkKYC token generation and verification.
 
 # Self-Sovereign Identity (SSI) Using Hyperledger Aries
-[TODO]
+## What is Self-Sovereign Identity?
+
+## Key Components in SSI
+### Decentralized Identifier (DID)
+
+### Verifier Credential
+
+### Verifiable Data Registry
+
+## Hyperledger's SSI Framework
+
+
+## Implementing zkKYC with Hyperledger Aries
+
 
 # Zero Knowledge Proof (ZKP) with zk-SNARKs
 Generating the _zkKYC token_ and the _validity proof_ is an unaddressed challenge in the zkKYC paper.
@@ -478,11 +508,8 @@ We can identify several areas for optimization:
 __Adapt to a Common Elliptic Curve__ &nbsp; We use the Baby Jubjub curve in this project, which is a special curve designed for zkSNARKs and the only reliable curve available at the moment. However, it is not widely used in practice. We may want to consider adapting the project to a more common elliptic curve, such as the Ed25519 curve.
 As a prerequisite, this will need an _efficient_ circom implementation of the curve.
 
-__Reconsider Proving Systems__ &nbsp; We use the Groth16 proving system in this project. However, we may want to consider other proving systems in practice, because Groth16 requires a trusted setup for each circuit.
-A trusted setup usually involves multiple trusted parties to guarantee the security of the setup. It may not be practical to go through such a process for each circuit.
+__Explore Other Proving Systems__ &nbsp; We use the Groth16 proving system in this project. However, we may want to consider other proving systems in practice, because Groth16 requires a trusted setup for each circuit, and this may not always be practical.
 Further study and research are needed to find the most suitable proving system for zkKYC.
-
-__Hide Issuer's Public Key from the Proof__ &nbsp; Currently, the issuer's public key is included in the proof. This is because the verifier needs to verify the signature of the DID record.
 
 __Integrate into DeFi Protocols__ &nbsp; This could be the most exciting potential of the project, and has also been discussed in the succeeding zkKYC paper – _zkKYC in DeFi_ [ref:https://eprint.iacr.org/2022/321]. This project can be easily extended to integrate with DeFi protocols, as Circom can generate Solidity smart contracts for proof verification. Then, a DeFi protocol can include the zkKYC verification process in its smart contract, and require users to submit a valid zkKYC proof before they can use the protocol. This will enable DeFi protocols to provide a more trustful and still privacy-preserving service to authenticated users.
 
