@@ -1,14 +1,48 @@
 Privacy-Preserving KYC
 # Abstract
 Know-Your-Customer (KYC) process is a critical step in some businesses to combat crime.
-Several problems exist in traditional KYC process and they may threaten users' privacy.
+Several problems exist in the traditional KYC process and they may threaten users' privacy.
 A solution concept named _zkKYC_ is proposed to address these problems.
 The solution concept specifies the business requirements for a privacy-preserving KYC system.
-This project aims to address the challenge in the designing a zero-knowledge KYC token generation and verification mechanism, and provide an implementation a privacy-preserving KYC system based on the zkKYC solution concept, using Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge proofs with zk-SNARKs via the Circom and SnarkJS libraries.
+This project aims to address the challenge in designing a zero-knowledge KYC token generation and verification mechanism, and provide an implementation a privacy-preserving KYC system based on the zkKYC solution concept, using Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge proofs with zk-SNARKs via the Circom and SnarkJS libraries.
 
 # Introduction
+## Background
+Know-Your-Customer (KYC) process is a critical step in some businesses to combat crimes such as money laundering and terrorist financing.
+However, the current common KYC process may threaten users' privacy, by requiring more information than necessary, leaking or abusing personal information and so on, while users have to sacrifice their privacy and give up control over their information to meet the compliance requirement.
+From the businesses' perspective, it is also a challenge for them to keep customers' personal information secure.
 
-# Problem and Objective
+When exploring solutions to privacy-preserving KYC, we found an interesting solution concept named _zkKYC_, proposed by Pieter Pauwels in 2021.
+It describes a "zero-knowledge KYC solution" leveraging self-sovereign identity and zero-knowledge proofs.
+The paper identifies problems existing in the traditional KYC process and proposes a solution concept to address these problems. It also defines detailed business requirements for such a system.
+
+As a solution concept, the paper did not specify any detail for the implementation.
+It is also mentioned by the author in the subsequent paper that designing and implementing the zero-knowledge proving system for zkKYC tokens is a valuable challenge to tackle.
+So, we decided to take on the task of solving the challenge and implementing our privacy-preserving KYC system based on the zkKYC solution concept.
+
+## Project Overview
+This project consists of two major parts: Self-Sovereign Identity (SSI) and Zero Knowledge Proof (ZKP).
+
+SSI is a decentralized identity framework that allows users to control their own identity information and share it with others only when necessary.
+It is a promising solution and has been adopted by many organizations.
+We use SSI to facilitate the issuance, secure storage and verification of credentials that contain the information required for KYC.
+In our project, we use Hyperledger Aries as the SSI framework.
+
+ZKP is a cryptographic technique that allows a prover to prove a statement to a verifier without revealing any information other than the validity of the statement.
+We use ZKP to generate the _zkKYC token_ and its _validity proof_.
+This enables the verifier (business) to verify that the zkKYC token contains the information required for KYC without revealing the information itself.
+In our project, we use zk-SNARKs to achieve the ZKP, using the Circom and SnarkJS libraries.
+
+---
+
+In the following chapters, we will first identify the problems and the objective of this project.
+Then, we will introduce the zkKYC solution concept, followed by the system architecture.
+After that, we will elaborate on the implementation of the SSI part and the ZKP part, respectively, with the detailed background knowledge, design thinking and implementation details.
+After introducing our implementation, we will also review the business requirements specified in the solution concept to discuss how they have been addressed in our implementation.
+Finally, we will discuss the future work, or potentials of this project.
+
+
+# Problems and Objective
 Generally speaking, we have the following problems in the current traditional KYC process:
 -	Traditional businesses collect much information for the KYC purpose and clients have poor control over the shared information
 -	Some novel businesses such as cryptocurrency ones guarantee privacy and anonymity but lack the KYC process to combat crime
@@ -21,8 +55,7 @@ According to Pauwels (2021), the traditional KYC process has the following probl
 
 To address these problems, Pauwels (2021) proposed a solution concept named __*zkKYC*__, which leverages Self-Sovereign Identity (SSI) and zero-knowledge proofs to achieve the KYC purpose without disclosing any personal information.
 
-While Pauwels (2021) gives comprehensive business requirements and the solution concept, challenges lie in the implementation of the zero-knowledge proving system (Pauwels et al., 2022).
-
+While Pauwels (2021) gives comprehensive business requirements and the solution concept, challenges lie in the design and implementation of the zero-knowledge proving system (Pauwels et al., 2022).
 Therefore, the objective of this project is to study existing SSI technologies, design a zero-knowledge proving mechanism and finally provide an implementation of the zkKYC solution concept.
 
 # The zkKYC Solution Concept
@@ -537,6 +570,8 @@ __Integrate into DeFi Protocols__ &nbsp; This could be the most exciting potenti
 
 # Conclusion
 In this project, we have implemented a zkKYC solution concept based on the zkKYC paper [ref:https://eprint.iacr.org/2020/1186] and the zkSNARKs technology. We have also integrated the zkKYC solution into the SSI controller written in NodeJS, and demonstrated the zkKYC process in a simple use case.
+.. contribution ...
+
 
 # Appendix
 ## Project Setup
