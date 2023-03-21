@@ -194,9 +194,27 @@ Full zkSNARK also involves another two
 properties: succinctness and non-interactivity, but we will not cover those details in this report to avoid further distraction from our main topic.
 
 ### Choosing a Proving System
-[TODO]
+Groth16 and PLONK are two popular zk-SNARK proving systems.
 
-We chose Groth16 in our project for no particular reason.
+Groth16 is based on pairing-based cryptography and uses a construction called _bilinear pairing_. Groth16 is efficient and features succinct proofs and reasonably fast performance, and it has been widely adopted in applications such as privacy cryptocurrencies like Zcash.
+
+A major drawback of Groth16 is that it requires a trusted setup for each different circuit. A trusted setup is a process that generates the parameters for the proving system. It can be analogous to the process of generating the encrypted powers of $s$ to get $E_{s^{i}}$ in the previous section.
+
+The trusted setup is a one-time process that is expensive and time-consuming, and must be performed by trusted parties using secure Multi-Party Computation (MPC).
+
+PLONK, on the other hand, is a more recently proposed, polynomial-based zk-SNARK proving system that leverages the _polynomial commitment scheme_.
+
+The advantage of PLONK is that it supports a universal trusted setup, which means that the trusted setup can be performed once and used for any circuit. This is a major improvement over Groth16.
+
+However, PLONK is not as efficient as Groth16 as it has a much slower performance and larger key and proof sizes. Taking our circuit as an example, with Groth16, 
+
+> PLONK \
+> [INFO]  snarkJS: Plonk constraints: 286616
+>
+
+Both Groth16 and PLONK are supported by _SnarkJS_, the tool we will use to generate the witness and proof.
+So, either of the two proving systems may be used in the project.
+In the demonstration, we will use Groth16 for succinct and fast proving.
 
 ### Implementing zk-SNARKs in the Project
 To implement zk-SNARKs, we can define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
@@ -467,6 +485,9 @@ Further study and research are needed to find the most suitable proving system f
 __Hide Issuer's Public Key from the Proof__ &nbsp; Currently, the issuer's public key is included in the proof. This is because the verifier needs to verify the signature of the DID record.
 
 __Integrate into DeFi Protocols__ &nbsp; This could be the most exciting potential of the project, and has also been discussed in the succeeding zkKYC paper – _zkKYC in DeFi_ [ref:https://eprint.iacr.org/2022/321]. This project can be easily extended to integrate with DeFi protocols, as Circom can generate Solidity smart contracts for proof verification. Then, a DeFi protocol can include the zkKYC verification process in its smart contract, and require users to submit a valid zkKYC proof before they can use the protocol. This will enable DeFi protocols to provide a more trustful and still privacy-preserving service to authenticated users.
+
+# Conclusion
+In this project, we have implemented a zkKYC solution concept based on the zkKYC paper [ref:https://eprint.iacr.org/2020/1186] and the zkSNARKs technology. We have also integrated the zkKYC solution into the SSI controller written in NodeJS, and demonstrated the zkKYC process in a simple use case.
 
 # Appendix
 ## Project Setup
