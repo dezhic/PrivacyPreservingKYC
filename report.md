@@ -1,4 +1,7 @@
-Privacy-Preserved KYC
+Privacy-Preserving KYC
+# Abstract
+Know-Your-Customer (KYC) process is a critical step in some businesses to combat crime. Several problems exist in traditional KYC process and they may threaten users' privacy. A solution concept named _zkKYC_ is proposed to address these problems. The solution concept specifies the business requirements for a privacy-preserving KYC system. This project aims to address the challenge in the designing a zero-knowledge KYC token generation and verification mechanism, and provide an implementation a privacy-preserving KYC system based on the zkKYC solution concept using Self-Sovereign Identity (SSI) and zero-knowledge proofs.
+
 # Introduction
 
 # Problem and Objective
@@ -235,6 +238,8 @@ $E_{zkp_{s}^{'}} = \left( E_{p_{s}}^{'} \right)^{\delta}$ $(mod\ n)$ and
 pass the $E_{zk}$ values to the verifier.
 
 ---
+
+[TODO: sequence diagram]
 
 Until now, we have achieved sound and complete zero-knowledge proving.
 Full zkSNARK also involves another two
