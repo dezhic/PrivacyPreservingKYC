@@ -8,16 +8,198 @@
 [TODO]
 
 # Zero Knowledge Proof (ZKP) with zk-SNARKs
+Generating the _zkKYC token_ and the _validity proof_ is an unaddressed challenge in the zkKYC paper.
+In this section, we will discuss our approach to this problem using zero knowledge proof with _zk-SNARKs_.
 
 ## zk-SNARK Fundamentals
+In this section, we will introduce the fundamentals of zk-SNARKs, and how we can implement zk-SNARKs in our project.
+
 ### What are zk-SNARKs?
-[TODO]
-___TODO: FROM MID-TERM REPORT___
-### Choosing a Proving System – Groth16 or PLONK?
+_zk-SNARKs_ stands for _Zero Knowledge Succinct Non-interactive ARgument of Knowledge_. It is a type of zero knowledge proof that allows a prover to convince a verifier that a statement is true, without revealing any information beyond the statement itself. The statement is usually a mathematical expression, and the prover can prove that the statement is true by providing a _witness_ that satisfies the statement.
+
+There are many zk-SNARK schemes, or proving systems. To understand how zk-SNARKs achieve zero knowledge proof, we will use a polynomial-based proving system as an example to demonstrate the mechanism. [ref:Why and How zk-SNARK Works]
+
+__Knowledge as Polynomial__
+
+There is an advantageous property of polynomials. Two non-equal
+polynomials of degree at most $d$ can intersect at no more than $d$
+points. So, when an $x$ is randomly chosen from $N$ numbers, the
+probability of choosing an intersecting point is $\frac{d}{N}$, which is
+negligible when $N$ is significantly larger than $d$.
+
+Therefore, if the prover responds with a correct evaluation of the
+polynomial when given a random position $x$, it is highly confident that
+the prover does know the coefficients of the polynomial.
+
+Thanks to this property, we can express knowledge as coefficients of a
+polynomial, and easily prove that we know the coefficients.
+
+__Factorization__
+
+There are usually some constraints on the knowledge (polynomial) that
+the prover claims to know. For example, the prover claims that he knows
+a polynomial of degree $d$,
+
+$p(x) = c_{0}x^{0} + c_{1}x^{1} + \ldots + c_{d}x^{d}$,
+
+and it has roots $x = 1\ $and $x = 2$.
+
+Factorization can help us extract these constraints. In the above
+example, because *p(x)* has roots $x = 1\ $ and $x = 2$., we know that
+*p(x)* can be factorized into
+
+$p(x)\  = \ t(x)\ h(x)$*,*
+
+where $t(x) = (x - 1)(x - 2)$ and is called the *target polynomial*, and
+$h(x)$ is the quotient of $p(x)\text{/}t(x)$.
+
+So far, the prover and the verifier can try proving in the following
+protocol:
+
+-   Verifier chooses a random number $s$, and computes $t_{s} = t(s)$.
+    Then, Verifier passes $s$ to Prover
+
+-   Prover obtains $h(x) = \frac{p(x)}{t(x)}$ and computes
+    $p_{s} = p(s)$ and $h_{s} = h(s)$. Then, Prover passes $p_{s}$ and
+    $h_{s}$ to Verifier
+
+-   Verifier verifies $p_{s} = t_{s} \cdot h_{s}$
+
+However, the proof is valid only if both Verifier and Prover honestly
+follow this protocol. The prover can easily cheat by first choosing an
+arbitrary value as $h_{s}$, and then obtain an $p_{s}$ by multiply the
+arbitrary $h_{s}$ by $t_{s}$.
+
+__Homomorphic Encryption__
+
+The flaw of the above protocol is caused by passing a plaintext $s$ for
+polynomial evaluation, allowing dishonest provers to fabricate an
+equation. This problem can be solved by homomorphic encryption.
+
+A simple homomorphic encryption is
+
+$E(x) = g^{x}\ \ \ (mod\ n)$,
+
+where $g$ is a natural number base, and $mod\ n$ makes it difficult to
+solve $y = E(x)$ for $x$, due to the high complexity of the discrete
+logarithm problem.
+
+Here are two operations supported by $E(x)$:
+
+-   Addition of two encrypted values $a$ and $b$:
+
+> $$g^{a + b} = g^{a} \cdot g^{b} = E(a) \cdot E(b)$$
+
+-   Multiplication of an encrypted value $a$ by an unencrypted value
+    $m$:
+
+> $$\left( g^{a}m \right) = \left( g^{a} \right)^{m} = \left( E(a) \right)^{m}$$
+
+Now, we can encrypt the random value $s$ chosen by Verifier before
+passing to Prover. As $E(x)$ does not support exponential operation
+encrypted values, the verifier needs to prepare encrypted values of
+$s^{0},s^{1},\ldots,s^{d}$. The original protocol can be updated as
+follows:
+
+-   Verifier chooses a random number $s$, and computes $t_{s} = t(s)$.
+
+-   Verifier computes $E_{s^{i}} = E\left( s^{i} \right)$ for $i$ in
+    $0,\ 1,\ \ldots,\ d$ and passes $E_{s^{i}}$ to Prover
+
+-   Prover obtains $h(x) = \frac{p(x)}{t(x)}$
+
+-   Prover computes
+    $E_{p_{s}} = E\left( p(s) \right) = g^{p(s)} = g^{c_{0}s^{0} + c_{1}s^{1} + \ldots + c_{d}s^{d}}$
+
+$$= \left( g^{s^{0}} \right)^{c_{0}} \cdot \left( g^{s^{1}} \right)^{c_{1}} \cdot \ldots \cdot \left( g^{s^{d}} \right)^{c_{d}} = \prod_{i = 0}^{d}\left( E_{s^{i}} \right)^{c_{i}}$$
+
+-   Prover computes $E_{h_{s}}$ in a similar way
+
+-   Prover passes $E_{p_{s}}$ and $E_{h_{s}}$ to Verifier
+
+-   Verifier verifies
+    $E_{p_{s}} = \left( E_{h_{s}} \right)^{t_{s}}\mathbf{\ \  \Rightarrow \ \ }g^{p(s)} = \left( g^{h(s)} \right)^{t(s)}\mathbf{\ \  \Rightarrow \ \ }p(s) = h(s)\ t(s)$
+
+This updated protocol prevents the prover from getting plaintext $s$ and
+directly computing $t(s)$. However, this does not completely eliminate
+the possibility of cheating. Prover can still fabricate an equation as
+follows:
+
+-   Compute $g^{t(s)}$ using $E_{s^{i}}$
+
+-   Find a random value $r$, let $z_{h} = g^{r}$,
+    $z_{p} = \left( g^{t(s)} \right)^{r}$, so that
+    $z_{p} = z_{h}^{t(s)}$
+
+-   Now, $E_{p_{s}}$ and $E_{h_{s}}$ can be forged by $z_{p}$ and
+    $z_{h}$ respectively
+
+__Knowledge-of-Exponent Assumption (KEA)__
+
+To address the problem above, we need to enforce the prover to obtain
+the values via the polynomials $p(x)$ and $h(x)$. Note that after
+applying the homomorphic encryption, the coefficients of polynomials are
+used to *exponentiate* the encrypted values $E_{s_{i}}$. That is why KEA
+can help.
+
+The problem KEA addresses is described as follows:
+
+Alice has a value $a$. She needs to pass $a$ to Bob and asks Bob to
+perform an exponentiation $a^{v}$, where the exponent $v$ is *only known
+by Bob*. How can Alice ensure that Bob has performed the exponentiation
+for $a$ with some $v$, instead of returning some other values?
+
+The solution is to prepare a *shifted* value
+$a^{'} = a^{\alpha}\ \ \ mod\ n$, where $\alpha$ is chosen and only
+known by Alice. Then, Alice passes $a^{'}$ along with $a$, and asks Bob
+to perform the same exponential operation on $a$, $a^{'}$ to obtain $b$,
+$b^{'}$. Finally, Alice checks if
+
+$$b^{\alpha} = \left( a^{v} \right)^{\alpha} = a^{\alpha v} = a^{'v} = b^{'}$$
+
+Since Bob cannot obtain $\alpha$ except by unfeasible brute-forcing, the
+only way for Bob to produce $\left( b,b^{'} \right)$ that satisfies the
+above equation is to perform the exponentiation.
+
+Therefore, in addition to steps in the previous protocol, Verifier will
+prepare shifted values $E_{s^{i}}^{'} = g^{\alpha s^{i}}$ to be passed
+to Prover along with $E_{s^{i}}$, and Prover will return $E_{p_{s}}$ and
+$E_{p_{s}}^{'}$. Finally, if Verifier checks that if
+$\left( E_{p_{s}} \right)^{\alpha} = E_{p_{s}}^{'}$, it proves that the
+prover has correctly performed the homomorphic-encrypted calculation.
+
+__Achieving Zero-Knowledge__
+
+So far, we have achieved sound and complete proving. But values passed
+from Prover to Verifier, $E_{p_{s}} = g^{p(s)}$, $E_{h_{s}} = g^{h(s)}$
+and $E_{p_{s}}^{'} = g^{\alpha p(s)}$ contains some knowledge about the
+polynomial $p(x)$ that can be extracted by Verifier.
+
+Currently, the verifier verifies that these values satisfy
+
+$$E_{p_{s}} = \left( E_{h_{s}} \right)^{t(s)},\left( E_{p_{s}} \right)^{\alpha} = E_{p_{s}}^{'}$$
+
+It is obvious that if the prover exponentiates $E_{p_{s}}$, $E_{h_{s}}$
+and $E_{p_{s}}^{'}$ to the power $\delta$, the equations still hold. So,
+the simple solution is to select a secret random $\delta$, calculate
+$E_{zk - p_{s}} = \left( E_{p_{s}} \right)^{\delta}$,
+$E_{zkh_{s}} = \left( E_{h_{s}} \right)^{\delta}$ and
+$E_{zkp_{s}^{'}} = \left( E_{p_{s}}^{'} \right)^{\delta}$ $(mod\ n)$ and
+pass the $E_{zk}$ values to the verifier.
+
+---
+
+Until now, we have achieved sound and complete zero-knowledge proving.
+Full zkSNARK also involves another two
+properties: succinctness and non-interactivity, but we will not cover those details in this report to avoid further distraction from our main topic.
+
+### Choosing a Proving System
 [TODO]
 
+We chose Groth16 in our project for no particular reason.
+
 ### Implementing zk-SNARKs in the Project
-In our project, we define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
+To implement zk-SNARKs, we can define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
 
 Here are the general steps of the process:
 
@@ -280,6 +462,9 @@ As a prerequisite, this will need an _efficient_ circom implementation of the cu
 
 __Reconsider Proving Systems__ &nbsp; We use the Groth16 proving system in this project. However, we may want to consider other proving systems in practice, because Groth16 requires a trusted setup for each circuit.
 A trusted setup usually involves multiple trusted parties to guarantee the security of the setup. It may not be practical to go through such a process for each circuit.
+Further study and research are needed to find the most suitable proving system for zkKYC.
+
+__Hide Issuer's Public Key from the Proof__ &nbsp; Currently, the issuer's public key is included in the proof. This is because the verifier needs to verify the signature of the DID record.
 
 __Integrate into DeFi Protocols__ &nbsp; This could be the most exciting potential of the project, and has also been discussed in the succeeding zkKYC paper – _zkKYC in DeFi_ [ref:https://eprint.iacr.org/2022/321]. This project can be easily extended to integrate with DeFi protocols, as Circom can generate Solidity smart contracts for proof verification. Then, a DeFi protocol can include the zkKYC verification process in its smart contract, and require users to submit a valid zkKYC proof before they can use the protocol. This will enable DeFi protocols to provide a more trustful and still privacy-preserving service to authenticated users.
 
