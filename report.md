@@ -24,7 +24,7 @@ Therefore, the objective of this project is to study existing SSI technologies, 
 # The zkKYC Solution Concept
 
 ## Business Requirements
-Here are the business requirements specified in the original zkKYC paper:
+Here are the business requirements of the privacy-preserving KYC system specified in the original zkKYC paper:
 
 > | ID   | Business Requirement |
 > | ---- | -------------------- |
