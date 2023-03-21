@@ -7,7 +7,7 @@ Know-Your-Customer (KYC) process is a critical step in some businesses to combat
 # Problem and Objective
 Generally speaking, we have the following problems in the current traditional KYC process:
 -	Traditional businesses collect much information for the KYC purpose and clients have poor control over the shared information
--	Crypto businesses guarantee privacy and anonymity but lack the KYC process to combat crime
+-	Some novel businesses such as cryptocurrency ones guarantee privacy and anonymity but lack the KYC process to combat crime
 
 According to Pauwels (2021), the traditional KYC process has the following problems that threaten the security of users’ personal information:
 
