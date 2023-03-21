@@ -263,6 +263,8 @@ __No correlating signatures__
 
 This is achieved by including the signature verification process in the ZKP circuit.
 
+[TODO: check with the original zkKYC paper]
+
 # Future Work
 __Optimize Implementation__ &nbsp; For simplicity, we did not consider the performance and efficiency of the implementation in this project.
 We can identify several areas for optimization:
