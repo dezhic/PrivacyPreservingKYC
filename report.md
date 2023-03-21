@@ -119,7 +119,7 @@ Briefly speaking, we first encrypt the payload with AES using a random symmetric
 
 __AES Encryption__
 
-As mentioned in the previous section, plaintext messages in ElGamal encryption are represented by a point and an `aesKeyXmXor` value. As the AES key will be later encrypted with ElGamal, it is input
+As mentioned in the previous subsection, plaintext messages in ElGamal encryption are represented by a point and an `aesKeyXmXor` value. As the AES key will be later encrypted with ElGamal, it is input
 to the circuit as a point `aesKeyPoint`, and a _public_ input value `aesKeyXmXor`.
 Therefore, the first step is to obtain the AES key by XORing the `aesKeyXmXor` value with the lowest 253 bits of the x-coordinate of the point.
 
@@ -174,7 +174,7 @@ Using the above public information, the Government can decrypt the zkKYC token b
 ### Bit Lengths of Components — 248, 253, 254 or 256?
 You may have noticed that we use various bit lengths in the project implementation.
 Those values are carefully chosen to maximize the security of the system, while avoiding overflow.
-In this section, we will summarize bit lengths for the components and explain the rationale behind those choices.
+In this subsection, we will summarize bit lengths for the components and explain the rationale behind those choices.
 
 Generally, signals in a Circom circuit should be bounded by the finite field that the underlying elliptic curve is defined on.
 In our case, the _Baby Jubjub Elliptic Curve_ is defined over the field $F_p$, where $p$ is a _254-bit_ prime number [ref:https://eips.ethereum.org/EIPS/eip-2494].
@@ -183,7 +183,7 @@ Given this fact, we define the bit lengths for the following components in the p
 __DID Representation (248 bits):__ A DID is represented by an array of 248-bit unsigned integers. Each integer can be interpreted as a 31-byte string.
 
 __AES Key (253 bits):__ We use a 253-bit key for AES-256 encryption, instead of the standard 256-bit key.
-This is because this key will be encoded into a point on the Baby Jubjub curve and an XOR value as discussed in an earlier section.
+This is because this key will be encoded into a point on the Baby Jubjub curve and an XOR value as discussed in an earlier subsection.
 Therefore, as the point coordinate is bounded by a 254-bit number, we need to limit the key size to 253 bits to avoid overflowing the XOR value.
 
 __XOR Value (253 bits):__ The XOR value, named `xmXor`, is used to encode the AES key into a point on the Baby Jubjub curve. It is the result of XORing the 253-bit AES key with the lowest 253 bits of the x-coordinate of the encoding point `aesKeyPoint`.
