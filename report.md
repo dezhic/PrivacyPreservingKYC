@@ -86,6 +86,17 @@ EdDSA Signing is performed in NodeJS using the _@iden3/js-crypto_ library, and v
 
 The EdDSA signature consists of two elements, `R` and `S`. `R` is a point on the curve, and `S` is a scalar. We encode `R` as two 254-bit integers in an array, and `S` as a 254-bit integer.
 
+In summary, the zkKYC token generation circuit takes the following inputs for signature verification:
+```circom
+signal input didI[248];  // encoded did_i
+signal input didHI[248]; // encoded did_hi
+signal input pubI[2];    // public key of Issuer
+signal input sigS;       // S element of the EdDSA signature
+signal input sigR[2];    // R element of the EdDSA signature
+```
+
+The circuit execution would fail if the signature is invalid.
+
 ### Message Representation in ElGamal Encryption
 Before we discuss the encryption and decryption process, we need to clarify the message representation in the ElGamal encryption.
 
@@ -108,13 +119,14 @@ Briefly speaking, we first encrypt the payload with AES using a random symmetric
 
 __AES Encryption__
 
-As mentioned in the previous section, plaintext messages in ElGamal encryption are represented by a point and an `xmXor` value. As the AES key will be later encrypted with ElGamal, it is input
-to the circuit as a point `aesKeyPoint`, and a _public_ input value `xmXor`.
-Therefore, the first step is to obtain the AES key by XORing the `xmXor` value with the x-coordinate of the point.
+As mentioned in the previous section, plaintext messages in ElGamal encryption are represented by a point and an `aesKeyXmXor` value. As the AES key will be later encrypted with ElGamal, it is input
+to the circuit as a point `aesKeyPoint`, and a _public_ input value `aesKeyXmXor`.
+Therefore, the first step is to obtain the AES key by XORing the `aesKeyXmXor` value with the lowest 253 bits of the x-coordinate of the point.
 
 The circuit inputs also include the initial vector `iv` for AES, which is a randomly generated array of 128 bits.
 
-After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext `encryptedPayload`.
+After obtaining the AES key, we encrypt the payload (`did_i`, `did_hi`, `did_hv`, `did_v`) with the key and `iv`, into a ciphertext.
+The `iv` is then appended to the ciphertext, and the resulting bit array is the `encryptedPayload`.
 
 To encrypt the payload, we use the AES-256-CTR cipher, and the implementation is adapted from _Electron-Labs/aes-circom_ [ref:https://github.com/Electron-Labs/aes-circom], where they implemented the AES-GCM-SIV.
 
@@ -124,13 +136,40 @@ We just use AES-256-CTR circuit in their repository, and we modified it to match
 __ElGamal Encryption__
 
 After AES encryption, we encrypt the AES key with ElGamal using the Government's public key. 
-With the AES key represented by `aesKeyPoint` and `xmXor`, we just apply the ElGamal encryption on the `aesKeyPoint`, and output the ElGamal ciphertext represented by two points `c1` and `c2`.
+With the AES key represented by `aesKeyPoint` and `aesKeyXmXor`, we just apply the ElGamal encryption on the `aesKeyPoint`, and output the ElGamal ciphertext represented by two points `c1` and `c2`.
 
-__Token Structure__
-[ 图 zkKYC Token Structure ]
+The random number required by ElGamal encryption is taken as an input signal `elGamalR`.
+
+In summary, after the encryption process, the circuit takes the following inputs:
+```
+signal input didI[n248Bits];  // encoded did_i
+signal input didHI[n248Bits]; // encoded did_hi
+signal input didHV[n248Bits]; // encoded did_hv
+signal input didV[n248Bits];  // encoded did_v
+signal input aesKeyPoint[2]; // the point in AES key representation
+signal input aesKeyXmXor; // the xmXor value in AES key representation
+signal input aesIV[128]; // the 128-bit AES initial vector
+signal input govPubKey[2];    // public key of Government
+signal input elGamalR; // the random number for ElGamal encryption
+```
+ and generates the following public information that Government can use to decrypt the zkKYC token:
+
+```javascript
+[
+    c1X, c1Y,  // circuit output
+    c2X, c2Y,  // circuit output
+    ...encryptedPayload, // circuit output
+    aesKeyXmXor  // circuit public input
+]
+```
 
 __Decryption Process__
 
+Using the above public information, the Government can decrypt the zkKYC token by the following steps:
+
+- Decrypt `[c1X, c1Y, c2X, c2Y]` with the Government's private key to obtain the AES key point `aesKeyPoint`.
+- XOR the lowest 253 bits of the x-coordinate of `aesKeyPoint` with `aesKeyXmXor` to obtain the AES key.
+- Decrypt `encryptedPayload` with the AES key to obtain the payload (`did_i`, `did_hi`, `did_hv`, `did_v`).
 
 ### Bit Lengths of Components — 248, 253, 254 or 256?
 You may have noticed that we use various bit lengths in the project implementation.
