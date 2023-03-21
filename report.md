@@ -1,16 +1,20 @@
 # The zkKYC Solution Concept
+[TODO]
 
 # System Overview
-
+[TODO]
 
 # Self-Sovereign Identity (SSI) Using Hyperledger Aries
+[TODO]
 
 # Zero Knowledge Proof (ZKP) with zk-SNARKs
 
 ## zk-SNARK Fundamentals
 ### What are zk-SNARKs?
+[TODO]
 ___TODO: FROM MID-TERM REPORT___
 ### Choosing a Proving System – Groth16 or PLONK?
+[TODO]
 
 ### Implementing zk-SNARKs in the Project
 In our project, we define zk-SNARK constraints in the form of a circuit using the _circom language_, and then generate the witness and proof using _SnarkJS_.
@@ -148,7 +152,7 @@ signal input didHV[n248Bits]; // encoded did_hv
 signal input didV[n248Bits];  // encoded did_v
 signal input aesKeyPoint[2]; // the point in AES key representation
 signal input aesKeyXmXor; // the xmXor value in AES key representation
-signal input aesIV[128]; // the 128-bit AES initial vector
+signal input aesIV[128];  // the 128-bit AES initial vector
 signal input govPubKey[2];    // public key of Government
 signal input elGamalR; // the random number for ElGamal encryption
 ```
