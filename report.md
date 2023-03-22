@@ -80,12 +80,12 @@ Here are the business requirements of the privacy-preserving KYC system specifie
 # Self-Sovereign Identity (SSI) Using Hyperledger Aries
 ## What is Self-Sovereign Identity?
 
-## Key Components in SSI
-### Decentralized Identifier (DID)
+### Key Components in SSI
+__Decentralized Identifier (DID)__
 
-### Verifier Credential
+__Verifier Credential (VC)__
 
-### Verifiable Data Registry
+__Verifiable Data Registry (VDR)__
 
 ## Hyperledger's SSI Framework
 
