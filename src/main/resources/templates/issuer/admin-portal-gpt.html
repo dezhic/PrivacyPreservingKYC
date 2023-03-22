@@ -106,3 +106,21 @@
         </div>
     </div>
 </body>
+<script>
+    const idFilterInput = document.getElementById("idFilter");
+    const tableRows = document.querySelectorAll("table tbody tr");
+
+    idFilterInput.addEventListener("keyup", () => {
+        const filterValue = idFilterInput.value.toLowerCase();
+        tableRows.forEach((row) => {
+            const idCell = row.querySelector("td:first-child");
+            const idText = idCell.textContent.toLowerCase();
+            if (idText.indexOf(filterValue) > -1) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+
