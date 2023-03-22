@@ -12,11 +12,11 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Issuer Site - Admin Portal</a>
+            <a class="navbar-brand mx-3" href="#">Issuer Site - Admin Portal</a>
         </div>
     </nav>
 
-    <div class="container my-4">
+    <div class="container my-4" style="max-width: 80%">
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -105,22 +105,20 @@
             </div>
         </div>
     </div>
-</body>
-<script>
-    const idFilterInput = document.getElementById("idFilter");
-    const tableRows = document.querySelectorAll("table tbody tr");
-
-    idFilterInput.addEventListener("keyup", () => {
-        const filterValue = idFilterInput.value.toLowerCase();
-        tableRows.forEach((row) => {
-            const idCell = row.querySelector("td:first-child");
-            const idText = idCell.textContent.toLowerCase();
-            if (idText.indexOf(filterValue) > -1) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+    <script>
+        const idFilterInput = document.getElementById("idFilter");
+        const tableRows = document.querySelectorAll("table tbody tr");
+        idFilterInput.addEventListener("keyup", () => {
+            const filterValue = idFilterInput.value.toLowerCase();
+            tableRows.forEach((row) => {
+                const idCell = row.querySelector("td:first-child");
+                const idText = idCell.textContent.toLowerCase();
+                if (idText.indexOf(filterValue) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
         });
-    });
-</script>
-
+    </script>
+</body>
