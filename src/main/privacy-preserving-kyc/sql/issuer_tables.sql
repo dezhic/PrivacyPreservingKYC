@@ -4,8 +4,8 @@ CREATE TABLE Customer (
     username TEXT UNIQUE NOT NULL,
     password TEXT,
     name TEXT,
-    address TEXT,
     passport_no TEXT,
-    balance INTEGER,
+    birth_date TEXT,
+    nationality TEXT,
     register_time INTEGER
 );

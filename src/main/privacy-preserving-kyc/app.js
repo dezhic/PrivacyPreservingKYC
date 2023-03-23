@@ -4,7 +4,8 @@ var path = require('path');
 var logger = require('morgan');
 const session = require('express-session');
 
-var issuerRoutes = require('./routes/issuer');
+const issuerRoutes = require('./routes/issuer');
+// const holderRoutes = require('./routes/holder');
 
 var app = express();
 
@@ -15,6 +16,11 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'o234nytoi2u3wcoirwnxoqiun3298y4',
+  resave: false,
+  saveUninitialized: true,
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/issuer', issuerRoutes);
