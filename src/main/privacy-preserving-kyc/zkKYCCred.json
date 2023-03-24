@@ -1,0 +1,34 @@
+{
+    "auto_remove": false,
+    "connection_id": connection.connection_id,
+    "filter": {
+        "ld_proof": {
+            "credential": {
+                "@context": [
+                    "https://www.w3.org/2018/credentials/v1",
+                    {
+                        "@context": {
+                            "ZkSnarkProof": "https://example.com/zk-snark",
+                            "public_json": "https://example.com/zk-snark-public",
+                            "proof_json": "https://example.com/zk-snark-proof"
+                        }
+                    }
+                ],
+                "type": [
+                    "VerifiableCredential",
+                    "ZkSnarkProof"
+                ],
+                "issuer": publicDid,
+                "issuanceDate": new Date().toISOString(),
+                "credentialSubject": {
+                    "id": "did:sov:" + connection.their_did,
+                    "public_json": publicJson,
+                    "proof_json": proofJson,
+                }
+            },
+            "options": {
+                "proofType": "Ed25519Signature2018"
+            }
+        }
+    }
+}

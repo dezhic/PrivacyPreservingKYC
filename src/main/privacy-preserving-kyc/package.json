@@ -13,7 +13,8 @@
     "express-session": "^1.17.3",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "zkkyc-js": "file:../zkkyc-js"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

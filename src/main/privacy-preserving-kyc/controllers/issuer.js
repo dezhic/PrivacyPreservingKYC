@@ -1,5 +1,6 @@
 const axios = require("axios");
 const issuerDao = require('../dao/issuer');
+const signDidRecord = require('../utils/sign-did-record');
 
 const httpClient = axios.create({
     baseURL: 'http://159.138.47.211:8021',
@@ -33,7 +34,7 @@ module.exports = {
             return res.json({ message: 'success' });
         } catch (err) {
             if (err.errno === 19) {
-                return res.json({error: "Duplicate username"});
+                return res.json({ error: "Duplicate username" });
             }
             console.log(err);
             res.json(err);
@@ -71,58 +72,107 @@ module.exports = {
     requestCredential: async (req, res) => {
         const connInfo = await issuerDao.getLastConnection(req.session.username);
         if (!connInfo) {
-            return res.json({error: "No connection"});
+            return res.json({ error: "No connection" });
         }
         const customer = await issuerDao.getCustomerByUsername(req.session.username);
         const connectionPromise = httpClient.get('/connections/' + connInfo.connection_id);
         const publicDidPromise = httpClient.get('/wallet/did/public');
         const connection = (await connectionPromise).data;
         if (connection.state !== 'active') {
-            return res.json({error: `Connection state is not active. Current state: ${connection.state}. Connection ID: ${connection.connection_id}`});
+            return res.json({ error: `Connection state is not active. Current state: ${connection.state}. Connection ID: ${connection.connection_id}` });
         }
         let publicDid;
         try {
             const publicDidResult = (await publicDidPromise).data.result;
             publicDid = `did:${publicDidResult.method}:${publicDidResult.did}`;
         } catch (err) {
-            return res.json({error: "Cannot get public DID"});
+            return res.json({ error: "Cannot get public DID" });
         }
-        
-        const sendRes = await httpClient.post('/issue-credential-2.0/send', {
-            "auto_remove": false,
-            "connection_id": connection.connection_id,
-            "filter": {
-                "ld_proof": {
-                    "credential": {
-                        "@context": [
-                            "https://www.w3.org/2018/credentials/v1",
-                            "https://json-ld.org/contexts/person.jsonld"
-                        ],
-                        "type": [
-                            "VerifiableCredential",
-                            "Person"
-                        ],
-                        "issuer": publicDid,
-                        "issuanceDate": new Date().toISOString(),
-                        "credentialSubject": {
-                            "id": "did:sov:" + connection.their_did,
-                            "born": customer.birth_date,
-                            "nationality": customer.nationality,
+
+        let cred;
+        if (req.body.type === 'eligibility') {
+            cred = {
+                "auto_remove": false,
+                "connection_id": connection.connection_id,
+                "filter": {
+                    "ld_proof": {
+                        "credential": {
+                            "@context": [
+                                "https://www.w3.org/2018/credentials/v1",
+                                "https://json-ld.org/contexts/person.jsonld"
+                            ],
+                            "type": [
+                                "VerifiableCredential",
+                                "Person"
+                            ],
+                            "issuer": publicDid,
+                            "issuanceDate": new Date().toISOString(),
+                            "credentialSubject": {
+                                "id": "did:sov:" + connection.their_did,
+                                "born": customer.birth_date,
+                                "nationality": customer.nationality,
+                            }
+                        },
+                        "options": {
+                            "proofType": "Ed25519Signature2018"
                         }
-                    },
-                    "options": {
-                        "proofType": "Ed25519Signature2018"
                     }
                 }
             }
-        });
+        } else if (req.body.type === 'kyc') {
+            let sigJson;
+            try {
+                let sig = await signDidRecord(publicDid, "did:sov:" + connection.their_did, "00000000000000000000000000000000");
+                sigJson = JSON.stringify(sig);
+            } catch (err) {
+                console.log(err);
+                return res.json({ error: "Failed to sign DIDs", detail: err });
+            }
+
+            cred = {
+                "auto_remove": false,
+                "connection_id": connection.connection_id,
+                "filter": {
+                    "ld_proof": {
+                        "credential": {
+                            "@context": [
+                                "https://www.w3.org/2018/credentials/v1",
+                                {
+                                    "@context": {
+                                        "DidSig": "https://example.com/didsig",
+                                        "sig_json": "https://example.com/didsig-json"
+                                    }
+                                }
+                            ],
+                            "type": [
+                                "VerifiableCredential",
+                                "DidSig"
+                            ],
+                            "issuer": publicDid,
+                            "issuanceDate": new Date().toISOString(),
+                            "credentialSubject": {
+                                "id": "did:sov:" + connection.their_did,
+                                "sig_json": sigJson,
+                            }
+                        },
+                        "options": {
+                            "proofType": "Ed25519Signature2018"
+                        }
+                    }
+                }
+            }
+        } else {
+            return res.json({ error: 'Credential type should be "eligibility" or "kyc"' });
+        }
+        console.log(JSON.stringify(cred));
+        const sendRes = await httpClient.post('/issue-credential-2.0/send', cred);
         res.json(sendRes.data);
     },
 
     getInvitationByConnectionId: async (req, res) => {
         const connInfo = await issuerDao.getConnectionByUsernameAndConnectionId(req.session.username, req.query.connection_id);
         if (!connInfo) {
-            return res.json({error: "Not found"});
+            return res.json({ error: "Not found" });
         }
         return res.json({ invitation_url: connInfo.invitation_url });
     },
@@ -130,7 +180,7 @@ module.exports = {
     getCredentials: async (req, res) => {
         const connection = await issuerDao.getLastConnection(req.session.username);
         if (!connection) {
-            return res.json({error: "No connection"});
+            return res.json({ error: "No connection" });
         }
         const result = await httpClient.get('/issue-credential-2.0/records', {
             params: {
