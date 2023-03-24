@@ -11,26 +11,77 @@ module.exports = {
     },
 
     login: async function (req, res) {
-        const customers = await issuerDao.getCustomerByUsername(req.query.username);
-        res.json(customers);
+        const customers = await issuerDao.getCustomerByUsername(req.body.username);
+        if (customers.password === req.body.password) {
+            req.session.username = req.body.username;
+            return res.json({ message: 'success' });
+        } else {
+            return res.json({ error: 'Incorrect username/password' });
+        }
     },
 
     signup: async function (req, res) {
-        await issuerDao.createCustomer(
-            req.body.username,
-            req.body.password,
-            req.body.name,
-            req.body.passport_no,
-            req.body.birth_date,
-            req.body.nationality,
-            Date.now());
-        res.json({ message: 'success' });
+        try {
+            await issuerDao.createCustomer(
+                req.body.username,
+                req.body.password,
+                req.body.name,
+                req.body.passport_no,
+                req.body.birth_date,
+                req.body.nationality,
+                Date.now());
+            return res.json({ message: 'success' });
+        } catch (err) {
+            if (err.errno === 19) {
+                return res.json({error: "Duplicate username"});
+            }
+            console.log(err);
+            res.json(err);
+        }
+    },
+
+    getCustomerInfo: async function (req, res) {
+        const customer = await issuerDao.getCustomerByUsername(req.session.username);
+        return res.json(customer);
+    },
+
+    createInvitation: async function (req, res) {
+        const customer = await issuerDao.getCustomerByUsername(req.session.username);
+        const result = await httpClient.post('/connections/create-invitation', {}, {
+            params: {
+                alias: customer?.username,
+                auto_accept: true,
+                public: true,
+            }
+        });
+        await issuerDao.createConnection(customer.username, result.data.connection_id, result.data.invitation_url, Date.now());
+        res.json(result.data);
+    },
+
+    getLastConnection: async function (req, res) {
+        const connInfo = await issuerDao.getLastConnection(req.session.username);
+        if (connInfo) {
+            const connectionRes = await httpClient.get('/connections/' + connInfo.connection_id);
+            return res.json(connectionRes.data);
+        } else {
+            return res.json(null);
+        }
     },
 
     requestCredential: async (req, res) => {
-        const result = await httpClient.post('/issue-credential-2.0/send', {
-            "auto_remove": true,
-            "connection_id": "25a693ec-276c-4f6f-ab13-d0aba533b4e1",
+        const customer = await issuerDao.getCustomerByUsername(req.session.username);
+        const connInfo = await issuerDao.getLastConnection(req.session.username);
+        if (!connInfo) {
+            return res.json({error: "No connection"});
+        }
+        const connectionRes = await httpClient.get('/connections/' + connInfo.connection_id);
+        const connection = connectionRes.data;
+        if (connection.state !== 'active') {
+            return res.json({error: `Connection state is not active. Current state: ${connection.state}. Connection ID: ${connection.connection_id}`});
+        }
+        const sendRes = await httpClient.post('/issue-credential-2.0/send', {
+            "auto_remove": false,
+            "connection_id": connection.connection_id,
             "filter": {
                 "ld_proof": {
                     "credential": {
@@ -45,9 +96,9 @@ module.exports = {
                         "issuer": "did:sov:Ne1Ld4DR19nxXpvHEFu4EW",
                         "issuanceDate": "2023-01-01T12:00:00Z",
                         "credentialSubject": {
-                            "id": "did:key:aksdkajshdkajhsdkjahsdkjahsdj",
-                            "born": "2000-12-20",
-                            "nationality": "CN"
+                            "id": "did:sov:" + connection.their_did,
+                            "born": customer.birth_date,
+                            "nationality": customer.nationality,
                         }
                     },
                     "options": {
@@ -56,6 +107,28 @@ module.exports = {
                 }
             }
         });
+        res.json(sendRes.data);
+    },
+
+    getInvitationByConnectionId: async (req, res) => {
+        const connInfo = await issuerDao.getConnectionByUsernameAndConnectionId(req.session.username, req.query.connection_id);
+        if (!connInfo) {
+            return res.json({error: "Not found"});
+        }
+        return res.json({ invitation_url: connInfo.invitation_url });
+    },
+
+    getCredentials: async (req, res) => {
+        const connection = await issuerDao.getLastConnection(req.session.username);
+        if (!connection) {
+            return res.json({error: "No connection"});
+        }
+        const result = await httpClient.get('/issue-credential-2.0/records', {
+            params: {
+                connection_id: connection.connection_id,
+            }
+        });
         res.json(result.data);
-    }
+    },
+
 }

@@ -9,4 +9,10 @@ CREATE TABLE Customer (
     register_time INTEGER
 );
 
-INSERT INTO Customer VALUES ('alice', 'alicepw', 'Alice', 'A12345678', '1990-01-01', 'China', 0);
+CREATE TABLE Connection (
+    username TEXT NOT NULL,
+    connection_id TEXT NOT NULL,
+    invitation_url TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    PRIMARY KEY (username, connection_id)
+);
