@@ -59,6 +59,7 @@ While Pauwels (2021) gives comprehensive business requirements and the solution 
 Therefore, the objective of this project is to study existing SSI technologies, design a zero-knowledge proving mechanism and finally provide an implementation of the zkKYC solution concept.
 
 # The zkKYC Solution Concept
+__*[TODO: zkKYC paper]*__
 
 ## Business Requirements
 Here are the business requirements of the privacy-preserving KYC system specified in the original zkKYC paper:
@@ -77,6 +78,8 @@ Here are the business requirements of the privacy-preserving KYC system specifie
 # System Overview
 [TODO]: An overview of the system; Briefly mention that we will use Aries to implement the SSI framework and zk-SNARKs to achieve the zkKYC token generation and verification.
 
+![System Overview](zkkyc-system.png)
+
 # Self-Sovereign Identity (SSI) Using Hyperledger Aries
 ## What is Self-Sovereign Identity?
 
@@ -87,12 +90,17 @@ __Verifier Credential (VC)__
 
 __Verifiable Data Registry (VDR)__
 
-## Hyperledger's SSI Framework
+## Hyperledger SSI
+### The Ecosystem
+![Hyperledger SSI Ecosystem](eco.png)
+__Hyperledger SSI Ecosystem - Aries, Indy and Ursa__
 
+### Hyperledger Aries
+![Hyperledger Aries](aca-py.png)
+__Hyperledger Aries Architecture__
 
 ## Implementing zkKYC with Hyperledger Aries
-___TODOOOOOOOOOOOOOOOOOOOOOO!!!!!!!___
-
+[TODO: procedure to issue / verify credentials]
 
 # Zero Knowledge Proof (ZKP) with zk-SNARKs
 Generating the _zkKYC token_ and the _validity proof_ is an unaddressed challenge in the zkKYC paper.
@@ -276,7 +284,9 @@ pass the $E_{zk}$ values to the verifier.
 
 ---
 
-[TODO: sequence diagram]
+Here's a sequence diagram of showing the protocol we discussed above:
+
+![Sequence Diagram](zksnark.png)
 
 Until now, we have achieved sound and complete zero-knowledge proving.
 Full zkSNARK also involves another two
