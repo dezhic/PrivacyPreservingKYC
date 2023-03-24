@@ -5,7 +5,7 @@ var logger = require('morgan');
 const session = require('express-session');
 
 const issuerRoutes = require('./routes/issuer');
-// const holderRoutes = require('./routes/holder');
+const holderRoutes = require('./routes/holder');
 
 var app = express();
 
@@ -24,6 +24,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/issuer', issuerRoutes);
+app.use('/holder', holderRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

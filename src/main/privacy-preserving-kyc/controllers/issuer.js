@@ -69,16 +69,25 @@ module.exports = {
     },
 
     requestCredential: async (req, res) => {
-        const customer = await issuerDao.getCustomerByUsername(req.session.username);
         const connInfo = await issuerDao.getLastConnection(req.session.username);
         if (!connInfo) {
             return res.json({error: "No connection"});
         }
-        const connectionRes = await httpClient.get('/connections/' + connInfo.connection_id);
-        const connection = connectionRes.data;
+        const customer = await issuerDao.getCustomerByUsername(req.session.username);
+        const connectionPromise = httpClient.get('/connections/' + connInfo.connection_id);
+        const publicDidPromise = httpClient.get('/wallet/did/public');
+        const connection = (await connectionPromise).data;
         if (connection.state !== 'active') {
             return res.json({error: `Connection state is not active. Current state: ${connection.state}. Connection ID: ${connection.connection_id}`});
         }
+        let publicDid;
+        try {
+            const publicDidResult = (await publicDidPromise).data.result;
+            publicDid = `did:${publicDidResult.method}:${publicDidResult.did}`;
+        } catch (err) {
+            return res.json({error: "Cannot get public DID"});
+        }
+        
         const sendRes = await httpClient.post('/issue-credential-2.0/send', {
             "auto_remove": false,
             "connection_id": connection.connection_id,
@@ -93,8 +102,8 @@ module.exports = {
                             "VerifiableCredential",
                             "Person"
                         ],
-                        "issuer": "did:sov:Ne1Ld4DR19nxXpvHEFu4EW",
-                        "issuanceDate": "2023-01-01T12:00:00Z",
+                        "issuer": publicDid,
+                        "issuanceDate": new Date().toISOString(),
                         "credentialSubject": {
                             "id": "did:sov:" + connection.their_did,
                             "born": customer.birth_date,
