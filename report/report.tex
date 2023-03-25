@@ -8,6 +8,7 @@
 \geometry{a4paper, margin=2.5cm}
 \usepackage{minted}
 \usepackage{amsmath,amssymb}
+\usepackage{svg}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -148,12 +149,9 @@ Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge
 proofs with zk-SNARKs via the Circom and SnarkJS libraries.
 \end{abstract}
 
-\hypertarget{introduction}{%
 \chapter{Introduction}
-\label{introduction}}
 
-\hypertarget{background}{%
-\section{Background}\label{background}}
+\section{Background}
 
 Know-Your-Customer (KYC) process is a critical step in some businesses
 to combat crimes such as money laundering and terrorist financing.
@@ -179,8 +177,7 @@ for zkKYC tokens is a valuable challenge to tackle. So, we decided to
 take on the task of solving the challenge and implementing our
 privacy-preserving KYC system based on the zkKYC solution concept.
 
-\hypertarget{project-overview}{%
-\section{Project Overview}\label{project-overview}}
+\section{Project Overview}
 
 This project consists of two major parts: Self-Sovereign
 Identity (SSI) and Zero Knowledge Proof (ZKP).
@@ -212,8 +209,7 @@ will also review the business requirements specified in the solution
 concept to discuss how they have been addressed in our implementation.
 Finally, we will discuss the future work, or potentials of this project.
 
-\hypertarget{problems-and-objective}{%
-\chapter{Problems and Objective}\label{problems-and-objective}}
+\chapter{Problems and Objective}
 
 Generally speaking, we have the following problems in the current
 traditional KYC process: - Traditional businesses collect much
@@ -258,16 +254,13 @@ objective of this project is to study existing SSI technologies, design
 a zero-knowledge proving mechanism and finally provide an implementation
 of the zkKYC solution concept.
 
-\hypertarget{solution-overview}{%
-\chapter{Solution Overview}\label{solution-overview}}
+\chapter{Solution Overview}
 
-\hypertarget{the-zkkyc-solution-concept}{%
-\section{The zkKYC Solution Concept}\label{the-zkkyc-solution-concept}}
+\section{The zkKYC Solution Concept}
 
 \textbf{\emph{{[}TODO: zkKYC paper{]}}}
 
-\hypertarget{business-requirements}{%
-\subsection{Business Requirements}\label{business-requirements}}
+\subsection{Business Requirements}
 
 Here are the business requirements of the privacy-preserving KYC system
 specified in the original zkKYC paper:
@@ -312,8 +305,7 @@ reported issue. \\
 \end{longtable}
 \end{myquote}
 
-\hypertarget{system-architecture}{%
-\section{System Architecture}\label{system-architecture}}
+\section{System Architecture}
 
 {[}TODO{]}: An overview of the system; Briefly mention that we
 will use Aries to implement the SSI framework and zk-SNARKs to achieve
@@ -325,60 +317,121 @@ the zkKYC token generation and verification.
 \caption{System Overview}
 \end{figure}
 
-\hypertarget{self-sovereign-identity-ssi-using-hyperledger-aries}{%
-\chapter{Self-Sovereign Identity (SSI) Using Hyperledger
-Aries}\label{self-sovereign-identity-ssi-using-hyperledger-aries}}
+\chapter{Self-Sovereign Identity (SSI) Using Hyperledger Aries}
 
-\hypertarget{what-is-self-sovereign-identity}{%
-\section{What is Self-Sovereign
-Identity?}\label{what-is-self-sovereign-identity}}
+\section{Introduction to SSI}
+\subsection{What is Self-Sovereign Identity?}
+Self-sovereign identity (SSI) is a term to describe a new approach to
+identity administration that allows individuals to control the use of
+their personal information. SSI systems are decentralized, meaning that
+they do not rely on a central authority to manage identity information.
 
-\hypertarget{key-components-in-ssi}{%
-\subsubsection{Key Components in SSI}\label{key-components-in-ssi}}
+In traditional identity systems, the identity provider (e.g.~government,
+corporation) is responsible for managing the identity information of
+individuals. The identity provider is also responsible for verifying
+the identity of individuals. In contrast, SSI systems allow individuals
+to manage their own identity information and verify their identity
+themselves. This is achieved by using cryptographic keys to sign
+information and verify the authenticity of the information.
 
-\textbf{Decentralized Identifier (DID)}
+Besides authentication, SSI systems also allow individuals to prove their
+eligibility for certain services. For example, an individual can prove
+that they are over 18 years old to open an investment account, by
+presenting a \emph{verifiable credential (VC)} issued by a trusted
+authority and stored in his or her digital wallet. The verifier can
+then be assured about the eligibility of the individual without reaching
+out to the original issuer, or knowing any unnecessary information.
 
-\textbf{Verifier Credential (VC)}
+In this system, the credential issuer decides which attributes to include in
+the credential, the holder decides which attributes to disclose to the verifier,
+and the verifier decides whether to accept the credential based on the disclosed
+information and the credibility of the issuer. The possibility of selective
+disclosure of information helps address the \emph{Bundling Problem} as we
+discussed in the previous chapter.
 
-\textbf{Verifiable Data Registry (VDR)}
+\subsection{Key Components in SSI}
+Technically, SSI systems are built on top of a set of standards. [ref: w3c-did, w3c-vc]. 
+In this sub section, we will discuss the three key components, namely
+\emph{Decentralized Identifier (DID)}, \emph{Verifiable Credential (VC)} and
+\emph{Verifiable Data Registry (VDR)}.
+\subsubsection{Decentralized Identifier (DID)}
+The decentralized identifier (DID) is a globally unique identifier the subject.
+The subject can be individuals and organizations. The word ``decentralized'' 
+also describes the practice that the DID is not managed by a central authority,
+but generated by the subject itself.
 
-\hypertarget{hyperledger-ssi}{%
-\section{Hyperledger SSI}\label{hyperledger-ssi}}
+A DID is a string of characters that consist of three parts: the DID scheme,
+the DID method and the method-specific identifier, as illustrated in the
+following example:
+\begin{figure}[h]
+  \includesvg[width=5cm]{parts-of-a-did.svg}
+  \centering
+\end{figure}
+All DIDs start with the string \texttt{did:}. The DID method suggests how the
+DID can be resolved to a \emph{DID Document}, such as \texttt{did:ethr} using
+the Ethereum blockchain, or \texttt{did:sov} using the Sovrin network.
+Each DID method has its own rules for generating and resolving the 
+method-specific identifier.
 
-\hypertarget{the-ecosystem}{%
-\subsubsection{The Ecosystem}\label{the-ecosystem}}
+Resolved DID documents are JSON objects that contain the public keys and service
+endpoints of the subject. The DID document can be used to verify the authenticity
+of the DID and related signatures using the public keys, or to communicate with
+the subject using the service endpoints.
+\subsubsection{Verifier Credential (VC)}
+The Verifiable Credential (VC) is a JSON object that contains a set of attributes
+that are relevant to the subject. It is issued by the issuer and stored in the
+holder's wallet. The holder can then present the VC to the verifier to prove
+their eligibility for certain services. Depending on the DID method, it may be
+possible for the issuer to revoke issued VCs.
+
+The credentials are verifiable in the way that the verifier can verify the
+validity of the signatures via the public keys in the issuer's DID document,
+which is recorded in the \emph{Verifiable Data Registry}.
+
+The signing scheme used in the VC is designed to support selective disclosure,
+for example, the CL signature for JSON-LD credentials. Some schemes also 
+support predicate proofs, which allow the holder to prove that a certain
+attribute is within a certain range, such as age. For example, the BBS+ 
+signature.
+
+Finally, with a verifiable credential, the holder can select a subset of its
+attributes and generate a VC presentation for the verifier.
+
+\subsubsection{Verifiable Data Registry (VDR)}
+A verifiable data registry is where the DID documents, VC schemas and the
+revocation list are stored. Ideally, the VDR is a decentralized system that
+is not controlled by a single entity. The VDR can be a blockchain, such as
+Ethereum, or a distributed ledger, such as Sovrin, which is an instance of
+Hyperledger Indy. In our project, we use Sovrin as the VDR.
+
+\section{Hyperledger SSI Frameworks}
+
+\subsubsection{The Ecosystem}
 
 \includegraphics{eco.png} \textbf{Hyperledger SSI Ecosystem - Aries,
 Indy and Ursa}
 
-\hypertarget{hyperledger-aries}{%
-\subsubsection{Hyperledger Aries}\label{hyperledger-aries}}
+\subsubsection{Hyperledger Aries}
 
 \includegraphics{aca-py.png} \textbf{Hyperledger Aries Architecture}
 
-\hypertarget{implementing-zkkyc-with-hyperledger-aries}{%
-\section{Implementing zkKYC with Hyperledger
-Aries}\label{implementing-zkkyc-with-hyperledger-aries}}
+\section{Implementing zkKYC with Hyperledger Aries}
 
 {[}TODO: procedure to issue / verify credentials{]}
 
-\hypertarget{zero-knowledge-proof-zkp-with-zk-snarks}{%
-\chapter{Zero Knowledge Proof (ZKP) with
-zk-SNARKs}\label{zero-knowledge-proof-zkp-with-zk-snarks}}
+\chapter{Zero Knowledge Proof (ZKP) with zk-SNARKs}
 
 Generating the \emph{zkKYC token} and the \emph{validity proof} is an
 unaddressed challenge in the zkKYC paper. In this section, we will
 discuss our approach to solving this problem using zero knowledge proof
 with \emph{zk-SNARKs}.
 
-\hypertarget{zk-snark-fundamentals}{%
-\section{zk-SNARK Fundamentals}\label{zk-snark-fundamentals}}
+\section{zk-SNARK Fundamentals}
 
 In this section, we will introduce the fundamentals of zk-SNARKs, and
 how we can implement zk-SNARKs in our project.
 
-\hypertarget{what-are-zk-snarks}{%
-\subsubsection{What are zk-SNARKs?}\label{what-are-zk-snarks}}
+\subsubsection{What are zk-SNARKs?}
 
 \emph{zk-SNARKs} stands for \emph{Zero Knowledge Succinct
 Non-interactive ARgument of Knowledge}. It is a type of zero knowledge
@@ -605,9 +658,7 @@ Full zkSNARK also involves another two properties: succinctness
 and non-interactivity, but we will not cover those details in this
 report to avoid further distraction from our main topic.
 
-\hypertarget{choosing-a-proving-system}{%
-\subsubsection{Choosing a Proving
-System}\label{choosing-a-proving-system}}
+\subsubsection{Choosing a Proving System}
 
 Groth16 and PLONK are two popular zk-SNARK proving systems.
 
@@ -648,9 +699,7 @@ use to generate the witness and proof. So, either of the two proving
 systems may be used in the project. However, due to the prohibitive cost
 of PLONK, we will just choose Groth16 in our implementation.
 
-\hypertarget{implementing-zk-snarks-in-the-project}{%
-\subsubsection{Implementing zk-SNARKs in the
-Project}\label{implementing-zk-snarks-in-the-project}}
+\subsubsection{Implementing zk-SNARKs in the Project}
 
 To implement zk-SNARKs, we can define zk-SNARK constraints in the form
 of a circuit using the \emph{circom language}, and then generate the
@@ -708,8 +757,7 @@ Here are the general steps of the process:
   key.
 \end{enumerate}
 
-\hypertarget{zkp-workflow-for-zkkyc}{%
-\section{ZKP Workflow for zkKYC}\label{zkp-workflow-for-zkkyc}}
+\section{ZKP Workflow for zkKYC}
 
 In this section, we will illustrate the zero knowledge proof workflow
 using the following scenario:
@@ -819,8 +867,7 @@ Finally, Issuer can retrieve the Holder's real identity,
 \texttt{\{\ real\_name:\ "Evil\ Holder",\ passport\_no:\ "A12345678"\ \}},
 for the Government to take further actions.
 
-\hypertarget{implementation-details}{%
-\section{Implementation Details}\label{implementation-details}}
+\section{Implementation Details}
 
 Now, we are clear about the workflow of the zkKYC process. In this
 section, we will discuss the implementation details of the workflow.
@@ -831,9 +878,8 @@ an array of 248-bit (31-byte) signals. So, DIDs length limits will be
 multiples of 31 bytes, and the \emph{multiple} is specified by the
 circuit construction parameter \texttt{n248Bits}.
 
-\hypertarget{signing-and-verification-with-eddsa}{%
 \subsubsection{Signing and Verification with
-EdDSA}\label{signing-and-verification-with-eddsa}}
+EdDSA}
 
 The signing and verification of the tuple \texttt{(did\_i,\ did\_hi)} is
 done using EdDSA over the Baby Jubjub curve.
@@ -874,9 +920,7 @@ inputs for signature verification:
 
 The circuit execution would fail if the signature is invalid.
 
-\hypertarget{message-representation-in-elgamal-encryption}{%
-\subsubsection{Message Representation in ElGamal
-Encryption}\label{message-representation-in-elgamal-encryption}}
+\subsubsection{Message Representation in ElGamal Encryption}
 
 Before we discuss the encryption and decryption process, we need to
 clarify the message representation in the ElGamal encryption.
@@ -908,9 +952,7 @@ acts as the plaintext in the succeeding ElGamal encryption, can be
 its x-coordinate is lower-bounded by the message. This advantage
 increases the security level of the entire encryption process.
 
-\hypertarget{token-encryption-and-decryption-with-elgamal-and-aes}{%
-\subsubsection{Token Encryption and Decryption with ElGamal and
-AES}\label{token-encryption-and-decryption-with-elgamal-and-aes}}
+\subsubsection{Token Encryption and Decryption with ElGamal and AES}
 
 This subsection describes how we achieve the public key encryption and
 decryption of the zkKYC token.
@@ -1009,9 +1051,7 @@ token by the following steps:
   \texttt{did\_v}).
 \end{itemize}
 
-\hypertarget{bit-lengths-of-components-248-253-254-or-256}{%
-\subsubsection{Bit Lengths of Components --- 248, 253, 254 or
-256?}\label{bit-lengths-of-components-248-253-254-or-256}}
+\subsubsection{Bit Lengths of Components --- 248, 253, 254 or 256?}
 
 You may have noticed that we use various bit lengths in the project
 implementation. Those values are carefully chosen to maximize the
@@ -1071,9 +1111,7 @@ integer size, we pad input units (integers representing DIDs) to 256
 bits with trailing zeros. The 253-bit AES key is also padded to 256 bits
 with trailing zeros before inputting into the AES circuit.
 
-\hypertarget{interfaces-and-packaging}{%
-\subsubsection{Interfaces and
-Packaging}\label{interfaces-and-packaging}}
+\subsubsection{Interfaces and Packaging}
 
 The ZKP part of this project is relatively independent of the SSI part.
 So, we group the ZKP actions by roles and define the interfaces as
@@ -1122,8 +1160,7 @@ integration with SSI controllers written in other languages. You can
 start the GRPC server by running \texttt{npm\ run\ grpc} in the
 \textbf{zkkyc-js} directory.
 
-\hypertarget{project-review}{%
-\chapter{Project Review}\label{project-review}}
+\chapter{Project Review}
 \section{Business Requirements Review}
 \section{Security Review}
 
@@ -1137,8 +1174,7 @@ ZKP circuit.
 
 {[}TODO: check with the original zkKYC paper{]}
 
-\hypertarget{future-work}{%
-\chapter{Future Work}\label{future-work}}
+\chapter{Future Work}
 
 \textbf{Optimize Implementation} ~ For simplicity, we did not consider
 the performance and efficiency of the implementation in this project. We
@@ -1187,8 +1223,7 @@ contract, and require users to submit a valid zkKYC proof before they
 can use the protocol. This will enable DeFi protocols to provide a more
 trustful and still privacy-preserving service to authenticated users.
 
-\hypertarget{conclusion}{%
-\chapter{Conclusion}\label{conclusion}}
+\chapter{Conclusion}
 
 In this project, we have implemented a zkKYC solution concept based on
 the zkKYC paper
@@ -1197,31 +1232,22 @@ zkSNARKs technology. We have also integrated the zkKYC solution into the
 SSI controller written in NodeJS, and demonstrated the zkKYC process in
 a simple use case. .. contribution \ldots{}
 
-\hypertarget{appendix}{%
-\chapter{Appendix}\label{appendix}}
+\chapter{Appendix}
 
-\hypertarget{project-setup}{%
-\section{Project Setup}\label{project-setup}}
+\section{Project Setup}
 
-\hypertarget{project-code-navigation}{%
-\section{Project Code Navigation}\label{project-code-navigation}}
+\section{Project Code Navigation}
 
-\hypertarget{circom-snarkjs}{%
-\subsection{Circom \& SnarkJS}\label{circom-snarkjs}}
+\subsection{Circom \& SnarkJS}
 
-\hypertarget{circuits}{%
-\paragraph{Circuits}\label{circuits}}
+\paragraph{Circuits}
 
-\hypertarget{services}{%
-\paragraph{Services}\label{services}}
+\paragraph{Services}
 
-\hypertarget{api}{%
-\paragraph{API}\label{api}}
+\paragraph{API}
 
-\hypertarget{scripts}{%
-\paragraph{Scripts}\label{scripts}}
+\paragraph{Scripts}
 
-\hypertarget{hyperledger-aries-1}{%
-\subsection{Hyperledger Aries}\label{hyperledger-aries-1}}
+\subsection{Hyperledger Aries}
 
 \end{document}
