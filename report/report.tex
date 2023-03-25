@@ -3,7 +3,10 @@
 \PassOptionsToPackage{hyphens}{url}
 %
 \documentclass[
-]{article}
+]{report}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{minted}
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
 \ifPDFTeX
@@ -109,14 +112,30 @@
 \urlstyle{same}
 \hypersetup{
   hidelinks,
-  pdfcreator={LaTeX via pandoc}}
+  pdfcreator={LaTeX via pandoc}
+}
 
-\author{}
-\date{}
+\usepackage[most]{tcolorbox}
+\newtcolorbox{myquote}[1][]{%
+  colback=black!5,
+  colframe=black!5,
+  notitle,
+  sharp corners,
+  borderline west={2pt}{0pt}{black!80!black},
+  enhanced,
+  breakable,
+}
+
+\title{Privacy-Preserving KYC}
+\author{Dezhi Chen}
+\date{\today}
 
 \begin{document}
+\maketitle
+\tableofcontents
 
-Privacy-Preserving KYC \# Abstract Know-Your-Customer (KYC) process is a
+\begin{abstract}
+Know-Your-Customer (KYC) process is a
 critical step in some businesses to combat crime. Several problems exist
 in the traditional KYC process and they may threaten users' privacy. A
 solution concept named \emph{zkKYC} is proposed to address these
@@ -127,12 +146,14 @@ verification mechanism, and provide an implementation a
 privacy-preserving KYC system based on the zkKYC solution concept, using
 Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge
 proofs with zk-SNARKs via the Circom and SnarkJS libraries.
+\end{abstract}
 
 \hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\chapter{Introduction}
+\label{introduction}}
 
 \hypertarget{background}{%
-\subsection{Background}\label{background}}
+\section{Background}\label{background}}
 
 Know-Your-Customer (KYC) process is a critical step in some businesses
 to combat crimes such as money laundering and terrorist financing.
@@ -159,7 +180,7 @@ take on the task of solving the challenge and implementing our
 privacy-preserving KYC system based on the zkKYC solution concept.
 
 \hypertarget{project-overview}{%
-\subsection{Project Overview}\label{project-overview}}
+\section{Project Overview}\label{project-overview}}
 
 This project consists of two major parts: Self-Sovereign
 Identity (SSI) and Zero Knowledge Proof (ZKP).
@@ -192,7 +213,7 @@ concept to discuss how they have been addressed in our implementation.
 Finally, we will discuss the future work, or potentials of this project.
 
 \hypertarget{problems-and-objective}{%
-\section{Problems and Objective}\label{problems-and-objective}}
+\chapter{Problems and Objective}\label{problems-and-objective}}
 
 Generally speaking, we have the following problems in the current
 traditional KYC process: - Traditional businesses collect much
@@ -204,17 +225,17 @@ According to Pauwels (2021), the traditional KYC process has the
 following problems that threaten the security of users' personal
 information:
 
-\begin{quote}
-\_\_Copy Problem:\_\_ When users have to share personal
+\begin{myquote}
+\textbf{Copy Problem:} When users have to share personal
 information with each regulated entity that they engage with, it is
 impossible for them to control what these businesses subsequently do
 with that information. It can be copied, sold, misused, or may indeed be
 part of a hack or data breach anytime in the future.\\
-\_\_Bundling Problem:\_\_ While AML/CTF regulations usually
+\textbf{Bundling Problem:} While AML/CTF regulations usually
 require only specific data attributes (e.g.~name, address, date of
 birth) of a customer to be verified for KYC purposes, often much more
 personal data is collected and stored by the regulated entity.\\
-\_\_Recursive Oversight Problem:\_\_ When users have to share
+\textbf{Recursive Oversight Problem:} When users have to share
 personal information with a regulated entity, what governance
 protections do they have for their information? If data protection
 regulation does exist in a particular jurisdiction (e.g.~GDPR), how is
@@ -223,7 +244,7 @@ violating data governance obligations? If a regulated entity shares
 customer identity data with a regulator or other government agency, what
 privacy protection obligations are they subject to and who holds them to
 account?
-\end{quote}
+\end{myquote}
 
 To address these problems, Pauwels (2021) proposed a solution concept
 named \textbf{\emph{zkKYC}}, which leverages Self-Sovereign Identity
@@ -237,6 +258,9 @@ objective of this project is to study existing SSI technologies, design
 a zero-knowledge proving mechanism and finally provide an implementation
 of the zkKYC solution concept.
 
+\hypertarget{solution-overview}{%
+\chapter{Solution Overview}\label{solution-overview}}
+
 \hypertarget{the-zkkyc-solution-concept}{%
 \section{The zkKYC Solution Concept}\label{the-zkkyc-solution-concept}}
 
@@ -248,7 +272,7 @@ of the zkKYC solution concept.
 Here are the business requirements of the privacy-preserving KYC system
 specified in the original zkKYC paper:
 
-\begin{quote}
+\begin{myquote}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.1667}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.8333}}@{}}
@@ -286,10 +310,10 @@ BR08 & A Business SHOULD NOT hold personal identifiable information on a
 User, unless it is provided to them by Government in context of a
 reported issue. \\
 \end{longtable}
-\end{quote}
+\end{myquote}
 
-\hypertarget{system-overview}{%
-\section{System Overview}\label{system-overview}}
+\hypertarget{system-architecture}{%
+\section{System Architecture}\label{system-architecture}}
 
 {[}TODO{]}: An overview of the system; Briefly mention that we
 will use Aries to implement the SSI framework and zk-SNARKs to achieve
@@ -302,11 +326,11 @@ the zkKYC token generation and verification.
 \end{figure}
 
 \hypertarget{self-sovereign-identity-ssi-using-hyperledger-aries}{%
-\section{Self-Sovereign Identity (SSI) Using Hyperledger
+\chapter{Self-Sovereign Identity (SSI) Using Hyperledger
 Aries}\label{self-sovereign-identity-ssi-using-hyperledger-aries}}
 
 \hypertarget{what-is-self-sovereign-identity}{%
-\subsection{What is Self-Sovereign
+\section{What is Self-Sovereign
 Identity?}\label{what-is-self-sovereign-identity}}
 
 \hypertarget{key-components-in-ssi}{%
@@ -319,7 +343,7 @@ Identity?}\label{what-is-self-sovereign-identity}}
 \textbf{Verifiable Data Registry (VDR)}
 
 \hypertarget{hyperledger-ssi}{%
-\subsection{Hyperledger SSI}\label{hyperledger-ssi}}
+\section{Hyperledger SSI}\label{hyperledger-ssi}}
 
 \hypertarget{the-ecosystem}{%
 \subsubsection{The Ecosystem}\label{the-ecosystem}}
@@ -333,13 +357,13 @@ Indy and Ursa}
 \includegraphics{aca-py.png} \textbf{Hyperledger Aries Architecture}
 
 \hypertarget{implementing-zkkyc-with-hyperledger-aries}{%
-\subsection{Implementing zkKYC with Hyperledger
+\section{Implementing zkKYC with Hyperledger
 Aries}\label{implementing-zkkyc-with-hyperledger-aries}}
 
 {[}TODO: procedure to issue / verify credentials{]}
 
 \hypertarget{zero-knowledge-proof-zkp-with-zk-snarks}{%
-\section{Zero Knowledge Proof (ZKP) with
+\chapter{Zero Knowledge Proof (ZKP) with
 zk-SNARKs}\label{zero-knowledge-proof-zkp-with-zk-snarks}}
 
 Generating the \emph{zkKYC token} and the \emph{validity proof} is an
@@ -348,7 +372,7 @@ discuss our approach to solving this problem using zero knowledge proof
 with \emph{zk-SNARKs}.
 
 \hypertarget{zk-snark-fundamentals}{%
-\subsection{zk-SNARK Fundamentals}\label{zk-snark-fundamentals}}
+\section{zk-SNARK Fundamentals}\label{zk-snark-fundamentals}}
 
 In this section, we will introduce the fundamentals of zk-SNARKs, and
 how we can implement zk-SNARKs in our project.
@@ -685,7 +709,7 @@ Here are the general steps of the process:
 \end{enumerate}
 
 \hypertarget{zkp-workflow-for-zkkyc}{%
-\subsection{ZKP Workflow for zkKYC}\label{zkp-workflow-for-zkkyc}}
+\section{ZKP Workflow for zkKYC}\label{zkp-workflow-for-zkkyc}}
 
 In this section, we will illustrate the zero knowledge proof workflow
 using the following scenario:
@@ -796,7 +820,7 @@ Finally, Issuer can retrieve the Holder's real identity,
 for the Government to take further actions.
 
 \hypertarget{implementation-details}{%
-\subsection{Implementation Details}\label{implementation-details}}
+\section{Implementation Details}\label{implementation-details}}
 
 Now, we are clear about the workflow of the zkKYC process. In this
 section, we will discuss the implementation details of the workflow.
@@ -942,31 +966,29 @@ signal \texttt{elGamalR}.
 In summary, after the encryption process, the circuit takes the
 following inputs:
 
-\begin{verbatim}
+\begin{minted}{c}
 signal input didI[n248Bits];  // encoded did_i
 signal input didHI[n248Bits]; // encoded did_hi
 signal input didHV[n248Bits]; // encoded did_hv
 signal input didV[n248Bits];  // encoded did_v
-signal input aesKeyPoint[2]; // the point in AES key representation
-signal input aesKeyXmXor; // the xmXor value in AES key representation
-signal input aesIV[128];  // the 128-bit AES initial vector
+signal input aesKeyPoint[2];  // the point in AES key representation
+signal input aesKeyXmXor;     // the xmXor value in AES key representation
+signal input aesIV[128];      // the 128-bit AES initial vector
 signal input govPubKey[2];    // public key of Government
-signal input elGamalR; // the random number for ElGamal encryption
-\end{verbatim}
+signal input elGamalR;        // the random number for ElGamal encryption
+\end{minted}
 
 and generates the following public information that Government can use
 to decrypt the zkKYC token:
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{[}
-\NormalTok{    c1X}\OperatorTok{,}\NormalTok{ c1Y}\OperatorTok{,}  \CommentTok{// circuit output}
-\NormalTok{    c2X}\OperatorTok{,}\NormalTok{ c2Y}\OperatorTok{,}  \CommentTok{// circuit output}
-    \OperatorTok{...}\NormalTok{encryptedPayload}\OperatorTok{,} \CommentTok{// circuit output}
-\NormalTok{    aesKeyXmXor  }\CommentTok{// circuit public input}
-\NormalTok{]}
-\end{Highlighting}
-\end{Shaded}
+\begin{minted}{js}
+[
+  c1X, c1Y,             // circuit output
+  c2X, c2Y,             // circuit output
+  ...encryptedPayload,  // circuit output
+  aesKeyXmXor           // circuit public input
+]
+\end{minted}
 
 \textbf{Decryption Process}
 
@@ -1057,40 +1079,36 @@ The ZKP part of this project is relatively independent of the SSI part.
 So, we group the ZKP actions by roles and define the interfaces as
 follows:
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 0\tabcolsep) * \real{0.0556}}@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\textbf{Issuer} \\
-\texttt{generateKeyPair(privKey?:\ string)\ =\textgreater{}\ \{\ priv:\ string,\ pub:\ {[}string,\ string{]}\ \}}
-~ Generate a key pair for the issuer. If \texttt{privKey} is provided,
+\textit{\textbf{Issuer}}
+\mint[breaklines]{ts}|generateKeyPair(privKey?: string) => { priv: string, pub: string[] }|
+Generate a key pair for the issuer. If \texttt{privKey} is provided,
 the key pair will be derived from the private key. Otherwise, a random
-private key will be generated. \\
-\texttt{signDidRecord(didI:\ string,\ didHI:\ string,\ privKey:\ string)\ =\textgreater{}\ \{\ s:\ string,\ r:\ string{[}{]}\ \}}
-~ Sign the DID record with the private key. \\
-\textbf{Holder} \\
-\texttt{generateZkKycProof(didI:\ string,\ didHI:\ string,\ didHV:\ string,\ didV:\ string,\ sigS:\ string,\ sigR:\ string{[}{]},\ issuerPubKey:\ string{[}{]},\ govPubKey:\ string{[}{]})\ =\textgreater{}\ \{\ proofJson:\ string,\ publicJson:\ string\ \}}
-~ Generate the zkKYC proof and public information, including the
-encrypted contents and public keys. \\
-\textbf{Verifier} \\
-\texttt{parsePublic(publicJson:\ string)\ =\textgreater{}\ \{\ aesKeyPointCipher:\ \{\ c1:\ string{[}{]},\ c2:\ string{[}{]}\ \},\ encryptedPayload:\ string,\ didHV:\ string,\ didV:\ string,\ issuerPubKey:\ string{[}{]},\ govPubKey:\ string{[}{]},\ aesKeyXmXor:\ string\ \}}
-~ Parse the public information generated by the Holder into an object.
+private key will be generated.
+\mint[breaklines]{ts}|signDidRecord(didI: string, didHI: string, privKey: string) => { s: string, r: string[] }|
+Sign the DID record with the private key.
+
+\textit{\textbf{Holder}}
+\mint[breaklines]{ts}|generateZkKycProof(didI: string, didHI: string, didHV: string, didV: string, sigS: string, sigR: string[], issuerPubKey: string{[}{]}, govPubKey: string{[}{]}) => { proofJson: string, publicJson: string }|
+Generate the zkKYC proof and public information, including the
+encrypted contents and public keys.
+
+\textit{\textbf{Verifier}}
+\mint[breaklines]{ts}|parsePublic(publicJson: string) => { aesKeyPointCipher: { c1: string[], c2: string[] }, encryptedPayload: string, didHV: string, didV: string, issuerPubKey: string[], govPubKey: string[], aesKeyXmXor: string }|
+Parse the public information generated by the Holder into an object.
 The parsed object can be easily read by the Verifier and passed to the
-government for decryption. \\
-\texttt{verifyZkKycProof(proofJson:\ string,\ publicJson:\ string)\ =\textgreater{}\ boolean}
-~ Verify the zkKYC proof and public information to check if the
-information is valid. \\
-\textbf{Government} \\
-\texttt{decryptToken(parsedPublic:\ string,\ privKey:\ string)\ =\textgreater{}\ \{\ didI:\ string,\ didHI:\ string,\ didHV:\ string,\ didV:\ string\ \}}
-~ Decrypt the zkKYC token with the Government's private key to obtain
-the DIDs in the token. \\
-\texttt{generateKeyPair(privKey?:\ string)\ =\textgreater{}\ \{\ priv:\ string,\ pub:\ {[}string,\ string{]}\ \}}
-~ Generate a key pair for the issuer. If \texttt{privKey} is provided,
+government for decryption.
+\mint[breaklines]{ts}|verifyZkKycProof(proofJson: string, publicJson: string) => boolean|
+Verify the zkKYC proof and public information to check if the information is valid.
+
+\textit{\textbf{Government}}
+\mint[breaklines]{ts}|decryptToken(parsedPublic: string, privKey: string) => { didI: string, didHI: string, didHV: string, didV: string }|
+Decrypt the zkKYC token with the Government's private key to obtain
+the DIDs in the token.
+
+\mint[breaklines]{ts}|generateKeyPair(privKey?: string) => { priv: string, pub: string[] }|
+Generate a key pair for the issuer. If \texttt{privKey} is provided,
 the key pair will be derived from the private key. Otherwise, a random
-private key will be generated. \\
-\end{longtable}
+private key will be generated.
 
 These interfaces are packaged into a NodeJS module \textbf{zkkyc-js} and
 can be imported into the SSI controller written in NodeJS. For this
@@ -1104,8 +1122,10 @@ integration with SSI controllers written in other languages. You can
 start the GRPC server by running \texttt{npm\ run\ grpc} in the
 \textbf{zkkyc-js} directory.
 
-\hypertarget{requirements-review}{%
-\section{Requirements Review}\label{requirements-review}}
+\hypertarget{project-review}{%
+\chapter{Project Review}\label{project-review}}
+\section{Business Requirements Review}
+\section{Security Review}
 
 Finally, let us review the requirements of the zkKYC solution concept
 and see how the project meets those requirements.
@@ -1118,7 +1138,7 @@ ZKP circuit.
 {[}TODO: check with the original zkKYC paper{]}
 
 \hypertarget{future-work}{%
-\section{Future Work}\label{future-work}}
+\chapter{Future Work}\label{future-work}}
 
 \textbf{Optimize Implementation} ~ For simplicity, we did not consider
 the performance and efficiency of the implementation in this project. We
@@ -1168,7 +1188,7 @@ can use the protocol. This will enable DeFi protocols to provide a more
 trustful and still privacy-preserving service to authenticated users.
 
 \hypertarget{conclusion}{%
-\section{Conclusion}\label{conclusion}}
+\chapter{Conclusion}\label{conclusion}}
 
 In this project, we have implemented a zkKYC solution concept based on
 the zkKYC paper
@@ -1178,16 +1198,16 @@ SSI controller written in NodeJS, and demonstrated the zkKYC process in
 a simple use case. .. contribution \ldots{}
 
 \hypertarget{appendix}{%
-\section{Appendix}\label{appendix}}
+\chapter{Appendix}\label{appendix}}
 
 \hypertarget{project-setup}{%
-\subsection{Project Setup}\label{project-setup}}
+\section{Project Setup}\label{project-setup}}
 
 \hypertarget{project-code-navigation}{%
-\subsection{Project Code Navigation}\label{project-code-navigation}}
+\section{Project Code Navigation}\label{project-code-navigation}}
 
 \hypertarget{circom-snarkjs}{%
-\subsubsection{Circom \& SnarkJS}\label{circom-snarkjs}}
+\subsection{Circom \& SnarkJS}\label{circom-snarkjs}}
 
 \hypertarget{circuits}{%
 \paragraph{Circuits}\label{circuits}}
@@ -1202,6 +1222,6 @@ a simple use case. .. contribution \ldots{}
 \paragraph{Scripts}\label{scripts}}
 
 \hypertarget{hyperledger-aries-1}{%
-\subsubsection{Hyperledger Aries}\label{hyperledger-aries-1}}
+\subsection{Hyperledger Aries}\label{hyperledger-aries-1}}
 
 \end{document}
