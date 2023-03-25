@@ -37,3 +37,14 @@ build/
 
 powersOfTau28_hez_final_17.ptau
 **.wtns
+
+### Tex ###
+**.aux
+**.fdb_latexmk
+**.fls
+**.log
+**.toc
+**.synctex(busy)
+**.pygtex
+**.pygstyle
+**.synctex.gz
