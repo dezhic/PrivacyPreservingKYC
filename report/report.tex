@@ -1034,13 +1034,14 @@ adopted in applications such as privacy cryptocurrencies like Zcash\textsuperscr
 
 A major drawback of Groth16 is that it requires a trusted setup for each
 different circuit. A trusted setup is a process that generates the
-parameters for the proving system. It can be analogous to the process of
+parameters for the proving system\textsuperscript{\cite{trusted-setup}}.
+It can be analogous to the process of
 generating the encrypted powers of \(s\) to get \(E_{s^{i}}\) in the
 previous section.
 
 The trusted setup is a one-time process that is expensive and
 time-consuming, and must be performed by trusted parties using secure
-Multi-Party Computation (MPC)\textsuperscript{\cite{trusted-setup}}.
+Multi-Party Computation (MPC).
 
 PLONK\textsuperscript{\cite{cryptoeprint:2019/953}}, on the other hand,
 is a more recently proposed, polynomial-based
