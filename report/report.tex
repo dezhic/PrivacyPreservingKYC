@@ -510,6 +510,13 @@ Hyperledger Indy. In our project, we use Sovrin as the VDR.
 \caption{Typical SSI Workflow}
 \end{figure}
 
+As you can see, the zkKYC solution is an adaption of the SSI workflow.
+In the typical SSI workflow, parties register their DIDs and
+credential schemas on the VDR. The issuer then issues a VC to the holder,
+and the holder presents the VC to the verifier. The verifier can then
+verify the authenticity of the VC using the public keys in the issuer's
+DID document, which is recorded in the VDR.
+
 \section{Hyperledger SSI Framework}
 
 \subsection{Relevant Hyperledger Projects}
