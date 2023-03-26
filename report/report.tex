@@ -695,7 +695,7 @@ with \emph{zk-SNARKs}.
 In this section, we will introduce the fundamentals of zk-SNARKs, and
 how we can implement zk-SNARKs in our project.
 
-\subsubsection{What are zk-SNARKs?}
+\subsection{What are zk-SNARKs?}
 
 \emph{zk-SNARKs} stands for \emph{Zero Knowledge Succinct
 Non-interactive ARgument of Knowledge}. It is a type of zero knowledge
@@ -710,7 +710,7 @@ zk-SNARKs achieve zero knowledge proof, we will use a polynomial-based
 proving system as an example to demonstrate the mechanism.
 {[}ref:Why and How zk-SNARK Works{]}
 
-\textbf{Knowledge as Polynomial}
+\subsubsection{Knowledge as Polynomial}
 
 There is an advantageous property of polynomials. Two non-equal
 polynomials of degree at most \(d\) can intersect at no more than \(d\)
@@ -725,7 +725,7 @@ that the prover does know the coefficients of the polynomial.
 Thanks to this property, we can express knowledge as coefficients of a
 polynomial, and easily prove that we know the coefficients.
 
-\textbf{Factorization}
+\subsubsection{Factorization}
 
 There are usually some constraints on the knowledge (polynomial) that
 the prover claims to know. For example, the prover claims that he knows
@@ -764,7 +764,7 @@ follow this protocol. The prover can easily cheat by first choosing an
 arbitrary value as \(h_{s}\), and then obtain an \(p_{s}\) by multiply
 the arbitrary \(h_{s}\) by \(t_{s}\).
 
-\textbf{Homomorphic Encryption}
+\subsubsection{Homomorphic Encryption}
 
 The flaw of the above protocol is caused by passing a plaintext \(s\)
 for polynomial evaluation, allowing dishonest provers to fabricate an
@@ -849,7 +849,7 @@ equation as follows:
   \(z_{h}\) respectively
 \end{itemize}
 
-\textbf{Knowledge-of-Exponent Assumption (KEA)}
+\subsubsection{Knowledge-of-Exponent Assumption (KEA)}
 
 To address the problem above, we need to enforce the prover to obtain
 the values via the polynomials \(p(x)\) and \(h(x)\). Note that after
@@ -885,7 +885,7 @@ and \(E_{p_{s}}^{'}\). Finally, if Verifier checks that if
 the prover has correctly performed the homomorphic-encrypted
 calculation.
 
-\textbf{Achieving Zero-Knowledge}
+\subsubsection{Achieving Zero-Knowledge}
 
 So far, we have achieved sound and complete proving. But values passed
 from Prover to Verifier, \(E_{p_{s}} = g^{p(s)}\),
@@ -922,7 +922,7 @@ Full zkSNARK also involves another two properties: succinctness
 and non-interactivity, but we will not cover those details in this
 report to avoid further distraction from our main topic.
 
-\subsubsection{Choosing a Proving System}
+\subsection{Choosing a Proving System}
 
 Groth16 and PLONK are two popular zk-SNARK proving systems.
 
@@ -963,7 +963,7 @@ use to generate the witness and proof. So, either of the two proving
 systems may be used in the project. However, due to the prohibitive cost
 of PLONK, we will just choose Groth16 in our implementation.
 
-\subsubsection{Implementing zk-SNARKs in the Project}
+\subsection{Implementing zk-SNARKs in the Project}
 
 To implement zk-SNARKs, we can define zk-SNARK constraints in the form
 of a circuit using the \emph{circom language}, and then generate the
@@ -971,7 +971,7 @@ witness and proof using \emph{SnarkJS}.
 
 Here are the general steps of the process:
 
-\textbf{A. Circuit definition and preparation for proving}
+\subsubsection*{A. Circuit definition and preparation for proving}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -996,7 +996,7 @@ Here are the general steps of the process:
   (verification\_key.json).
 \end{enumerate}
 
-\textbf{B. Generating the witness and proof}
+\subsubsection*{B. Generating the witness and proof}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1011,7 +1011,7 @@ Here are the general steps of the process:
   public inputs and outputs.
 \end{enumerate}
 
-\textbf{C. Verifying the proof}
+\subsubsection*{C. Verifying the proof}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1142,7 +1142,7 @@ an array of 248-bit (31-byte) signals. So, DIDs length limits will be
 multiples of 31 bytes, and the \emph{multiple} is specified by the
 circuit construction parameter \texttt{n248Bits}.
 
-\subsubsection{Signing and Verification with
+\subsection{Signing and Verification with
 EdDSA}
 
 The signing and verification of the tuple \texttt{(did\_i,\ did\_hi)} is
@@ -1184,7 +1184,7 @@ inputs for signature verification:
 
 The circuit execution would fail if the signature is invalid.
 
-\subsubsection{Message Representation in ElGamal Encryption}
+\subsection{Message Representation in ElGamal Encryption}
 
 Before we discuss the encryption and decryption process, we need to
 clarify the message representation in the ElGamal encryption.
@@ -1216,7 +1216,7 @@ acts as the plaintext in the succeeding ElGamal encryption, can be
 its x-coordinate is lower-bounded by the message. This advantage
 increases the security level of the entire encryption process.
 
-\subsubsection{Token Encryption and Decryption with ElGamal and AES}
+\subsection{Token Encryption and Decryption with ElGamal and AES}
 
 This subsection describes how we achieve the public key encryption and
 decryption of the zkKYC token.
@@ -1229,7 +1229,7 @@ Briefly speaking, we first encrypt the payload with AES using a random
 symmetric key, and then encrypt the symmetric key with ElGamal using the
 Government's public key.
 
-\textbf{AES Encryption}
+\subsubsection{AES Encryption}
 
 As mentioned in the previous subsection, plaintext messages in ElGamal
 encryption are represented by a point and an \texttt{aesKeyXmXor} value.
@@ -1258,7 +1258,7 @@ we do not require the integrity guarantee it provides. We just use
 AES-256-CTR circuit in their repository, and we modified it to match the
 bit endianness we are using in the rest of the project.
 
-\textbf{ElGamal Encryption}
+\subsubsection{ElGamal Encryption}
 
 After AES encryption, we encrypt the AES key with ElGamal using the
 Government's public key. With the AES key represented by
@@ -1296,7 +1296,7 @@ to decrypt the zkKYC token:
 ]
 \end{minted}
 
-\textbf{Decryption Process}
+\subsubsection{Decryption Process}
 
 Using the above public information, the Government can decrypt the zkKYC
 token by the following steps:
@@ -1315,7 +1315,7 @@ token by the following steps:
   \texttt{did\_v}).
 \end{itemize}
 
-\subsubsection{Bit Lengths of Components --- 248, 253, 254 or 256?}
+\subsection{Bit Lengths of Components --- 248, 253, 254 or 256?}
 
 You may have noticed that we use various bit lengths in the project
 implementation. Those values are carefully chosen to maximize the
@@ -1331,51 +1331,51 @@ where \(p\) is a \emph{254-bit} prime number
 this fact, we define the bit lengths for the following components in the
 project:
 
-\_\_DID Representation (248 bits):\_\_ A DID is represented by
+\textbf{DID Representation (248 bits):} A DID is represented by
 an array of 248-bit unsigned integers. Each integer can be interpreted
 as a 31-byte string.
 
-\_\_AES Key (253 bits):\_\_ We use a 253-bit key for AES-256
+\textbf{AES Key (253 bits):} We use a 253-bit key for AES-256
 encryption, instead of the standard 256-bit key. This is because this
 key will be encoded into a point on the Baby Jubjub curve and an XOR
 value as discussed in an earlier subsection. Therefore, as the point
 coordinate is bounded by a 254-bit number, we need to limit the key size
 to 253 bits to avoid overflowing the XOR value.
 
-\_\_XOR Value (253 bits):\_\_ The XOR value, named
+\textbf{XOR Value (253 bits):} The XOR value, named
 \texttt{xmXor}, is used to encode the AES key into a point on the Baby
 Jubjub curve. It is the result of XORing the 253-bit AES key with the
 lowest 253 bits of the x-coordinate of the encoding point
 \texttt{aesKeyPoint}.
 
-\_\_ElGamal random value \texttt{r} (253 bits):\_\_ The random
+\textbf{ElGamal random value \texttt{r} (253 bits):} The random
 value \texttt{r} is a signal in the ElGamal encryption circuit. Signals
 are bounded by a 254-bit number. When generating the \texttt{r},
 however, we use a 253-bit random number to avoid overflowing the signal.
 
-\_\_Baby Jubjub Point (254 bits):\_\_ A point on the Baby Jubjub
+\textbf{Baby Jubjub Point (254 bits):} A point on the Baby Jubjub
 curve is represented by two 254-bit unsigned integers or buffers. Public
 keys, \texttt{R} in the EdDSA signature, the encoding point
 \texttt{aesKeyPoint}, ``shared secret'' \texttt{s} in ElGamal
 encryption, and the \texttt{c1} and \texttt{c2} of the ElGamal
 ciphertext are all Baby Jubjub points.
 
-\_\_Private Key (256 bits):\_\_ We use a 32-byte buffer as the
+\textbf{Private Key (256 bits):} We use a 32-byte buffer as the
 private key for the EdDSA signature. Internally, EdDSA derives a 253-bit
 scalar from the private key, which is used for the signature generation
 process.
 
-\_\_Private Key Scalar (253 bits):\_\_ A 253-bit scalar derived
+\textbf{Private Key Scalar (253 bits):} A 253-bit scalar derived
 according to the Baby Jubjub EdDSA signature scheme. It is also used as
 the private key for the ElGamal decryption.
 
-\_\_AES Circuit Input (256 bits):\_\_ As the AES-256 algorithm
+\textbf{AES Circuit Input (256 bits):} As the AES-256 algorithm
 requires the size of the input to be the multiple of the unsigned
 integer size, we pad input units (integers representing DIDs) to 256
 bits with trailing zeros. The 253-bit AES key is also padded to 256 bits
 with trailing zeros before inputting into the AES circuit.
 
-\subsubsection{Interfaces and Packaging}
+\subsection{Interfaces and Packaging}
 
 The ZKP part of this project is relatively independent of the SSI part.
 So, we group the ZKP actions by roles and define the interfaces as
