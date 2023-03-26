@@ -946,8 +946,6 @@ random \(\delta\), calculate
 \(E_{zkp_{s}^{'}} = \left( E_{p_{s}}^{'} \right)^{\delta}\) \((mod\ n)\)
 and pass the \(E_{zk}\) values to the verifier.
 
-\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
 There is a sequence diagram on the next page showing the protocol we discussed
 above.
 
@@ -1336,6 +1334,18 @@ to decrypt the zkKYC token:
 ]
 \end{minted}
 
+We implemented the ElGamal encryption algorithm with the BabyJub curve
+in the circom circuit, in the following steps:
+\begin{itemize}
+  \tightlist
+  \item Compute the \textbf{c1} point by multiplying the base point by
+    \texttt{elGamalR}.
+  \item Compute the shared secret point \textbf{s} by multiplying the
+    public key point by \texttt{elGamalR}.
+  \item Add the message point to the shared secret point to get the
+    \textbf{c2} point.
+\end{itemize}
+
 \subsubsection{Decryption Process}
 
 Using the above public information, the Government can decrypt the zkKYC
@@ -1355,6 +1365,19 @@ token by the following steps:
   \texttt{did\_v}).
 \end{itemize}
 
+The ElGamal decryption algorithm is implemented in the JavaScript
+with the BabyJub curve, in the following steps:
+\begin{itemize}
+  \tightlist
+  \item Compute the shared secret point \textbf{s} by multiplying the
+    \texttt{c1} point by the private key.
+  \item Compute the inverse of \textbf{s} according to the
+    specification of the BabyJub curve.
+  \item Add the \texttt{c2} point to the inverse of \textbf{s} to get
+    the message -- \texttt{aesKeyPoint}.
+\end{itemize}
+  
+  
 \subsection{Bit Lengths of Components --- 248, 253, 254 or 256?}
 
 You may have noticed that we use various bit lengths in the project
