@@ -9,6 +9,8 @@
 \usepackage{minted}
 \usepackage{amsmath,amssymb}
 \usepackage{svg}
+\usepackage[style=ieee]{biblatex}
+\addbibresource{references.bib}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -172,6 +174,7 @@ credits.
 
 \tableofcontents
 
+\renewcommand{\abstractname}{Abstract}
 \begin{abstract}
 Know-Your-Customer (KYC) process is a
 critical step in some businesses to combat crime. Several problems exist
@@ -210,7 +213,7 @@ business requirements for such a system.
 As a solution concept, the paper did not specify any detail for the
 implementation. It is also mentioned by the author in the subsequent
 paper that designing and implementing the zero-knowledge proving system
-for zkKYC tokens is a valuable challenge to tackle. So, we decided to
+for zkKYC tokens is a valuable challenge to tackle\textsuperscript{\cite{cryptoeprint:2022/321}}. So, we decided to
 take on the task of solving the challenge and implementing our
 privacy-preserving KYC system based on the zkKYC solution concept.
 
@@ -485,7 +488,7 @@ disclosure of information helps address the \emph{Bundling Problem} as we
 discussed in the previous chapter.
 
 \subsection{Key Components in SSI}
-Technically, SSI systems are built on top of a set of standards. [ref: w3c-did, w3c-vc]. 
+Technically, SSI systems are built on top of a set of standards\textsuperscript{\cite{W3CDIDCore,W3CVCDataModel}}.
 In this sub section, we will discuss the three key components, namely
 \emph{Decentralized Identifier (DID)}, \emph{Verifiable Credential (VC)} and
 \emph{Verifiable Data Registry (VDR)}.
@@ -784,8 +787,8 @@ the statement.
 
 There are many zk-SNARK schemes, or proving systems. To understand how
 zk-SNARKs achieve zero knowledge proof, we will use a polynomial-based
-proving system as an example to demonstrate the mechanism.
-{[}ref:Why and How zk-SNARK Works{]}
+proving system as an example to demonstrate the
+mechanism\textsuperscript{\cite{DBLP:journals/corr/abs-1906-07221}}
 
 \subsubsection{Knowledge as Polynomial}
 
@@ -988,8 +991,8 @@ above.
 
 \begin{figure}
 \centering
-\includegraphics{zksnark.png}
-\caption{Sequence Diagram}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{zksnark.png}
+\caption{zk-SNARKs ZKP Sequence Diagram}
 \end{figure}
 
 Until now, we have achieved sound and complete zero-knowledge proving.
@@ -1060,8 +1063,7 @@ Here are the general steps of the process:
 \item
   Trusted Setup - Powers of Tau. With Groth16, the first phase, Powers
   of Tau, can be performed in advance. So, we just download the Powers
-  of Tau file of the right size from a trusted source
-  {[}ref:https://github.com/iden3/snarkjs{]}.
+  of Tau file of the right size from a trusted source\textsuperscript{\cite{snarkjs}}.
 \item
   Trusted Setup - Phase 2. The phase 2 setup, however, is specific to
   the circuit. Ideally, it requires contributions from multiple trusted
@@ -1228,14 +1230,13 @@ encoded \texttt{did\_i} and \texttt{did\_hi} concatenated together. We
 have chosen the Poseidon hash function in favor of the well-known
 SHA-256 hash function, because the Poseidon hash function is a set of
 permutations over a prime field, which makes it more efficient for
-zk-SNARKs.
-{[}ref:https://eips.ethereum.org/EIPS/eip-5988{]}
+zk-SNARKs\textsuperscript{\cite{EIP5988}}.
 
 In contrast, the SHA-256 hash function is inefficient in our use case,
 and it also resulted in a large number of constraints in the circuits
 according to our experiments.
 
-EdDSA Signing is performed in NodeJS using the \_@iden3/js-crypto\_
+EdDSA Signing is performed in NodeJS using the \emph{@iden3/js-crypto}
 library, and verification is performed in the circuit using the
 \emph{circomlib} library.
 
@@ -1269,8 +1270,7 @@ it encrypts is essentially a \emph{point} on the curve. Therefore, we
 need a way to represent an arbitrary message with a point on the curve.
 
 An existing solution is to pick a random point on the curve, and
-subtract the message from its x-coordinate
-{[}ref:https://ethresear.ch/t/elgamal-encryption-decryption-and-rerandomization-with-circom-support/8074{]}
+subtract the message from its x-coordinate\textsuperscript{\cite{elgamal-circom}}
 to get a \texttt{xIncrement} value. Then, the message can be represented
 by the point and \texttt{xIncrement}.
 
@@ -1324,8 +1324,8 @@ ciphertext, and the resulting bit array is the
 \texttt{encryptedPayload}.
 
 To encrypt the payload, we use the AES-256-CTR cipher, and the
-implementation is adapted from \emph{Electron-Labs/aes-circom}
-{[}ref:https://github.com/Electron-Labs/aes-circom{]},
+implementation is adapted from
+\emph{Electron-Labs/aes-circom}\textsuperscript{\cite{aes-circom}},
 where they implemented the AES-GCM-SIV.
 
 We did not choose AES-GCM-SIV due to its computational complexity, and
@@ -1426,8 +1426,8 @@ behind those choices.
 Generally, signals in a Circom circuit should be bounded by the finite
 field that the underlying elliptic curve is defined on. In our case, the
 \emph{Baby Jubjub Elliptic Curve} is defined over the field \(F_p\),
-where \(p\) is a \emph{254-bit} prime number
-{[}ref:https://eips.ethereum.org/EIPS/eip-2494{]}. Given
+where \(p\) is a \emph{254-bit} prime
+number\textsuperscript{\cite{EIP2494}}. Given
 this fact, we define the bit lengths for the following components in the
 project:
 
@@ -1668,8 +1668,8 @@ research are needed to find the most suitable proving system for zkKYC.
 
 \textbf{Integrate into DeFi Protocols} ~ This could be the most exciting
 potential of the project, and has also been discussed in the succeeding
-zkKYC paper -- \emph{zkKYC in DeFi}
-{[}ref:https://eprint.iacr.org/2022/321{]}. This project
+zkKYC paper -- \emph{zkKYC in DeFi}\textsuperscript{\cite{cryptoeprint:2022/321}}.
+This project
 can be easily extended to integrate with DeFi protocols, as Circom can
 generate Solidity smart contracts for proof verification. Then, a DeFi
 protocol can include the zkKYC verification process in its smart
@@ -1689,5 +1689,6 @@ system into the existing SSI framework to demonstrate the workflow of
 the entire privacy-preserving KYC system.
 
 \chapter{References}
+\printbibliography[heading=none]
 
 \end{document}
