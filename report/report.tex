@@ -128,12 +128,11 @@
 }
 
 \title{Privacy-Preserving KYC}
-\author{Dezhi Chen}
+\author{CHEN Dezhi}
 \date{\today}
 
 \begin{document}
 \maketitle
-\tableofcontents
 
 \begin{abstract}
 Know-Your-Customer (KYC) process is a
@@ -148,6 +147,8 @@ privacy-preserving KYC system based on the zkKYC solution concept, using
 Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge
 proofs with zk-SNARKs via the Circom and SnarkJS libraries.
 \end{abstract}
+
+\tableofcontents
 
 \chapter{Introduction}
 
@@ -1642,12 +1643,14 @@ trustful and still privacy-preserving service to authenticated users.
 
 \chapter{Conclusion}
 
-In this project, we have implemented a zkKYC solution concept based on
-the zkKYC paper
-{[}ref:https://eprint.iacr.org/2020/1186{]} and the
-zkSNARKs technology. We have also integrated the zkKYC solution into the
-SSI controller written in NodeJS, and demonstrated the zkKYC process in
-a simple use case. .. contribution \ldots{}
+In conclusion, we have developed a privacy-preserving KYC system, using
+the zkKYC solution concept, which leverages self-sovereign identity and
+zero-knowledge proof. To provide an implementation for the solution
+concept, we designed and built a ZKP system with the Groth16 proving
+system using Circom and SnarkJS, for generating and verifying the
+zero-knowledge proof of user identity. Finally, we integrated the ZKP
+system into the existing SSI framework to demonstrate the workflow of
+the entire privacy-preserving KYC system.
 
 \chapter{References}
 
