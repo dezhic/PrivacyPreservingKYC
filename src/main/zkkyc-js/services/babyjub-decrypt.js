@@ -17,7 +17,7 @@ function decrypt(cipher, privKey) {
     const babyJub = iden3crypto.babyJub;
     // Compute shared secret s
     var s = babyJub.mulPointEscalar(cipher.c1, privScalar);
-    // Compute the invert
+    // Compute the inverse of s
     var sInvX = babyJub.F.e(-1n * s[0]);
     var sInvY = s[1];
     var mPoint = babyJub.addPoint(cipher.c2, [sInvX, sInvY]);
