@@ -137,12 +137,13 @@
 \begin{titlepage}
 	\centering
 	\vspace*{4.5cm}
-	{\Large\textbf{Privacy-Preserving KYC}}\\
+	{\LARGE\textbf{Privacy-Preserving KYC}}\\
 	\vspace{1.5cm}
-	{\LARGE\textbf{CHEN Dezhi}}\\
+	{\Large\textbf{CHEN Dezhi}}\\
 	\vspace{1.5cm}
-	{\large Submitted in partial fulfillment of the requirements for the degree of \\
-  Bachelor of Science (Honours) \\
+	{\large Submitted in partial fulfillment of the requirements for the degree of} \\
+	\vspace{1.0cm}
+  {\large Bachelor of Science (Honours) \\
   in Computer Science}\\
 	\vspace{1.5cm}
 	{\large Hong Kong Baptist University}\\
@@ -151,7 +152,7 @@
 	\vfill
 \end{titlepage}
 
-\renewcommand{\abstractname}{Acknowledgement}
+\renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
 Upon submitting this project, my university life is coming to an end.
 I would like to express my sincere gratitude and appreciation to 
@@ -168,7 +169,7 @@ partner and friends for their companionship and encouragement during
 my university life.
 
 Finally, I would like to thank Dr. Elizabeth K.S. LAW for her generous
-donation to the scholarship that supports my study in Hong Kong Baptist
+donation to the scholarship that supports my study at Hong Kong Baptist
 University.
 \end{abstract}
   
@@ -203,8 +204,8 @@ in the traditional KYC process and they may threaten users' privacy. A
 solution concept named \emph{zkKYC} is proposed to address these
 problems. The solution concept specifies the business requirements for a
 privacy-preserving KYC system. This project aims to address the
-challenge in designing a zero-knowledge KYC token generation and
-verification mechanism, and provide an implementation a
+challenge of designing a zero-knowledge KYC token generation and
+verification mechanism, and provide an implementation of a
 privacy-preserving KYC system based on the zkKYC solution concept, using
 Self-Sovereign Identity (SSI) via Hyperledger Aries and zero-knowledge
 proofs with zk-SNARKs via the Circom and SnarkJS libraries.
@@ -264,19 +265,19 @@ In the following chapters, we will first identify the problems and the
 objective of this project. Then, we will introduce the zkKYC solution
 concept, followed by the system architecture. After that, we will
 elaborate on the implementation of the SSI part and the ZKP part,
-respectively, with the detailed background knowledge, design thinking
+respectively, with detailed background knowledge, design thinking
 and implementation details. After introducing our implementation, we
 will also review the business requirements specified in the solution
 concept to discuss how they have been addressed in our implementation.
-Finally, we will discuss the future work, or potentials of this project.
+Finally, we will discuss the future work or potentials of this project.
 
 \chapter{Problems and Objective}
 
 Generally speaking, we have the following problems in the current
 traditional KYC process: - Traditional businesses collect much
 information for the KYC purpose and clients have poor control over the
-shared information - Some novel businesses such as cryptocurrency ones
-guarantee privacy and anonymity but lack the KYC process to combat crime
+shared information - Some novel businesses, such as cryptocurrency ones,
+guarantee privacy and anonymity but lack the KYC process to combat crime.
 
 According to Pauwels (2021), the traditional KYC process has the
 following problems that threaten the security of users' personal
@@ -328,7 +329,7 @@ privacy-preserving KYC. It leverages SSI and zero-knowledge proofs to
 achieve the KYC purpose without disclosing any personal information.
 
 In a typical SSI system, the user has a \emph{wallet} that contains
-their \emph{verifiable credentials} (VCs). A VC is a digital document
+\emph{verifiable credentials} (VCs). A VC is a digital document
 that contains the information required for KYC, such as eligibility
 proofs like nationality and age. The zkKYC solution
 adds a zero-knowledge identity proof on top of the existing SSI
@@ -365,7 +366,7 @@ identity of the user. The Issuer issues the Holder with verifiable
 credentials according to the Holder's information in its database.
 In reality, this role can be played by the government agency, or some
 large banks that already have the user's information registered via
-traditional KYC process.
+the traditional KYC process.
 
 \item
 \textbf{Holder:} The Holder is the user who holds the verifiable
@@ -443,7 +444,7 @@ Ideally, a self-sovereign identity system is decentralized. That means
 there can be multiple organizations acting as each role. All of them
 are connected to each other via peer-to-peer credential passing and
 a decentralized ledger to store the decentralized identity information.
-We will introduce the how SSI works in the next chapter. In this section,
+We will introduce how SSI works in the next chapter. In this section,
 we will focus on the system architecture of a single role of the system,
 as shown in the following figure.
 
@@ -470,7 +471,7 @@ The \emph{ZKP system} is built using the \emph{zkSNARK} libraries
 Circom and SnarkJS. The \emph{database} is simply SQLite3 DB files.
 
 Then, the Aries controller is connected to the \emph{Hyperledger Aries
-Framework} via HTTP REST API provided by tha Aries Cloud Agent (ACA-Py).
+Framework} via HTTP REST API provided by the Aries Cloud Agent (ACA-Py).
 We have deployed the ACA-Py on a remote server, one for each of the
 Issuer, Holder and Verifier. ACA-Py will handle the communication with
 the other agents, and perform verification using the information stored
@@ -479,7 +480,7 @@ Verifiable Data Registry (VDR) in our system.
 \chapter{Self-Sovereign Identity (SSI) Using Hyperledger Aries}
 
 \section{Introduction to SSI}
-\subsection{What is Self-Sovereign Identity?}
+\subsection{What is Self-Sovereign Identity?}\textsuperscript{\cite{SovrinFAQ,EdxSSI}}
 Self-sovereign identity (SSI) is a term to describe a new approach to
 identity administration that allows individuals to control the use of
 their personal information. SSI systems are decentralized, meaning that
@@ -510,7 +511,7 @@ discussed in the previous chapter.
 
 \subsection{Key Components in SSI}
 Technically, SSI systems are built on top of a set of standards\textsuperscript{\cite{W3CDIDCore,W3CVCDataModel}}.
-In this sub section, we will discuss the three key components, namely
+In this subsection, we will discuss the three key components, namely
 \emph{Decentralized Identifier (DID)}, \emph{Verifiable Credential (VC)} and
 \emph{Verifiable Data Registry (VDR)}.
 \subsubsection{Decentralized Identifier (DID)}
@@ -519,7 +520,7 @@ The subject can be individuals and organizations. The word ``decentralized''
 also describes the practice that the DID is not managed by a central authority,
 but generated by the subject itself.
 
-A DID is a string of characters that consist of three parts: the DID scheme,
+A DID is a string of characters that consists of three parts: the DID scheme,
 the DID method and the method-specific identifier, as illustrated in the
 following example:
 \begin{figure}[h]
@@ -602,7 +603,7 @@ based on the Hyperledger Indy project. The \emph{Hyperledger Aries}
 project provides a set of APIs for interacting with the distributed
 ledger and communicating with other agents.
 
-\subsection{Hyperledger Aries}
+\subsection{Hyperledger Aries}\textsuperscript{\cite{EdxHyperledgerAries}}
 As a developer of SSI applications, we write programs using the Hyperledger
 Aries framework. The Aries framework provides a set of APIs that allow
 developers to interact with other SSI agents through the underlying SSI
@@ -612,7 +613,7 @@ implementations of Aries agents, such as \emph{Aries Cloud Agent
 Python (ACA-Py)} and \emph{Aries Framework Go}.
 
 In our project, we use ACA-Py as the agent implementation. The following
-figure illustrates the architecture of ACA-Py.
+figure illustrates the architecture of ACA-Py\textsuperscript{\cite{AriesCloudAgentPython}}.
 
 \begin{figure}
 \centering
@@ -650,7 +651,7 @@ machine with different ports. The Issuer agent is running on port 8020,
 the Holder agent is running on port 8030, and the Verifier agent is
 running on port 8040.
 
-For demonstration purpose, we let the each agent connect to an in-memory
+For the demonstration purpose, we let the each agent connect to an in-memory
 Indy wallet. The wallet is a secure storage for the agent's keys,
 credentials and information of established connections. The wallet is
 encrypted with a master key, which is generated by and managed by the
@@ -675,15 +676,15 @@ The Issuer Site simulates the process of customer real identity registration
 with the Issuer, and the process of verifiable credential request and 
 issuance. 
 
-First, the customer (holder) need to fill in the registration form and create a
-profile with the Issuer. This step demonstrate the traditional KYC process
+First, the customer (holder) needs to fill in the registration form and create a
+profile with the Issuer. This step demonstrates the traditional KYC process
 performed by the Issuer, before it can issue verifiable credentials to the
 customer. The customer's profile is stored in the Issuer's database.
 
 Then, before requesting verifiable credentials, the customer needs to setup a 
 connection between the Issuer and his/her wallet agent. To do this, he/she
 needs to login the Issuer's customer portal and get an invitation URL from
-the Issuer. Then, the customer paste this URL into the Holder's Wallet agent.
+the Issuer. Then, the customer pastes this URL into the Holder's Wallet agent.
 The Holder's Wallet agent will then setup a connection with the Issuer's
 agent in the backend.
 
@@ -738,15 +739,15 @@ can further verify the validity of the zkKYC token through our ZKP system.
 \subsubsection{Verifier Site}
 Similar to the Issuer Site, the Verifier Site simulates the process of
 business registration, but instead of conducting traditional KYC process,
-the verifier simply requests for presentation of verifiable credentials
+the verifier simply requests for presentations of verifiable credentials
 we discussed above.
 
 As already mentioned in the previous subsections, the Holder needs to
-setup a connection, by firstly going to the Verifier's customer portal and
+setup a connection, by first going to the Verifier's customer portal and
 getting an invitation URL. Similarly, the Holder will have a dedicated DID
 $DID_{HV}$ for the connection.
 
-The credential requests is also initiated from the customer portal by
+The credential requests are also initiated from the customer portal by
 clicking on the \emph{Credential Request} button. The Verifier will then
 send a credential request to the Holder's wallet agent via the connection,
 and automatically complete the process when the Holder's wallet agent in
@@ -774,7 +775,7 @@ to parse and verify the zkKYC token, and for Government to decrypt the
 zkKYC token.
 
 We integrate \textbf{zkkyc-js} into the SSI backend by letting the
-corresponding agents to call the APIs via a \emph{worker thread} of NodeJS.
+corresponding agents call the APIs via a \emph{worker thread} of NodeJS.
 The worker thread is a separate thread that can be used to perform
 time-consuming tasks without blocking the main thread. This is necessary
 because the zero-knowledge proof generation and verification are very
@@ -782,7 +783,7 @@ slow in comparison to the other operations in the SSI backend, and thus
 we have this implementation to avoid blocking the main thread.
 
 The computation results are passed back to the main thread via callbacks,
-and then subsequently passed to database or to the frontend.
+and then subsequently passed to the database or to the frontend.
 
 \chapter{Zero Knowledge Proof (ZKP) with zk-SNARKs}
 
@@ -1025,10 +1026,11 @@ report to avoid further distraction from our main topic.
 
 Groth16 and PLONK are two popular zk-SNARK proving systems.
 
-Groth16 is based on pairing-based cryptography and uses a construction
+Groth16\textsuperscript{\cite{cryptoeprint:2016/260}} is based on
+pairing-based cryptography and uses a construction
 called \emph{bilinear pairing}. Groth16 is efficient and features
 succinct proofs and reasonably fast performance, and it has been widely
-adopted in applications such as privacy cryptocurrencies like Zcash.
+adopted in applications such as privacy cryptocurrencies like Zcash\textsuperscript{\cite{Groth16Intro,Groth16Blog}}.
 
 A major drawback of Groth16 is that it requires a trusted setup for each
 different circuit. A trusted setup is a process that generates the
@@ -1038,11 +1040,12 @@ previous section.
 
 The trusted setup is a one-time process that is expensive and
 time-consuming, and must be performed by trusted parties using secure
-Multi-Party Computation (MPC).
+Multi-Party Computation (MPC)\textsuperscript{\cite{trusted-setup}}.
 
-PLONK, on the other hand, is a more recently proposed, polynomial-based
+PLONK\textsuperscript{\cite{cryptoeprint:2019/953}}, on the other hand,
+is a more recently proposed, polynomial-based
 zk-SNARK proving system that leverages the \emph{polynomial commitment
-scheme}.
+scheme}\textsuperscript{\cite{plonk}}.
 
 The advantage of PLONK is that it supports a universal trusted setup,
 which means that the trusted setup can be performed once and used for
@@ -1564,16 +1567,16 @@ Approach to Meet the Requirement
 \endlastfoot
 BR01 & We are just added the \emph{zkKYC} token generation and verification
 process to the existing SSI solution. Therefore, all properties provided
-by SSI is preserved. \\
-BR02 & 1. The personal identifiable information is stored in the Issuer's
+by SSI are preserved. \\
+BR02 & 1. Personal identifiable information is stored in the Issuer's
 database. What is shared with the business (Verifier) is an encrypted
 token containing the information for the Issuer to retrieve the
 information of the given customer. Therefore, the user does not need
-to share personal identifiable for KYC with the Verifier. There is also
+to share personal identifiable information for KYC with the Verifier. There is also
 no way for the Verifier to retrieve the customer's information from the
 Issuer as the necessary information for doing so can only be decrypted
 by the Government. \\
-BR03 & This can be achieved by existing SSI solution with the
+BR03 & This can be achieved by existing SSI solutions with
 verifiable credentials. Aries Framework can handle signing and
 verifying such credentials. \\
 BR04 & The business (Verifier) can report the zkKYC token to the
@@ -1603,7 +1606,7 @@ get the signatures from the Issuer, but just a ZKP proof that the
 information is signed by the Issuer controlling a given public key.
 
 \textbf{Verifier Abusing KYC Data} ~ In traditional KYC, the Verifier
-may be able to abuse the information provided for KYC purpose. However,
+may be able to abuse the information provided for KYC purposes. However,
 in our system, the Verifier only gets an encrypted token, without any
 personal information of the customer. The token is generated by the
 Holder specifically for this business. Therefore, it is also meaningless
@@ -1612,16 +1615,16 @@ for other businesses.
 \textbf{Holder's Credentials Stolen} ~ If someone steals the Holder's
 credentials, they may be able to impersonate the Holder to generate
 zkKYC tokens for other businesses. Firstly, the credentials are stored
-in the Holder's secure storage of the wallet, which should be generally
-safe. Secondly, in case the attacker gets the access to the Holder's
+in the Holder's secure storage of the wallet, which should generally be
+safe. Secondly, in case the attacker gets access to the Holder's
 wallet, the Holder can contact the Issuer to revoke the credentials.
 
 \textbf{Data Leakage} ~ In traditional KYC, the Holder's personal
 information is stored in the every business they have conducted KYC
-with, and thus leads to significant risk of data leakage. If one of
+with, and thus leads to a significant risk of data leakage. If one of
 the business is compromised, the user's data is threatened. In our
 solution, businesses do not store user's personal data, and the KYC
-information is only meaningful for the dedicated businesses.
+information is only meaningful for dedicated businesses.
 Therefore, as long as the Issuer is secure, the Holder's data is safe.
 This significantly reduces the risk of data leakage threatening the
 user privacy.
