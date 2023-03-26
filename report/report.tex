@@ -408,16 +408,54 @@ is not controlled by a single entity. The VDR can be a blockchain, such as
 Ethereum, or a distributed ledger, such as Sovrin, which is an instance of
 Hyperledger Indy. In our project, we use Sovrin as the VDR.
 
-\section{Hyperledger SSI Frameworks}
+\section{Hyperledger SSI Framework}
 
-\subsubsection{The Ecosystem}
+\subsection{Relevant Hyperledger Projects}
+Hyperledger Foundation is a non-profit organization that incubates and
+develops open source blockchain projects. In the SSI space, there are three
+relevant Hyperledger projects. They are \emph{Hyperledger Aries},
+\emph{Hyperledger Indy} and \emph{Hyperledger Ursa}.
 
-\includegraphics{eco.png} \textbf{Hyperledger SSI Ecosystem - Aries,
-Indy and Ursa}
+The following figure illustrates the relationship between these projects.
 
-\subsubsection{Hyperledger Aries}
+\begin{figure}
+\centering
+\includegraphics[width=8cm]{eco.png}
+\caption{Hyperledger SSI Projects}
+\end{figure}
 
-\includegraphics{aca-py.png} \textbf{Hyperledger Aries Architecture}
+The lowest layer is the \emph{Hyperledger Ursa} project, which provides
+cryptographic primitives for the other projects. The \emph{Hyperledger
+Indy} project provides a distributed ledger for storing DID documents and
+VCs. For instance, the Sovrin Network we use in our project is developed
+based on the Hyperledger Indy project. The \emph{Hyperledger Aries}
+project provides a set of APIs for interacting with the distributed
+ledger and communicating with other agents.
+
+\subsection{Hyperledger Aries}
+As a developer of SSI applications, we write programs using the Hyperledger
+Aries framework. The Aries framework provides a set of APIs that allow
+developers to interact with other SSI agents through the underlying SSI
+protocols such as \emph{Connection Protocol}, \emph{Credential Exchange
+Protocol} and \emph{Present Proof Protocol}. There are also several
+implementations of Aries agents, such as \emph{Aries Cloud Agent
+Python (ACA-Py)} and \emph{Aries Framework Go}.
+
+In our project, we use ACA-Py as the agent implementation. The following
+figure illustrates the architecture of ACA-Py.
+
+\begin{figure}
+\centering
+\includegraphics[width=8cm]{aca-py.png}
+\caption{Hyperledger Aries Architecture}
+\end{figure}
+
+To develop an SSI application with Hyperledger Aries, we need to
+implement our business logic in the \emph{controller} of the agent.  
+From there, we define which credentials to issue, which attributes to
+disclose and which credentials to accept, and so on. With ACA-Py, we
+can implement the controller in any programming language and interact
+with the framework through the REST API.
 
 \section{Implementing zkKYC with Hyperledger Aries}
 
