@@ -1239,7 +1239,8 @@ for the Government to take further actions.
 
 Now, we are clear about the workflow of the zkKYC process. In this
 section, we will discuss the implementation details of the workflow.
-\#\#\# DID Encoding By default, Circom signals are bounded by the field
+\subsection{DID Encoding}
+By default, Circom signals are bounded by the field
 size of the curve, which is a 254-bit prime number. Therefore, for both
 convenience and efficiency, we decide to encode the DIDs in the form of
 an array of 248-bit (31-byte) signals. So, DIDs length limits will be
