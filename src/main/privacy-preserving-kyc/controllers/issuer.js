@@ -12,10 +12,10 @@ module.exports = {
     },
 
     login: async function (req, res) {
-        const customers = await issuerDao.getCustomerByUsername(req.body.username);
-        if (customers.password === req.body.password) {
+        const customer = await issuerDao.getCustomerByUsername(req.body.username);
+        if (customer.password === req.body.password) {
             req.session.username = req.body.username;
-            return res.json({ message: 'success' });
+            return res.render('issuer/customer-portal', { customer: customer })
         } else {
             return res.json({ error: 'Incorrect username/password' });
         }

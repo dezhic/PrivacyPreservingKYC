@@ -24,10 +24,12 @@
                         Customer Information
                     </div>
                     <div class="card-body">
-                        <!-- Placeholding personal information -->
-                        <p>Name: John Doe</p>
-                        <p>Email: john.doe@example.com</p>
-                        <p>Address: 123 Main St, Anytown USA</p>
+                        <p>Username: <%= customer.username %></p>
+                        <p>Full Name: <%= customer.name %></p>
+                        <p>Passport No.: <%= customer.passport_no %></p>
+                        <p>Date of Birth: <%= customer.birth_date %></p>
+                        <p>Nationality: <%= customer.nationality %></p>
+                        <p>Register Time: <%= new Date(customer.register_time).toLocaleDateString() + " " + new Date(customer.register_time).toLocaleTimeString() %></p>
                     </div>
                 </div>
                 <div class="card mb-4">
