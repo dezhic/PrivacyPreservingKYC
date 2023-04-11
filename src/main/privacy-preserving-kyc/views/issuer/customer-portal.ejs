@@ -10,12 +10,19 @@
     <style>
         .bd-callout {
             padding: 0.75rem;
-            /* margin-top: 1.25rem;
-            margin-bottom: 1.25rem; */
             border: 1px solid #e9ecef;
             border-left-width: 0.25rem;
             border-radius: 0.25rem;
-            border-left-color: #5bc0de;
+            border-left-color: green;
+        }
+
+        #copy-btn span {
+            position: absolute;
+            transform: translate(-50%, -50%);
+        }
+
+        .fade {
+            transition: opacity 1s ease-in-out;
         }
     </style>
 </head>
@@ -69,8 +76,17 @@
                         Connections
                     </div>
                     <div class="card-body">
-                        <button type="button" class="btn btn-primary" id="create-inv">New Connection</button>
-                        <span class="bd-callout">asdfawfawfhwqkfejaklwjfajwlsdfjlasl</span>
+                        <div style="display: flex; align-items: center; height:45px">
+                            <button type="button" id="new-btn" class="btn btn-primary me-3"
+                                style="height: 40px; width: 150px">New Connection</button>
+                            <button type="button" id="copy-btn" hidden class="btn btn-success me-3"
+                                style="height: 40px; width: 150px">
+                                <span id="copy-inv-txt" style="opacity: 1;">Copy Invitation</span>
+                                <span id="copied-txt" style="opacity: 0;">Copied!</span>
+                            </button>
+                            <span id="inv-url" hidden class="bd-callout"
+                                style="display:inline-block; width: 70%; height:50px; overflow: auto; white-space: nowrap;"></span>
+                        </div>
                         <hr>
                         <form class="mb-3">
                             <label for="idFilter" class="form-label">Filter by ID:</label>
@@ -168,10 +184,32 @@
                 renderConnections(data);
             });
         }
-        $("#create-inv").click(() => {
+        $("#new-btn").click(() => {
             $.post("/issuer/create-invitation", {}, (data, status) => {
                 fetchConnections();
+                $("#inv-url").text(data.invitation_url);
+                $("#new-btn").attr("hidden", true);
+                $("#copy-btn").attr("hidden", false);
+                $("#copy-btn").focus();
+                $("#inv-url").attr("hidden", false);
             });
+        });
+        $("#copy-btn").click(() => {
+            const copyText = document.getElementById("inv-url").textContent;
+            navigator.clipboard.writeText(copyText);
+            $("#copy-inv-txt").css("opacity", 0);
+            $("#copied-txt").css("opacity", 1);
+            setTimeout(() => {
+                $("#copy-inv-txt").addClass("fade");
+                $("#copied-txt").addClass("fade");
+                $("#copy-inv-txt").css("opacity", "1");
+                $("#copied-txt").css("opacity", "0");
+                setTimeout(() => {
+                    $("#copy-inv-txt").removeClass("fade");
+                    $("#copied-txt").removeClass("fade");
+                }, 1000);
+            }, 500);
+            
         });
 
         $("#list-conn").click(() => {
