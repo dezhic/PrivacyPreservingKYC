@@ -145,9 +145,9 @@
     </div>
     <script>
         const idFilterInput = document.getElementById("idFilter");
-        const tableRows = document.querySelectorAll("table tbody tr");
         idFilterInput.addEventListener("keyup", () => {
             const filterValue = idFilterInput.value.toLowerCase();
+            const tableRows = document.querySelectorAll("#conn-table-body tr");
             tableRows.forEach((row) => {
                 const idCell = row.querySelector("td:first-child");
                 const idText = idCell.textContent.toLowerCase();
