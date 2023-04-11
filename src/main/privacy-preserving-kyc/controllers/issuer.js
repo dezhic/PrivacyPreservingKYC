@@ -6,6 +6,17 @@ const httpClient = axios.create({
     baseURL: 'http://159.138.47.211:8021',
 });
 
+async function getAllConnections(username) {
+    const connInfo = await issuerDao.getConnectionsByUsername(username);
+    const connections = [];
+    for (let i = 0; i < connInfo.length; i++) {
+        const connectionRes = await httpClient.get('/connections/' + connInfo[i].connection_id);
+        connections.push(connectionRes.data);
+    }
+    return connections;
+}
+
+
 module.exports = {
     index: async function (req, res) {
         res.render('issuer/index', { title: 'Issuer' });
@@ -15,7 +26,8 @@ module.exports = {
         const customer = await issuerDao.getCustomerByUsername(req.body.username);
         if (customer.password === req.body.password) {
             req.session.username = req.body.username;
-            return res.render('issuer/customer-portal', { customer: customer })
+            const connections = await getAllConnections(req.body.username);
+            return res.render('issuer/customer-portal', { customer: customer, connections: connections })
         } else {
             return res.json({ error: 'Incorrect username/password' });
         }
@@ -59,18 +71,13 @@ module.exports = {
         res.json(result.data);
     },
 
-    getLastConnection: async function (req, res) {
-        const connInfo = await issuerDao.getLastConnection(req.session.username);
-        if (connInfo) {
-            const connectionRes = await httpClient.get('/connections/' + connInfo.connection_id);
-            return res.json(connectionRes.data);
-        } else {
-            return res.json(null);
-        }
+    listConnections: async function (req, res) {
+        const connections = await getAllConnections(req.session.username);
+        return res.json(connections);
     },
 
     requestCredential: async (req, res) => {
-        const connInfo = await issuerDao.getLastConnection(req.session.username);
+        const connInfo = await issuerDao.getConnectionsByUsername(req.session.username);
         if (!connInfo) {
             return res.json({ error: "No connection" });
         }
@@ -178,7 +185,7 @@ module.exports = {
     },
 
     getCredentials: async (req, res) => {
-        const connection = await issuerDao.getLastConnection(req.session.username);
+        const connection = await issuerDao.getConnectionsByUsername(req.session.username);
         if (!connection) {
             return res.json({ error: "No connection" });
         }

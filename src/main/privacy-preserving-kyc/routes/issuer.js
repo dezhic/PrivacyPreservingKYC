@@ -15,7 +15,7 @@ router.get('/customer-info', isAuth, issuerCtrl.getCustomerInfo);
 
 router.post('/create-invitation', isAuth, issuerCtrl.createInvitation);
 
-router.get('/last-connection', isAuth, issuerCtrl.getLastConnection);
+router.get('/connections', isAuth, issuerCtrl.listConnections);
 
 router.get('/invitation', isAuth, issuerCtrl.getInvitationByConnectionId);
 

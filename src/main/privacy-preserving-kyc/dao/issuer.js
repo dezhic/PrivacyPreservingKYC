@@ -43,13 +43,13 @@ module.exports = {
         });
     },
 
-    getLastConnection: async function (username) {
+    getConnectionsByUsername: async function (username) {
         return new Promise((resolve, reject) => {
-            db.get('SELECT * FROM Connection WHERE username = ? ORDER BY created_at DESC LIMIT 1', [username], (err, row) => {
+            db.all('SELECT * FROM Connection WHERE username = ? ORDER BY created_at DESC', [username], (err, rows) => {
                 if (err) {
                     reject(err);
                 }
-                resolve(row);
+                resolve(rows);
             });
         });
     },

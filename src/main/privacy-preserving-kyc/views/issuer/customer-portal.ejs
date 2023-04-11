@@ -7,6 +7,17 @@
     <title>Issuer Site - Customer Portal</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        .bd-callout {
+            padding: 0.75rem;
+            /* margin-top: 1.25rem;
+            margin-bottom: 1.25rem; */
+            border: 1px solid #e9ecef;
+            border-left-width: 0.25rem;
+            border-radius: 0.25rem;
+            border-left-color: #5bc0de;
+        }
+    </style>
 </head>
 
 <body>
@@ -27,14 +38,27 @@
                         <div class="container p-0">
                             <div class="row">
                                 <div class="col">
-                                    <p><b>Username:</b> <%= customer.username %></p>
-                                    <p><b>Full Name:</b> <%= customer.name %></p>
-                                    <p><b>Passport No.:</b> <%= customer.passport_no %></p>
+                                    <p><b>Username:</b>
+                                        <%= customer.username %>
+                                    </p>
+                                    <p><b>Full Name:</b>
+                                        <%= customer.name %>
+                                    </p>
+                                    <p><b>Passport No.:</b>
+                                        <%= customer.passport_no %>
+                                    </p>
                                 </div>
                                 <div class="col">
-                                    <p><b>Date of Birth:</b> <%= customer.birth_date %></p>
-                                    <p><b>Nationality:</b> <%= customer.nationality %></p>
-                                    <p><b>Register Time:</b> <%= new Date(customer.register_time).toLocaleDateString() + " " + new Date(customer.register_time).toLocaleTimeString() %></p>
+                                    <p><b>Date of Birth:</b>
+                                        <%= customer.birth_date %>
+                                    </p>
+                                    <p><b>Nationality:</b>
+                                        <%= customer.nationality %>
+                                    </p>
+                                    <p><b>Register Time:</b>
+                                        <%= new Date(customer.register_time).toLocaleDateString() + " " + new
+                                            Date(customer.register_time).toLocaleTimeString() %>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -42,9 +66,12 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        Customer Database
+                        Connections
                     </div>
                     <div class="card-body">
+                        <button type="button" class="btn btn-primary" id="create-inv">New Connection</button>
+                        <span class="bd-callout">asdfawfawfhwqkfejaklwjfajwlsdfjlasl</span>
+                        <hr>
                         <form class="mb-3">
                             <label for="idFilter" class="form-label">Filter by ID:</label>
                             <input type="text" class="form-control" id="idFilter" placeholder="Enter ID">
@@ -53,30 +80,12 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>Deposit Amount</th>
+                                    <th>Holder DID</th>
+                                    <th>State</th>
+                                    <th>Created At</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>John Smith</td>
-                                    <td>456 Maple St, Anytown USA</td>
-                                    <td>$1000</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jane Doe</td>
-                                    <td>789 Oak St, Anytown USA</td>
-                                    <td>$500</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Bob Johnson</td>
-                                    <td>321 Elm St, Anytown USA</td>
-                                    <td>$750</td>
-                                </tr>
+                            <tbody id="conn-table-body">
                             </tbody>
                         </table>
                     </div>
@@ -137,9 +146,31 @@
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
+        function renderConnections(connections) {
+            const tableContent = connections.map(conn => {
+                const createdDate = new Date(conn.created_at);
+                return `
+                <tr>
+                    <td>${conn.connection_id}</td>
+                    <td>${conn.their_did}</td>
+                    <td>${conn.state}</td>
+                    <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
+                </tr>`;
+            });
+            $("#conn-table-body").html(tableContent);
+        }
+        // initial render
+        renderConnections(<%- JSON.stringify(connections) %>);
+    </script>
+    <script>
+        function fetchConnections() {
+            $.get("/issuer/connections", (data, status) => {
+                renderConnections(data);
+            });
+        }
         $("#create-inv").click(() => {
             $.post("/issuer/create-invitation", {}, (data, status) => {
-                new QRCode(document.getElementById("inv-qr"), data.invitation_url);
+                fetchConnections();
             });
         });
 
