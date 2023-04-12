@@ -6,6 +6,7 @@ router.get('/', holderCtrl.index);
 router.get('/credentials', holderCtrl.listCredentials);
 router.post('/receive-invitation', holderCtrl.receiveInvitation);
 router.get('/connections', holderCtrl.listConnections);
+router.post('/generate-zkkyc-proof', holderCtrl.generateZkKycProof);
 
 
 module.exports = router;

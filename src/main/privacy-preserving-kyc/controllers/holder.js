@@ -1,5 +1,6 @@
 const axios = require("axios");
 const holderDao = require('../dao/holder');
+const genZk = require('../utils/generate-zkkyc-proof');
 
 const httpClient = axios.create({
     baseURL: 'http://159.138.47.211:8041',
@@ -47,5 +48,21 @@ module.exports = {
             console.error(err);
             return res.json({ error: err })
         }
-    }
+    },
+
+    generateZkKycProof: async function (req, res) {
+        console.log("Generating proof for request: " + JSON.stringify(req.body));
+        const proof = await genZk(
+            req.body.did_i,
+            req.body.did_hi,
+            req.body.did_hv,
+            req.body.did_v,
+            req.body.sig.s,
+            req.body.sig.r,
+            req.body.pub_i,
+            req.body.pub_g,
+        );
+        return res.json(proof);
+    },
+
 }

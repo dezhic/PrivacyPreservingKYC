@@ -129,8 +129,15 @@ module.exports = {
             }
         } else if (req.body.type === 'kyc') {
             let sigJson;
+            const key = {
+                "pub": [
+                    "95364b73b69447846f8de961c455757809eee2bbbb28bf9acac244a452edfe24",
+                    "898f905a0398ad6008add36aa7db1c91e8fe77d126443fc55b037287c9248c94"
+                ],
+                "priv": "0000000000000000000000000000000000000000000000000000000000000000"
+            };
             try {
-                let sig = await signDidRecord(publicDid, "did:sov:" + connection.their_did, "00000000000000000000000000000000");
+                let sig = await signDidRecord(publicDid, "did:sov:" + connection.their_did, key.priv);
                 sigJson = JSON.stringify(sig);
             } catch (err) {
                 console.log(err);
@@ -147,8 +154,9 @@ module.exports = {
                                 "https://www.w3.org/2018/credentials/v1",
                                 {
                                     "@context": {
-                                        "DidSig": "https://example.com/didsig",
-                                        "sig_json": "https://example.com/didsig-json"
+                                        "DidSig": "https://example.com/did-sig",
+                                        "sig_json": "https://example.com/sig-json",
+                                        "sig_pubkey": "https://example.com/sig-pubkey"
                                     }
                                 }
                             ],
@@ -161,6 +169,7 @@ module.exports = {
                             "credentialSubject": {
                                 "id": "did:sov:" + connection.their_did,
                                 "sig_json": sigJson,
+                                "sig_pubkey": key.pub,
                             }
                         },
                         "options": {

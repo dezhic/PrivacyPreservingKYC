@@ -201,7 +201,7 @@
                     <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
                     <td>${cred.type}</td>
                     <td>${cred.holder_did}</td>
-                    <td><button class="btn-outline-secondary" onclick="alert(\`${JSON.stringify(JSON.parse(cred.content).credentialSubject).replaceAll("\"", "'")}\`)">View Content</button></td>
+                    <td><button class="btn btn-outline-secondary" onclick="alert(\`${JSON.stringify(JSON.parse(cred.content).credentialSubject).replaceAll("\"", "'")}\`)">View Content</button></td>
                 </tr>`;
             });
             $("#cred-table-body").html(tableContent);
@@ -264,3 +264,4 @@
     </script>
 
 </body>
+</html>

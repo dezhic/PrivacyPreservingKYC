@@ -6,10 +6,12 @@ const { randomUint253, beBuffer2bitArray, hexToUint256 } = require('../services/
 const generateCircuitInput = require('../services/generate-circuit-input');
 
 const WORKING_DIR = './proof/tmp';
+console.log('Creating working directory: ' + WORKING_DIR);
 fs.mkdirSync(WORKING_DIR, { recursive: true });
 
 module.exports = {
     generateZkKycProof: (didI, didHI, didHV, didV, sigS, sigR, issuerPubKey, govPubKey) => {
+        console.log('Generating ZkKyc proof...');
         
         const aesKey = aesKeyGen().encodedKey; // Generate encoded AES key
         
@@ -37,12 +39,12 @@ module.exports = {
 
         // Generate witness file
         console.log('Generating witness file...');
-        console.log(execSync(`node proof/generate_zkkyc_token_js/generate_witness.js proof/generate_zkkyc_token_js/generate_zkkyc_token.wasm ${inputFilePath} ${witnessFilePath}`).toString());
+        console.log(execSync(`node ../zkkyc-js/proof/generate_zkkyc_token_js/generate_witness.js ../zkkyc-js/proof/generate_zkkyc_token_js/generate_zkkyc_token.wasm ${inputFilePath} ${witnessFilePath}`).toString());
         console.log('Generated witness file: ' + witnessFilePath);
 
         // Prove with snarkjs
         console.log('Proving with snarkjs...');
-        console.log(execSync(`snarkjs groth16 prove proof/generate_zkkyc_token.zkey ${witnessFilePath} ${proofFilePath} ${publicFilePath}`).toString());
+        console.log(execSync(`snarkjs groth16 prove ../zkkyc-js/proof/generate_zkkyc_token.zkey ${witnessFilePath} ${proofFilePath} ${publicFilePath}`).toString());
         console.log('Generated proof file: ' + proofFilePath + ' and public file: ' + publicFilePath);
         
         // Read proof files (proof.json & public.json)

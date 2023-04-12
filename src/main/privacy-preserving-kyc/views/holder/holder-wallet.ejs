@@ -69,7 +69,7 @@
                                         <%= // customer.nationality %>
                                     </p>
                                     <p><b>Register Time:</b>
-                                        <%= // new Date(customer.register_time).toLocaleDateString() + " " + new
+                                        <%= // new Date(customer.register_time).toLocaleDateString() + " " + new //
                                             // Date(customer.register_time).toLocaleTimeString()
                                         %>
                                     </p>
@@ -86,7 +86,7 @@
                         <form>
                             <div class="row" style="display: flex; align-items: center;">
                                 <div class="col-8">
-                                    <input type="text" class="form-control" id="inv-url" placeholder="Invitation URL"/>
+                                    <input type="text" class="form-control" id="inv-url" placeholder="Invitation URL" />
                                 </div>
                                 <div class="col-auto" style="display: flex; align-items: center; height:45px">
                                     <button type="button" id="paste-btn" class="btn btn-success me-3"
@@ -165,6 +165,69 @@
             </div>
         </div>
     </div>
+    <!-- Credential Details Modal -->
+    <div class="modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Credential Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="cred-modal-body" class="modal-body">
+                    ...
+                </div>
+                <div>
+                    <hr/>
+                    <form class="container">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <label for="did-v" class="form-label">Verifier DID</label>
+                                <input id="did-v" type="text" class="form-control" placeholder="DID_V">
+                            </div>
+                            <div class="col-6">
+                                <label for="did-hv" class="form-label">Holder DID for Verifier</label>
+                                <input id="did-hv" type="text" class="form-control" placeholder="DID_HV">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">
+                                <label for="pub-g" class="form-label">Government Public Key</label>
+                                <input id="pub-g" type="text" class="form-control" placeholder="Government Public Key">
+                            </div>
+                        </div>
+                        <div class="row mx-5">
+                            <div id="cred-store" hidden></div>
+                            <button id="gen-token-btn" type=button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#zkkyc-token-modal">Generate zkKYC Token</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- zkKYC Token Modal -->
+    <div class="modal" id="zkkyc-token-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">zkKYC Token</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="zkkyc-modal-body" class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Back</button>
+                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         const idFilterInput = document.getElementById("idFilter");
         idFilterInput.addEventListener("keyup", () => {
@@ -183,6 +246,7 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script>
         function renderConnections(connections) {
             const tableContent = connections.map(conn => {
@@ -198,7 +262,7 @@
             $("#conn-table-body").html(tableContent);
         }
         // initial render
-        renderConnections(<%- JSON.stringify(connections) %>);
+        renderConnections(<% - JSON.stringify(connections) %>);
     </script>
     <script>
         $("#inv-url").on("input change", () => {
@@ -224,21 +288,21 @@
                 $("#inv-url").val(text).change();
                 $("#inv-url").focus();
             });
-            
+
         });
         $("#receive-btn").click(() => {
             $.post("/holder/receive-invitation",
-            {
-                invitation_url: $("#inv-url").val()
-            },
-            (data, status) => {
-                fetchConnections();
-                $("#inv-url").text(data.invitation_url);
-                $("#new-btn").attr("hidden", true);
-                $("#copy-btn").attr("hidden", false);
-                $("#copy-btn").focus();
-                $("#inv-url").attr("hidden", false);
-            });
+                {
+                    invitation_url: $("#inv-url").val()
+                },
+                (data, status) => {
+                    fetchConnections();
+                    $("#inv-url").text(data.invitation_url);
+                    $("#new-btn").attr("hidden", true);
+                    $("#copy-btn").attr("hidden", false);
+                    $("#copy-btn").focus();
+                    $("#inv-url").attr("hidden", false);
+                });
         });
 
         $("#list-conn").click(() => {
@@ -264,12 +328,13 @@
         function renderCredentials(credentials) {
             const tableContent = credentials.map(cred => {
                 const createdDate = new Date(cred.issuanceDate);
+                const credBase64 = btoa(JSON.stringify(cred));
                 return `
                 <tr>
                     <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
                     <td>${cred.type.includes("DidSig") ? "kyc" : (cred.type.includes("Person") ? "eligibility" : "unknown")}</td>
                     <td>${cred.credentialSubject.id}</td>
-                    <td><button class="btn-outline-secondary" onclick="alert(\`${JSON.stringify(cred.credentialSubject).replaceAll("\"", "'")}\`)">View Content</button></td>
+                    <td><button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="renderCredentialModalBody(\`${credBase64}\`)">View Content</button></td>
                 </tr>`;
             });
             $("#cred-table-body").html(tableContent);
@@ -279,4 +344,57 @@
             renderCredentials(data);
         });
     </script>
+    <script>
+        function renderCredentialModalBody(credentialBase64) {
+            const credential = JSON.parse(atob(credentialBase64));
+            console.log("credential:", JSON.stringify(credential, null, 2));
+            const type = credential.type.includes("DidSig") ? "kyc" : (credential.type.includes("Person") ? "eligibility" : "unknown");
+            const createdDate = new Date(credential.issuanceDate);
+            const credentialSubject = credential.credentialSubject;
+            const content = `
+                <div class="container">
+                    <div class="row">
+                        <div class="col"><b>Type:</b> ${type}</div>
+                        <div class="col"><b>Issue Time:</b> ${createdDate.toLocaleString()}</div>
+                    </div>
+                    <div class="row">
+                        <div><b>Content:</b></div>
+                        <textarea style="height: 250px;" readonly>${JSON.stringify(credentialSubject, null, 2)}</textarea>
+                    </div>
+                </div>
+            `;
+            $("#cred-modal-body").html(content);
+            $("#cred-store").text(credentialBase64);
+        }
+    </script>
+    <script>
+        $("#gen-token-btn").click(() => {
+            const cred = JSON.parse(atob($("#cred-store").text()));
+            console.log(cred);
+            const sig = JSON.parse(cred.credentialSubject.sig_json);
+            $.ajax({
+                url: "/holder/generate-zkkyc-proof",
+                type: "POST",
+                data: JSON.stringify({
+                    did_i: cred.issuer,
+                    did_hi: cred.credentialSubject.id,
+                    did_hv: $("#did-hv").val(),
+                    did_v: $("#did-v").val(),
+                    pub_g: atob($("#pub-g").val()).split(','),
+                    pub_i: cred.credentialSubject.sig_pubkey,
+                    sig: sig,
+                }),
+                success: (data, status) => {
+                    console.log(data);
+                    $("#zkkyc-modal-body").html(`
+                        <div class="container">
+                            <textarea readonly style="height: 500px; width: 100%;">${JSON.stringify(data, null, 2)}</textarea>
+                        </div>
+                    `);
+                },
+                contentType: "application/json",
+            });
+        });
+    </script>
 </body>
+</html>
