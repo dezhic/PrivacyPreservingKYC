@@ -77,18 +77,18 @@ module.exports = {
     },
 
     requestCredential: async (req, res) => {
-        const connInfo = await issuerDao.getConnectionsByUsername(req.session.username);
+        const customer = await issuerDao.getCustomerByUsername(req.session.username);
+        const connInfo = await issuerDao.getConnectionByUsernameAndConnectionId(req.session.username, req.body.connection_id);
         if (!connInfo) {
             return res.json({ error: "No connection" });
         }
-        const customer = await issuerDao.getCustomerByUsername(req.session.username);
         const connectionPromise = httpClient.get('/connections/' + connInfo.connection_id);
-        const publicDidPromise = httpClient.get('/wallet/did/public');
         const connection = (await connectionPromise).data;
         if (connection.state !== 'active') {
             return res.json({ error: `Connection state is not active. Current state: ${connection.state}. Connection ID: ${connection.connection_id}` });
         }
         let publicDid;
+        const publicDidPromise = httpClient.get('/wallet/did/public');
         try {
             const publicDidResult = (await publicDidPromise).data.result;
             publicDid = `did:${publicDidResult.method}:${publicDidResult.did}`;
@@ -97,6 +97,7 @@ module.exports = {
         }
 
         let cred;
+        console.log(customer.username + " is requesting " + req.body.type + " credential for " + connection.their_did);
         if (req.body.type === 'eligibility') {
             cred = {
                 "auto_remove": false,
@@ -172,8 +173,22 @@ module.exports = {
             return res.json({ error: 'Credential type should be "eligibility" or "kyc"' });
         }
         console.log(JSON.stringify(cred));
-        const sendRes = await httpClient.post('/issue-credential-2.0/send', cred);
-        res.json(sendRes.data);
+        try {
+            const sendRes = await httpClient.post('/issue-credential-2.0/send', cred);
+            console.log("sendRes.data: " + JSON.stringify(sendRes.data));
+            await issuerDao.createCredentialInfo(
+                sendRes.data.cred_ex_id,
+                connection.their_did,
+                customer.username,
+                req.body.type,
+                JSON.stringify(sendRes.data.by_format.cred_offer.ld_proof.credential),
+                Date.now()
+            );
+            return res.json(sendRes.data);
+        } catch (err) {
+            console.log(err);
+            return res.json({ error: "Failed to send credential or store credential info" });
+        }
     },
 
     getInvitationByConnectionId: async (req, res) => {
@@ -185,16 +200,14 @@ module.exports = {
     },
 
     getCredentials: async (req, res) => {
-        const connection = await issuerDao.getConnectionsByUsername(req.session.username);
-        if (!connection) {
-            return res.json({ error: "No connection" });
+        try {
+            const creds = await issuerDao.getCredentialInfoByUsername(req.session.username);
+            console.log("creds: " + JSON.stringify(creds));
+            return res.json(creds);
+        } catch (err) {
+            console.log(err);
+            return res.json({ error: "Failed to get credentials" });
         }
-        const result = await httpClient.get('/issue-credential-2.0/records', {
-            params: {
-                connection_id: connection.connection_id,
-            }
-        });
-        res.json(result.data);
     },
 
 }

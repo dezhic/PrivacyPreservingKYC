@@ -9,7 +9,7 @@ router.post('/login', issuerCtrl.login);
 // router.post('/login', issuerCtrl.login);
 router.post('/signup', issuerCtrl.signup);
 
-router.post('/credential/request', isAuth, issuerCtrl.requestCredential);
+router.post('/request-credential', isAuth, issuerCtrl.requestCredential);
 
 router.get('/customer-info', isAuth, issuerCtrl.getCustomerInfo);
 

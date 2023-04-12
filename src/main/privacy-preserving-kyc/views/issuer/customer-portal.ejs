@@ -110,33 +110,45 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        Connections
+                        Request Credentials
                     </div>
-                    <div class="card-body">
-                        <button type="button" class="btn btn-primary" id="list-conn">List Connections</button>
-                        <table class="table" id="conn-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>State</th>
-                                    <th>Created At</th>
-                                    <th>Updated At</th>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>State</td>
-                                    <td>Created At</td>
-                                    <td>Updated At</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                    <div class="card-body container">
+                        <form class="row">
+                            <div class="col-4">
+                                <select id="cred-type" class="form-select">
+                                    <option value="" disabled selected>Credential Type</option>
+                                    <option value="eligibility">Eligibility</option>
+                                    <option value="kyc">KYC</option>
+                                </select>
+                            </div>
+                            <div class="col-5">
+                                <input id="conn-id" class="form-control" type="text" placeholder="Connection ID">
+                            </div>
+                            <div class="col">
+                                <button type="button" id="request-btn" class="btn btn-outline-primary"
+                                    style="height: 40px; width: 100px">Request</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        Issued Credentials
+                        Requested Credentials
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Request Time</th>
+                                    <th>Type</th>
+                                    <th>Holder DID</th>
+                                    <th>Content</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cred-table-body">
+                            </tbody>
+                        </table>
+
                     </div>
 
                 </div>
@@ -161,6 +173,8 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <script>
         function renderConnections(connections) {
             const tableContent = connections.map(conn => {
@@ -177,6 +191,25 @@
         }
         // initial render
         renderConnections(<%- JSON.stringify(connections) %>);
+    </script>
+    <script>
+        function renderCredentials(credentials) {
+            const tableContent = credentials.map(cred => {
+                const createdDate = new Date(cred.created_at);
+                return `
+                <tr>
+                    <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
+                    <td>${cred.type}</td>
+                    <td>${cred.holder_did}</td>
+                    <td><button class="btn-outline-secondary" onclick="alert(\`${JSON.stringify(JSON.parse(cred.content).credentialSubject).replaceAll("\"", "'")}\`)">View Content</button></td>
+                </tr>`;
+            });
+            $("#cred-table-body").html(tableContent);
+        }
+        // initial loading
+        $.get("/issuer/credentials", (data, status) => {
+            renderCredentials(data);
+        });
     </script>
     <script>
         function fetchConnections() {
@@ -212,23 +245,22 @@
             
         });
 
-        $("#list-conn").click(() => {
-            $.get("/issuer/connections", (data, status) => {
-                let tableContent = '<tr><th>ID</th><th>State</th><th>Created At</th><th>Updated At</th></tr>';
-                const rows = data.results.map(conn => {
-                    const createdDate = new Date(conn.created_at);
-                    const updatedDate = new Date(conn.updated_at);
-                    return `
-                    <tr>
-                        <td>${conn.connection_id}</td>
-                        <td>${conn.state}</td>
-                        <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
-                        <td>${updatedDate.toLocaleDateString()} ${updatedDate.toLocaleTimeString()}</td>
-                    </tr>`;
-                });
-                tableContent += rows;
-                $("#conn-table").html(tableContent);
+        $("#request-btn").click(() => {
+            const typeVal = $("#cred-type").val();
+            const connId = $("#conn-id").val();
+            if (!typeVal || !connId) {
+                alert("Please enter a credential type and connection ID");
+                return;
+            }
+            $.post("/issuer/request-credential",
+            {
+                type: typeVal,
+                connection_id: connId
+            },
+            (data, status) => {
+                console.log(data);
             });
         });
     </script>
+
 </body>

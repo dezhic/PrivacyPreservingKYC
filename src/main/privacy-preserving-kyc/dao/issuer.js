@@ -65,4 +65,29 @@ module.exports = {
         });
     },
 
+    createCredentialInfo: async function (credExId, holderDid, username, type, content, createdAt) {
+        return new Promise((resolve, reject) => {
+            db.run('INSERT INTO CredentialInfo (cred_ex_id, holder_did, username, type, content, created_at) VALUES (?,?,?,?,?,?)',
+                [credExId, holderDid, username, type, content, createdAt], (err) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve();
+                }
+            );
+        });
+    },
+
+    getCredentialInfoByUsername: async function (username) {
+        return new Promise((resolve, reject) => {
+            console.log("getting all credentials for user: " + username + "...");
+            db.all('SELECT * FROM CredentialInfo WHERE username = ? ORDER BY created_at DESC', [username], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            });
+        });
+    },
+
 }
