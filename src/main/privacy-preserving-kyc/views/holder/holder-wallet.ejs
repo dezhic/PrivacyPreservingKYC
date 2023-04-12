@@ -145,9 +145,22 @@
                 </div>
                 <div class="card mb-4">
                     <div class="card-header">
-                        Issued Credentials
+                        Received Credentials
                     </div>
-
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Request Time</th>
+                                    <th>Type</th>
+                                    <th>Holder DID</th>
+                                    <th>Option</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cred-table-body">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -245,6 +258,25 @@
                 tableContent += rows;
                 $("#conn-table").html(tableContent);
             });
+        });
+    </script>
+    <script>
+        function renderCredentials(credentials) {
+            const tableContent = credentials.map(cred => {
+                const createdDate = new Date(cred.issuanceDate);
+                return `
+                <tr>
+                    <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
+                    <td>${cred.type.includes("DidSig") ? "kyc" : (cred.type.includes("Person") ? "eligibility" : "unknown")}</td>
+                    <td>${cred.credentialSubject.id}</td>
+                    <td><button class="btn-outline-secondary" onclick="alert(\`${JSON.stringify(cred.credentialSubject).replaceAll("\"", "'")}\`)">View Content</button></td>
+                </tr>`;
+            });
+            $("#cred-table-body").html(tableContent);
+        }
+        // initial loading
+        $.get("/holder/credentials", (data, status) => {
+            renderCredentials(data);
         });
     </script>
 </body>

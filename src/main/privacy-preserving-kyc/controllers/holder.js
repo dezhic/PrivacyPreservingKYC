@@ -12,7 +12,7 @@ module.exports = {
 
     listCredentials: async function (req, res) {
         const credentialsRes = await httpClient.post('/credentials/w3c', {});
-        res.json(credentialsRes.data);
+        res.json(credentialsRes.data.results.map(cred => cred.cred_value));
     },
     
     listConnections: async function (req, res) {
