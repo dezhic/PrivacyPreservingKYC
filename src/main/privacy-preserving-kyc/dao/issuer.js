@@ -65,10 +65,10 @@ module.exports = {
         });
     },
 
-    createCredentialInfo: async function (credExId, holderDid, username, type, content, createdAt) {
+    createCredentialInfo: async function (credExId, connectionId, holderDid, username, type, content, createdAt) {
         return new Promise((resolve, reject) => {
-            db.run('INSERT INTO CredentialInfo (cred_ex_id, holder_did, username, type, content, created_at) VALUES (?,?,?,?,?,?)',
-                [credExId, holderDid, username, type, content, createdAt], (err) => {
+            db.run('INSERT INTO CredentialInfo (cred_ex_id, connection_id, holder_did, username, type, content, created_at) VALUES (?,?,?,?,?,?,?)',
+                [credExId, connectionId, holderDid, username, type, content, createdAt], (err) => {
                     if (err) {
                         reject(err);
                     }
@@ -82,6 +82,17 @@ module.exports = {
         return new Promise((resolve, reject) => {
             console.log("getting all credentials for user: " + username + "...");
             db.all('SELECT * FROM CredentialInfo WHERE username = ? ORDER BY created_at DESC', [username], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            });
+        });
+    },
+
+    getCustomers: async function () {
+        return new Promise((resolve, reject) => {
+            db.all('SELECT cred.holder_did AS did, cust.name AS name, nationality, passport_no, birth_date FROM Customer cust JOIN Connection conn ON cust.username = conn.username JOIN CredentialInfo cred ON conn.connection_id = cred.connection_id ORDER BY cred.created_at DESC', (err, rows) => {
                 if (err) {
                     reject(err);
                 }

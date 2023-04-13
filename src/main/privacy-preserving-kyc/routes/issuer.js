@@ -21,4 +21,6 @@ router.get('/invitation', isAuth, issuerCtrl.getInvitationByConnectionId);
 
 router.get('/credentials', isAuth, issuerCtrl.getCredentials);
 
+router.get('/customers', isAuth, issuerCtrl.getCustomers);
+
 module.exports = router;

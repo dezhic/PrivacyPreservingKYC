@@ -6,6 +6,14 @@ const httpClient = axios.create({
     baseURL: 'http://159.138.47.211:8021',
 });
 
+const key = {
+    "pub": [
+        "95364b73b69447846f8de961c455757809eee2bbbb28bf9acac244a452edfe24",
+        "898f905a0398ad6008add36aa7db1c91e8fe77d126443fc55b037287c9248c94"
+    ],
+    "priv": "0000000000000000000000000000000000000000000000000000000000000000"
+};
+
 async function getAllConnections(username) {
     const connInfo = await issuerDao.getConnectionsByUsername(username);
     const connections = [];
@@ -24,10 +32,22 @@ module.exports = {
 
     login: async function (req, res) {
         const customer = await issuerDao.getCustomerByUsername(req.body.username);
-        if (customer.password === req.body.password) {
+        if (customer?.password === req.body.password) {
             req.session.username = req.body.username;
-            const connections = await getAllConnections(req.body.username);
-            return res.render('issuer/customer-portal', { customer: customer, connections: connections })
+            if (customer.username === 'admin') {
+                let publicDid;
+                const publicDidPromise = httpClient.get('/wallet/did/public');
+                try {
+                    const publicDidResult = (await publicDidPromise).data.result;
+                    publicDid = `did:${publicDidResult.method}:${publicDidResult.did}`;
+                } catch (err) {
+                    return res.json({ error: "Cannot get public DID" });
+                }
+                return res.render('issuer/admin-portal', { issuerKeys: key, issuerDid: publicDid });
+            } else {
+                const connections = await getAllConnections(req.body.username);
+                return res.render('issuer/customer-portal', { customer: customer, connections: connections })
+            }
         } else {
             return res.json({ error: 'Incorrect username/password' });
         }
@@ -129,13 +149,6 @@ module.exports = {
             }
         } else if (req.body.type === 'kyc') {
             let sigJson;
-            const key = {
-                "pub": [
-                    "95364b73b69447846f8de961c455757809eee2bbbb28bf9acac244a452edfe24",
-                    "898f905a0398ad6008add36aa7db1c91e8fe77d126443fc55b037287c9248c94"
-                ],
-                "priv": "0000000000000000000000000000000000000000000000000000000000000000"
-            };
             try {
                 let sig = await signDidRecord(publicDid, "did:sov:" + connection.their_did, key.priv);
                 sigJson = JSON.stringify(sig);
@@ -181,12 +194,12 @@ module.exports = {
         } else {
             return res.json({ error: 'Credential type should be "eligibility" or "kyc"' });
         }
-        console.log(JSON.stringify(cred));
         try {
             const sendRes = await httpClient.post('/issue-credential-2.0/send', cred);
             console.log("sendRes.data: " + JSON.stringify(sendRes.data));
             await issuerDao.createCredentialInfo(
                 sendRes.data.cred_ex_id,
+                cred.connection_id,
                 connection.their_did,
                 customer.username,
                 req.body.type,
@@ -216,6 +229,16 @@ module.exports = {
         } catch (err) {
             console.log(err);
             return res.json({ error: "Failed to get credentials" });
+        }
+    },
+
+    getCustomers: async (req, res) => {
+        try {
+            const customers = await issuerDao.getCustomers();
+            return res.json(customers);
+        } catch (err) {
+            console.log(err);
+            return res.json({ error: "Failed to get customers" });
         }
     },
 
