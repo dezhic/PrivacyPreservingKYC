@@ -60,7 +60,7 @@ module.exports = {
         let result = spawnSync('snarkjs', [
             'groth16',
             'verify',
-            'proof/verification_key.json',
+            '../zkkyc-js/proof/verification_key.json',
             `${WORKING_DIR}/${proofId}_public.json`,
             `${WORKING_DIR}/${proofId}_proof.json`]);
         console.log(result.stdout.toString());
