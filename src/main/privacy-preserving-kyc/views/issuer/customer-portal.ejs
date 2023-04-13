@@ -206,15 +206,17 @@
             });
             $("#cred-table-body").html(tableContent);
         }
-        // initial loading
-        $.get("/issuer/credentials", (data, status) => {
-            renderCredentials(data);
-        }).fail((err) => {
-            if (err.status === 401) {
-                alert('You are not logged in.')
-                window.location.href = "/issuer";
-            }
-        });
+        function fetchCredentials() {
+            $.get("/issuer/credentials", (data, status) => {
+                renderCredentials(data);
+            }).fail((err) => {
+                if (err.status === 401) {
+                    alert('You are not logged in.')
+                    window.location.href = "/issuer";
+                }
+            });
+        }
+        fetchCredentials();
     </script>
     <script>
         function fetchConnections() {
@@ -273,7 +275,7 @@
                 connection_id: connId
             },
             (data, status) => {
-                console.log(data);
+                fetchCredentials();
             }).fail((err) => {
                 if (err.status === 401) {
                     alert('You are not logged in.')
