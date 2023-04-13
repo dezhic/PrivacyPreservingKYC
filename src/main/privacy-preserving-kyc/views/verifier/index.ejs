@@ -52,35 +52,26 @@
                         Verify zkKYC Token
                     </div>
                     <div class="card-body">
-                    <div><label for="parsed">Parsed zkKYC Token:</label></div>
-                    <textarea id="parsed" wrap="off" readonly class="form-control mb-3" style="width: 100%; height: 450px" placeholder="Token and proof parsing result will be displayed here."></textarea>
-                    <div class="row" style="display: flex; align-items: center; height:45px">
-                        <div class="col" style="display:flex; justify-content: center;">
-                            <button id="copy-btn" type="button" id="receive-btn" class="btn btn-success me-3"
-                                style="height: 40px; width: 160px">Copy</button>
+                        <div><label for="parsed">Parsed zkKYC Token:</label></div>
+                        <textarea id="parsed" wrap="off" readonly class="form-control mb-3" style="width: 100%; height: 320px" placeholder="Token and proof parsing result will be displayed here."></textarea>
+                        <div class="row" style="display: flex; align-items: center; height:45px">
+                            <div class="col" style="display:flex; justify-content: center;">
+                                <button id="copy-btn" type="button" id="receive-btn" class="btn btn-success me-3"
+                                    style="height: 40px; width: 160px">Copy</button>
+                            </div>
                         </div>
-                    </div>
+                        <hr/>
+                        <div>
+                            <p><b>KYC Credential Signed by:</b><div id="pub-i"></div></p>
+                            <p><b>Dedicated Token for:</b><div id="did-v"></div></p>
+                            <p><b>Holder Peer DID:</b><div id="did-hv"></div></p>
+                            <p><b>Decryptable by:</b><div id="pub-g"></div></p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        const idFilterInput = document.getElementById("idFilter");
-        idFilterInput.addEventListener("keyup", () => {
-            const filterValue = idFilterInput.value.toLowerCase();
-            const tableRows = document.querySelectorAll("#conn-table-body tr");
-            tableRows.forEach((row) => {
-                const idCell = row.querySelector("td:first-child");
-                const idText = idCell.textContent.toLowerCase();
-                if (idText.indexOf(filterValue) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        });
-    </script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
@@ -99,6 +90,32 @@
             $("#conn-table-body").html(tableContent);
         }
         // initial render
+    </script>
+    <script>
+        function leBigInt2Bits(x, nBits) {
+            const bits = [];
+            for (let i = 0; i < nBits; i++) {
+                bits.push(x & 1n);
+                x >>= 1n;
+            }
+            return bits;
+        }
+        function beBitArray2buffer(a) {
+            const len = Math.floor((a.length -1 )/8)+1;
+            const b = new Uint8Array(len);
+
+            for (let i=0; i<a.length; i++) {
+                const p = Math.floor(i/8);
+                b[p] = b[p] | (Number(a[i]) << ( 7 - (i%8)  ));
+            }
+            return b;
+        }
+        function uint256ToHex(x) {
+            const buf = beBitArray2buffer(leBigInt2Bits(x, 256));
+            return Array.from(buf)
+                .map((i) => i.toString(16).padStart(2, '0'))
+                .join('');
+        }
     </script>
     <script>
         $("#paste-btn").click(() => {
@@ -123,6 +140,7 @@
         });
 
         $("#parse-token-btn").click(() => {
+
             $.ajax({
                 url: "/verifier/parse-token",
                 type: "POST",
@@ -131,6 +149,12 @@
                 success: (data, status) => {
                     console.log("/holder/parse-token response: ", data);
                     $("#parsed").val(JSON.stringify(data, null, 2));
+                    $("#pub-i").text(btoa(data.issuerPubKey.map(BigInt).map(uint256ToHex)));
+                    $("#did-v").text(data.didV);
+                    $("#did-hv").text(data.didHV);
+                    $("#pub-g").text(btoa(data.govPubKey.map(BigInt).map(uint256ToHex)));
+                    console.log(data.govPubKey.map(BigInt).map(uint256ToHex));
+                    console.log(btoa(data.govPubKey.map(BigInt).map(uint256ToHex)));
                 },
             })
         });

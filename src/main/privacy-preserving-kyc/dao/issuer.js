@@ -92,7 +92,7 @@ module.exports = {
 
     getCustomers: async function () {
         return new Promise((resolve, reject) => {
-            db.all('SELECT cred.holder_did AS did, cust.name AS name, nationality, passport_no, birth_date FROM Customer cust JOIN Connection conn ON cust.username = conn.username JOIN CredentialInfo cred ON conn.connection_id = cred.connection_id ORDER BY cred.created_at DESC', (err, rows) => {
+            db.all('SELECT DISTINCT cred.holder_did AS did, cust.name AS name, nationality, passport_no, birth_date FROM Customer cust JOIN Connection conn ON cust.username = conn.username JOIN CredentialInfo cred ON conn.connection_id = cred.connection_id ORDER BY cred.created_at DESC', (err, rows) => {
                 if (err) {
                     reject(err);
                 }
