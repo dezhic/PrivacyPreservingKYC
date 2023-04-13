@@ -209,12 +209,22 @@
         // initial loading
         $.get("/issuer/credentials", (data, status) => {
             renderCredentials(data);
+        }).fail((err) => {
+            if (err.status === 401) {
+                alert('You are not logged in.')
+                window.location.href = "/issuer";
+            }
         });
     </script>
     <script>
         function fetchConnections() {
             $.get("/issuer/connections", (data, status) => {
                 renderConnections(data);
+            }).fail((err) => {
+                if (err.status === 401) {
+                    alert('You are not logged in.')
+                    window.location.href = "/issuer";
+                }
             });
         }
         $("#new-btn").click(() => {
@@ -225,6 +235,11 @@
                 $("#copy-btn").attr("hidden", false);
                 $("#copy-btn").focus();
                 $("#inv-url").attr("hidden", false);
+            }).fail((err) => {
+                if (err.status === 401) {
+                    alert('You are not logged in.')
+                    window.location.href = "/issuer";
+                }
             });
         });
         $("#copy-btn").click(() => {
@@ -259,6 +274,11 @@
             },
             (data, status) => {
                 console.log(data);
+            }).fail((err) => {
+                if (err.status === 401) {
+                    alert('You are not logged in.')
+                    window.location.href = "/issuer";
+                }
             });
         });
     </script>

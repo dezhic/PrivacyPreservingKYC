@@ -98,7 +98,10 @@
                     renderCustomerTableBody(data);
                 },
                 error: function (err) {
-                    alert(err);
+                    if (err.status === 401) {
+                        alert("You are not logged in.");
+                        window.location.href = "/issuer";
+                    }
                 }
             });
         }
