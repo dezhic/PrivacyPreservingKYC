@@ -45,60 +45,45 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        Key Information
+                        Government Key Information
                     </div>
                     <div class="card-body">
-                        <form>
-                            <div class="row" style="display: flex; align-items: center;">
-                                <div class="col-8">
-                                    <input type="text" class="form-control" id="inv-url" placeholder="Invitation URL" />
-                                </div>
-                                <div class="col-auto" style="display: flex; align-items: center; height:45px">
-                                    <button type="button" id="paste-btn" class="btn btn-success me-3"
-                                        style="height: 40px; width: 160px">Paste Invitation</button>
-                                    <button type="button" id="receive-btn" hidden class="btn btn-primary me-3"
-                                        style="height: 40px; width: 160px">Receive Invitation</button>
-                                </div>
+                        <!-- <p><b>Public Key: </b>[
+                            "893680c284f3225b85e847a3221bac0cca03045a045574652473405e21b906d0",
+                            "67426c380f60a832c1c9ae3891d9c5d15d85837212b82784098af8281094e768"
+                        ]</p> -->
+                        <p><b>Public Key (Base64): </b>ODkzNjgwYzI4NGYzMjI1Yjg1ZTg0N2EzMjIxYmFjMGNjYTAzMDQ1YTA0NTU3NDY1MjQ3MzQwNWUyMWI5MDZkMCw2NzQyNmMzODBmNjBhODMyYzFjOWFlMzg5MWQ5YzVkMTVkODU4MzcyMTJiODI3ODQwOThhZjgyODEwOTRlNzY4</p>
+                        <p><b>Private Key: </b><div id="priv-key">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div></p>
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Decrypt Parsed zkKYC Token
+                    </div>
+                    <div class="card-body">
+                        <textarea type="text" class="form-control mb-3"
+                            id="parsed-token" placeholder="Input the parsed zkKYC token here..."
+                            style="height:300px;" wrap="off"></textarea>
+                        <div class="row" style="display: flex; align-items: center; height:45px">
+                            <div class="col-6" style="display:flex; justify-content: center;">
+                                <button type="button" id="paste-token-btn" class="btn btn-success me-3"
+                                    style="height: 40px; width: 160px">Paste</button>
                             </div>
-                        </form>
-                        <hr>
-                        <form class="mb-3">
-                            <label for="idFilter" class="form-label">Filter by ID:</label>
-                            <input type="text" class="form-control" id="idFilter" placeholder="Enter ID">
-                        </form>
-                        <table class="table" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Their Public DID</th>
-                                    <th>My DID</th>
-                                    <th>Created At</th>
-                                </tr>
-                            </thead>
-                            <tbody id="conn-table-body">
-                            </tbody>
-                        </table>
+                            <div class="col-6" style="display:flex; justify-content: center;">
+                                <button type="button" id="decrypt-btn" class="btn btn-primary me-3"
+                                    style="height: 40px; width: 160px">Decrypt</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header">
-                        Decrypt zkKYC Token
+                        Decrypted Content
                     </div>
                     <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Request Time</th>
-                                    <th>Type</th>
-                                    <th>Holder DID</th>
-                                    <th>Option</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cred-table-body">
-                            </tbody>
-                        </table>
+                    <textarea id="decrypted-token" wrap="off" readonly class="form-control mb-3" style="width: 100%; height: 450px" placeholder="Token and proof parsing result will be displayed here."></textarea>
                     </div>
                 </div>
             </div>
@@ -167,59 +152,10 @@
             </div>
         </div>
     </div>
-    <script>
-        const idFilterInput = document.getElementById("idFilter");
-        idFilterInput.addEventListener("keyup", () => {
-            const filterValue = idFilterInput.value.toLowerCase();
-            const tableRows = document.querySelectorAll("#conn-table-body tr");
-            tableRows.forEach((row) => {
-                const idCell = row.querySelector("td:first-child");
-                const idText = idCell.textContent.toLowerCase();
-                if (idText.indexOf(filterValue) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
-        });
-    </script>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script>
-        function renderConnections(connections) {
-            const tableContent = connections.map(conn => {
-                const createdDate = new Date(conn.created_at);
-                return `
-                <tr>
-                    <td>${conn.connection_id}</td>
-                    <td>${conn.their_public_did}</td>
-                    <td>${conn.my_did}</td>
-                    <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
-                </tr>`;
-            });
-            $("#conn-table-body").html(tableContent);
-        }
-        // initial render
-    </script>
-    <script>
-        $("#inv-url").on("input change", () => {
-            // if empty, display paste-btn, otherwise, display receive-btn
-            if ($("#inv-url").val() == "") {
-                $("#paste-btn").attr("hidden", false);
-                $("#receive-btn").attr("hidden", true);
-            } else {
-                $("#paste-btn").attr("hidden", true);
-                $("#receive-btn").attr("hidden", false);
-            }
-        });
-    </script>
-    <script>
-        function fetchConnections() {
-            $.get("/holder/connections", (data, status) => {
-                renderConnections(data);
-            });
-        }
         $("#paste-btn").click(() => {
             const clipboardText = navigator.clipboard.readText();
             clipboardText.then((text) => {
@@ -228,111 +164,25 @@
             });
 
         });
-        $("#receive-btn").click(() => {
-            $.post("/holder/receive-invitation",
-                {
-                    invitation_url: $("#inv-url").val()
-                },
-                (data, status) => {
-                    fetchConnections();
-                    $("#inv-url").text(data.invitation_url);
-                    $("#new-btn").attr("hidden", true);
-                    $("#copy-btn").attr("hidden", false);
-                    $("#copy-btn").focus();
-                    $("#inv-url").attr("hidden", false);
-                });
-        });
-
-        $("#list-conn").click(() => {
-            $.get("/holder/connections", (data, status) => {
-                let tableContent = '<tr><th>ID</th><th>State</th><th>Created At</th><th>Updated At</th></tr>';
-                const rows = data.results.map(conn => {
-                    const createdDate = new Date(conn.created_at);
-                    const updatedDate = new Date(conn.updated_at);
-                    return `
-                    <tr>
-                        <td>${conn.connection_id}</td>
-                        <td>${conn.state}</td>
-                        <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
-                        <td>${updatedDate.toLocaleDateString()} ${updatedDate.toLocaleTimeString()}</td>
-                    </tr>`;
-                });
-                tableContent += rows;
-                $("#conn-table").html(tableContent);
-            });
-        });
-    </script>
-    <script>
-        function renderCredentials(credentials) {
-            const tableContent = credentials.map(cred => {
-                const createdDate = new Date(cred.issuanceDate);
-                const credBase64 = btoa(JSON.stringify(cred));
-                return `
-                <tr>
-                    <td>${createdDate.toLocaleDateString()} ${createdDate.toLocaleTimeString()}</td>
-                    <td>${cred.type.includes("DidSig") ? "kyc" : (cred.type.includes("Person") ? "eligibility" : "unknown")}</td>
-                    <td>${cred.credentialSubject.id}</td>
-                    <td><button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="renderCredentialModalBody(\`${credBase64}\`)">View Content</button></td>
-                </tr>`;
-            });
-            $("#cred-table-body").html(tableContent);
-        }
-        // initial loading
-        $.get("/holder/credentials", (data, status) => {
-            renderCredentials(data);
-        });
-    </script>
-    <script>
-        function renderCredentialModalBody(credentialBase64) {
-            const credential = JSON.parse(atob(credentialBase64));
-            console.log("credential:", JSON.stringify(credential, null, 2));
-            const type = credential.type.includes("DidSig") ? "kyc" : (credential.type.includes("Person") ? "eligibility" : "unknown");
-            const createdDate = new Date(credential.issuanceDate);
-            const credentialSubject = credential.credentialSubject;
-            const content = `
-                <div class="container">
-                    <div class="row">
-                        <div class="col"><b>Type:</b> ${type}</div>
-                        <div class="col"><b>Issue Time:</b> ${createdDate.toLocaleString()}</div>
-                    </div>
-                    <div class="row">
-                        <div><b>Content:</b></div>
-                        <textarea style="height: 250px;" readonly>${JSON.stringify(credentialSubject, null, 2)}</textarea>
-                    </div>
-                </div>
-            `;
-            $("#cred-modal-body").html(content);
-            $("#cred-store").text(credentialBase64);
-        }
-    </script>
-    <script>
-        $("#gen-token-btn").click(() => {
-            const cred = JSON.parse(atob($("#cred-store").text()));
-            console.log(cred);
-            const sig = JSON.parse(cred.credentialSubject.sig_json);
+        $("#decrypt-btn").click(() => {
             $.ajax({
-                url: "/holder/generate-zkkyc-token",
+                url: "/government/decrypt-token",
                 type: "POST",
                 data: JSON.stringify({
-                    did_i: cred.issuer,
-                    did_hi: cred.credentialSubject.id,
-                    did_hv: $("#did-hv").val(),
-                    did_v: $("#did-v").val(),
-                    pub_g: atob($("#pub-g").val()).split(','),
-                    pub_i: cred.credentialSubject.sig_pubkey,
-                    sig: sig,
+                    parsed_token: JSON.parse($("#parsed-token").val()),
+                    priv_key: $("#priv-key").text()
                 }),
-                success: (data, status) => {
-                    console.log(data);
-                    $("#zkkyc-modal-body").html(`
-                        <div class="container">
-                            <textarea readonly style="height: 500px; width: 100%;">${JSON.stringify(data, null, 2)}</textarea>
-                        </div>
-                    `);
-                },
                 contentType: "application/json",
-            });
+                success: (data) => {
+                    console.log(data);
+                    $("#decrypted-token").html(JSON.stringify(data, null, 2));
+                },
+                error: (xhr, ajaxOptions, thrownError) => {
+                    alert(xhr.responseJSON.error);
+                }
+            })
         });
+
     </script>
 </body>
 </html>
