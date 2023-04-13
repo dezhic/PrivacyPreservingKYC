@@ -1,6 +1,6 @@
 const axios = require("axios");
 const holderDao = require('../dao/holder');
-const genZk = require('../utils/generate-zkkyc-proof');
+const genZk = require('../utils/generate-zkkyc-token');
 
 const httpClient = axios.create({
     baseURL: 'http://159.138.47.211:8041',
@@ -12,7 +12,9 @@ module.exports = {
     },
 
     listCredentials: async function (req, res) {
+        console.log("listCredentials");
         const credentialsRes = await httpClient.post('/credentials/w3c', {});
+        // console.log(credentialsRes);
         res.json(credentialsRes.data.results.map(cred => cred.cred_value));
     },
     
@@ -50,7 +52,7 @@ module.exports = {
         }
     },
 
-    generateZkKycProof: async function (req, res) {
+    generateZkKycToken: async function (req, res) {
         console.log("Generating proof for request: " + JSON.stringify(req.body));
         const proof = await genZk(
             req.body.did_i,

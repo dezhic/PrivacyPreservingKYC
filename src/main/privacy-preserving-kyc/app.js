@@ -6,6 +6,8 @@ const session = require('express-session');
 
 const issuerRoutes = require('./routes/issuer');
 const holderRoutes = require('./routes/holder');
+const verifierRoutes = require('./routes/verifier');
+const governmentRoutes = require('./routes/government');
 
 var app = express();
 
@@ -25,6 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/issuer', issuerRoutes);
 app.use('/holder', holderRoutes);
+app.use('/verifier', verifierRoutes);
+app.use('/government', governmentRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

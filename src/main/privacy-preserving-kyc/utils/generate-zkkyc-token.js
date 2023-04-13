@@ -4,7 +4,7 @@ const zkKycJs = require('zkkyc-js');
 if (isMainThread) {
     console.log("main thread");
     module.exports = (didI, didHI, didHV, didV, sigS, sigR, issuerPubKey, govPubKey) => {
-        console.log("main: generating zkKycProof for " + didI + " with " + didHI + " and " + didHV + " and " + didV + " and " + sigS + " and " + sigR + " and " + issuerPubKey + " and " + govPubKey);
+        console.log("main: generating zkKYC token for " + didI + " with " + didHI + " and " + didHV + " and " + didV + " and " + sigS + " and " + sigR + " and " + issuerPubKey + " and " + govPubKey);
         return new Promise((resolve, reject) => {
             console.log("main: creating worker");
             const worker = new Worker(__filename, { workerData: {
