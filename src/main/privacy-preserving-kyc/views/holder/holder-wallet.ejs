@@ -16,15 +16,6 @@
             border-left-color: green;
         }
 
-        #copy-btn span {
-            position: absolute;
-            transform: translate(-50%, -50%);
-        }
-
-        .fade {
-            transition: opacity 1s ease-in-out;
-        }
-
         #conn-table-body td:nth-child(2),
         #conn-table-body td:nth-child(3) {
             word-break: break-all;
@@ -161,8 +152,8 @@
                     ...
                 </div>
                 <div class="modal-footer">
+                    <button id="copy-btn" type="button" class="btn btn-success">Copy</button>
                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Back</button>
-                    <!-- <button type="button" class="btn btn-primary">Understood</button> -->
                 </div>
             </div>
         </div>
@@ -236,11 +227,6 @@
                 },
                 (data, status) => {
                     fetchConnections();
-                    $("#inv-url").text(data.invitation_url);
-                    $("#new-btn").attr("hidden", true);
-                    $("#copy-btn").attr("hidden", false);
-                    $("#copy-btn").focus();
-                    $("#inv-url").attr("hidden", false);
                 });
         });
     </script>
@@ -308,12 +294,19 @@
                     console.log(data);
                     $("#zkkyc-modal-body").html(`
                         <div class="container">
-                            <textarea readonly style="height: 500px; width: 100%;">${JSON.stringify(data, null, 2)}</textarea>
+                            <textarea id="zkkyc-token-text" readonly style="height: 500px; width: 100%;">${JSON.stringify(data, null, 2)}</textarea>
                         </div>
                     `);
                 },
                 contentType: "application/json",
             });
+        });
+    </script>
+    <script>
+        $("#copy-btn").click(() => {
+            const zkkycTokenText = $("#zkkyc-token-text").val();
+            navigator.clipboard.writeText(zkkycTokenText);
+            $("#zkkyc-token-text").focus();
         });
     </script>
 </body>
